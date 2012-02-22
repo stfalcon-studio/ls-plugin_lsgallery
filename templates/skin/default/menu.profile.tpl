@@ -1,0 +1,1 @@
+<li {if $aParams[1]=='images'}class="active"{/if}><a href="{router page='profile'}{$oUserProfile->getLogin()}/favourites/images/">{$aLang.user_menu_profile_favourites_images}</a>{if $iCountImageFavourite} ({$iCountImageFavourite}){/if}</li>

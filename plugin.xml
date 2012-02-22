@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+	<name>
+		<lang name="default">LsGallery</lang>
+	</name>
+	<author>
+		<lang name="default">stfalcon-studio</lang>
+	</author>
+	<homepage>http://stfalcon.com/</homepage>
+	<version>0.1.0</version>
+	<requires>
+		<livestreet>0.5.0</livestreet>
+		<plugins>
+		</plugins>
+	</requires>
+	<description>
+		<lang name="default">Allow to create galleries for user</lang>
+	</description>
+</plugin>
