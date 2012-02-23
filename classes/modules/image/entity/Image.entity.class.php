@@ -37,7 +37,10 @@ class PluginLsgallery_ModuleImage_EntityImage extends Entity
 
     public function getTagsArray()
     {
-        return explode(',', $this->getImageTags());
+        if ($this->getImageTags()) {
+            return explode(',', $this->getImageTags());
+        }
+        return null;
     }
 
     public function getFilename()

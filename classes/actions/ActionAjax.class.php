@@ -212,7 +212,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
                 return false;
             }
 
-            $oImage->setImageTags(htmlspecialchars(getRequest('tags')));
+            $oImage->setImageTags(trim(htmlspecialchars(getRequest('tags')), ' ,'));
             $this->PluginLsgallery_Image_UpdateImage($oImage);
         }
     }
