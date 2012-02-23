@@ -726,13 +726,13 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
             }
         }
 
-        if (!func_check(getRequest('album_title'), 'text', 2, 200)) {
+        if (!func_check(getRequest('album_title'), 'text', 2, 64)) {
             $this->Message_AddError($this->Lang_Get('lsgallery_album_title_error'), $this->Lang_Get('error'));
             $bOk = false;
         }
         
         $sDescription = getRequest('album_description');
-        if ($sDescription && !func_check($sDescription, 'text', 1, 2000)) {
+        if ($sDescription && !func_check($sDescription, 'text', 10, 512)) {
             $this->Message_AddError($this->Lang_Get('lsgallery_album_description_error'), $this->Lang_Get('error'));
             $bOk = false;
         }

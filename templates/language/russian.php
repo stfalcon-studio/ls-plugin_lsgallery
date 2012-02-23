@@ -41,12 +41,12 @@ return array(
     'lsgallery_type_personal' => 'Личный',
     
     'lsgallery_album_title_notice' => 'Заполнение обязательно',
-    'lsgallery_album_description_notice' => 'Описание должно быть от 10 до 2000 символов',
+    'lsgallery_album_description_notice' => 'Описание должно быть от 10 до 512 символов',
     'lsgallery_album_type_notice' => '«Открытый» - доступен для всех.<br/>«Для друзей» - для вас и ваших друзей.<br/>«Личный» - только для вас.',
     
     'lsgallery_album_id_error' => 'Неправильный id альбома!',
-    'lsgallery_album_title_error' => 'Название  должно быть от 2 до 200 символов!',
-    'lsgallery_album_description_error' => 'Описание должно быть от 10 до 2000 символов!',
+    'lsgallery_album_title_error' => 'Название  должно быть от 2 до 64 символов!',
+    'lsgallery_album_description_error' => 'Описание должно быть от 10 до 512 символов!',
     'lsgallery_album_type_error' => 'Некорректный тип альбома!',
     
     'lsgallery_album_add_image' => 'Добавить новые фотографии',
