@@ -93,7 +93,7 @@ ls.gallery = (function ($) {
             + '<textarea onBlur="ls.gallery.setImageDescription('+response.id+', this.value)"></textarea><br />'
             + '<label class="tags">' + ls.lang.get('lsgallery_image_tags') + '</label><br/>'
             + '<input type="text" class="autocomplete-image-tags" onBlur="ls.gallery.setImageTags('+response.id+', this.value)"/><br/>'
-            + '<div class="options-line"><span id="image_preview_state_' + response.id + '" class="photo-preview-state"><a href="javascript:ls.photoset.setCover(' + response.id + ')" class="mark-as-preview">' + ls.lang.get('lsgallery_album_set_image_cover') + '</a></span>'
+            + '<div class="options-line"><span id="image_preview_state_' + response.id + '" class="photo-preview-state"><a href="javascript:ls.gallery.setPreview(' + response.id + ')" class="mark-as-preview">' + ls.lang.get('lsgallery_album_set_image_cover') + '</a></span>'
             + '<a href="javascript:ls.gallery.deleteImage(' + response.id + ')" class="image-delete">' + ls.lang.get('lsgallery_album_image_delete') + '</a></div></li>';
             jQuery('#swfu_images').prepend(template);
             ls.autocomplete.add($(".autocomplete-image-tags"), aRouter['galleryajax']+'autocompleteimagetag/', true);
@@ -176,44 +176,6 @@ ls.gallery = (function ($) {
         });
     };
     
-    this.upload = function () {
-        ls.gallery.addImageEmpty();
-        ls.ajaxSubmit(aRouter['galleryajax']+'upload/', jQuery('#photoset-upload-form'), function (data) {
-            if (data.bStateError) {
-                jQuery('#album_image_empty').remove();
-                ls.msg.error(data.sMsgTitle, data.sMsg);
-            } else {
-                ls.gallery.addImage(data);
-            }
-        });
-        ls.gallery.closeForm();
-    };
-
-    this.closeForm = function () {
-        jQuery('#album-upload-form').hide();
-    };
-
-    this.showForm = function() {
-        var $select = $('#photoset-start-upload');
-        if ($select.length) {
-            var pos = $select.offset();
-            w = $select.outerWidth();
-            h = $select.outerHeight();
-            t = pos.top + h - 30  + 'px';
-            l = pos.left - 15 + 'px';
-            $('#photoset-upload-form').css({
-                'top':t,
-                'left':l
-            });
-        }
-        $('#photoset-upload-form').show();
-    };
-    this.showMainImage = function (id) {
-        $('#album-main-preview-' + id).css('width',$('#photoset-main-image-'+id).outerWidth());
-        $('#album-image-count-' + id).show();
-        $('#album-image-desc-'+id).show();
-    }
-	
     this.changeMark = function(idImage, idUser, status, a) {
         ls.ajax(aRouter['galleryajax'] + 'changemark', {
             'idImage': idImage,
