@@ -101,7 +101,6 @@ ls.gallery = (function ($) {
         } else {
             ls.msg.error(response.sMsgTitle, response.sMsg);
         }
-        ls.gallery.closeForm();
     };
 
     this.deleteImage = function (id) {
