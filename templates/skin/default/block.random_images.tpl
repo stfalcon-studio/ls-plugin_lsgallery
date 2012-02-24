@@ -1,4 +1,4 @@
-{if count ($aRandomImages)}
+{if (count($aRandomImages))}
 <div class="gallery-albums-preview">
     <h2 class="title">{$aLang.lsgallery_iamge_rand}</h2>
     <ul id="block-random-images">
