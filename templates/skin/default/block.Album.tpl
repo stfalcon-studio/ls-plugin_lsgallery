@@ -22,7 +22,7 @@
                     <div class="empty-album"></div>
                 {/if} 
             </a>
-            {$oAlbum->getDescription()|escape:'html'}
+            {$oAlbum->getDescription()|strip_tags}
 	</div>
     <div class="gallery-user">
         <a class="user" href="{$oUser->getUserWebPath()}">{$oUser->getLogin()}</a>
