@@ -170,7 +170,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
                 return false;
             }
 
-            $oImage->setDescription(htmlspecialchars(getRequest('text')));
+            $oImage->setDescription(getRequest('text'));
             $this->PluginLsgallery_Image_UpdateImage($oImage);
         }
     }
@@ -198,6 +198,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
     {
         $this->Viewer_SetResponseAjax('json');
 
+        
         $sTags = getRequest('tags', null, 'post');
 
         $aTags = explode(',', $sTags);
@@ -215,7 +216,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         } else {
             $sTags = join(',', $aTagsNew);
         }
-
+        
         /* @var $oImage PluginLsgallery_ModuleImage_EntityImage */
         $oImage = $this->PluginLsgallery_Image_GetImageById(getRequest('id'));
         if ($oImage) {

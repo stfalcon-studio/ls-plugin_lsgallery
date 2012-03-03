@@ -90,6 +90,13 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->SetTemplateAction('photo');
 
         $oImage = $this->PluginLsgallery_Image_GetImageOfDay();
+        
+        if ($oImage) {
+            $oAlbum = $this->PluginLsgallery_Album_GetAlbumById($oImage->getAlbumId());
+            $this->Viewer_Assign('oAlbum', $oAlbum);
+        }
+        
+        
         $aRandomImages = $this->PluginLsgallery_Image_GetRandomImages(Config::Get('plugin.lsgallery.images_random'));
         $aResult = $this->PluginLsgallery_Album_GetAlbumsIndex(1, Config::Get('plugin.lsgallery.album_block'));
 
@@ -330,6 +337,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $aImageUser = $this->PluginLsgallery_Image_GetImageUsersByImageId($oImage->getId());
         
         $this->Viewer_Assign('oImage', $oImage);
+        $this->Viewer_Assign('oAlbum', $oAlbum);
         $this->Viewer_Assign('aImageUser', $aImageUser);
         $this->Viewer_Assign('aComments', $aComments);
         $this->Viewer_Assign('iMaxIdComment', $iMaxIdComment);

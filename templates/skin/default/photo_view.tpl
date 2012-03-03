@@ -106,7 +106,7 @@
         {/if}    
     {/if}
     <div class="content">
-		{$oImage->getDescription()|escape:'html'}
+		{$oImage->getDescription()|strip_tags}
 	</div>
     
     <ul class="tags">
