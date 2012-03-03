@@ -69,6 +69,7 @@
 #image{
 	display:inline-block;
 	position:relative;
+        overflow:visible;
 	}
 	#submit-selected-friend{
 		font-weight:bold;
