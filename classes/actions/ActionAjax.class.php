@@ -198,8 +198,22 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
     {
         $this->Viewer_SetResponseAjax('json');
 
-        if (!func_check(getRequest('tags', null, 'post'), 'text', 2, 250)) {
+        $sTags = getRequest('tags', null, 'post');
+
+        $aTags = explode(',', $sTags);
+        $aTagsNew = array();
+        $aTagsNewLow = array();
+        foreach ($aTags as $sTag) {
+            $sTag = trim($sTag);
+            if (func_check($sTag, 'text', 2, 50) and !in_array(mb_strtolower($sTag, 'UTF-8'), $aTagsNewLow)) {
+                $aTagsNew[] = $sTag;
+                $aTagsNewLow[] = mb_strtolower($sTag, 'UTF-8');
+            }
+        }
+        if (!count($aTagsNew)) {
             return;
+        } else {
+            $sTags = join(',', $aTagsNew);
         }
 
         /* @var $oImage PluginLsgallery_ModuleImage_EntityImage */
@@ -212,7 +226,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
                 return false;
             }
 
-            $oImage->setImageTags(trim(htmlspecialchars(getRequest('tags')), ' ,'));
+            $oImage->setImageTags($sTags);
             $this->PluginLsgallery_Image_UpdateImage($oImage);
         }
     }
