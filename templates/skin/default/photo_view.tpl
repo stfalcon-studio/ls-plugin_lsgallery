@@ -111,7 +111,7 @@
     
     <ul class="tags">
 		{foreach from=$oImage->getTagsArray() item=sTag name=tags_list}
-			<li><a href="#">{$sTag|escape:'html'}</a>{if !$smarty.foreach.tags_list.last}, {/if}</li>
+			<li><a href="{router page='gallery'}tag/{$sTag|escape:'url'}/">{$sTag|escape:'html'}</a>{if !$smarty.foreach.tags_list.last}, {/if}</li>
 		{/foreach}                                                             
 	</ul>
     
