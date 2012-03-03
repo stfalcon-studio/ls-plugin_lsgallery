@@ -30,7 +30,7 @@ if (jQuery.browser.flash) {
                     <label class="description">{$aLang.lsgallery_image_description}</label><br/>
                     <textarea onBlur="ls.gallery.setImageDescription({$oImage->getId()}, this.value)">{$oImage->getDescription()}</textarea><br />
                     <label class="tags">{$aLang.lsgallery_image_tags}</label><br/>
-                    <input type="text" class="autocomplete-image-tags" onBlur="ls.gallery.setImageTags({$oImage->getId()}, this.value)"/><br/>
+                    <input type="text" class="autocomplete-image-tags" onBlur="ls.gallery.setImageTags({$oImage->getId()}, this.value)" value="{$oImage->getImageTags()}"/><br/>
                     <div class="options-line">
                         <span id="image_preview_state_{$oImage->getId()}" class="photo-preview-state">
                             {if $bIsMainImage}
