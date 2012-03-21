@@ -14,10 +14,9 @@
 		</plugins>
 	</requires>
 	<description>
-		<lang name="default">Allow to create galleries for user. Sponored by Ilya Leonovich, 
+		<lang name="default">Allow to create galleries for user. Sponored by  
             owner of the project http://paintstrike.ru/ and http://airsoft.paintstrike.ru</lang>
-		<lang name="russian">Позволяет пользователям создавать галереи. Разработку плагина спонсировал Илья Леонович, 
-владелец проектов http://paintstrike.ru/ и http://airsoft.paintstrike.ru</lang>
-		<lang name="ukrainian"> Дозволяє користувачам створювати галереї. Розробку плагіна спонсорував Ілля Леонович, власник проектів http://paintstrike.ru/ і http://airsoft.paintstrike.ru</lang>
+		<lang name="russian">Позволяет пользователям создавать галереи. Разработку плагина спонсировал владелец проектов http://paintstrike.ru/ и http://airsoft.paintstrike.ru</lang>
+		<lang name="ukrainian"> Дозволяє користувачам створювати галереї. Розробку плагіна спонсорував власник проектів http://paintstrike.ru/ і http://airsoft.paintstrike.ru</lang>
 	</description>
 </plugin>
