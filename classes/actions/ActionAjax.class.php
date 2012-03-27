@@ -71,8 +71,6 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         }
 
         $iAlbumId = getRequest('album_id');
-        $sTargetId = null;
-        $iCountPhotos = 0;
 
         /* @var $oAlbum PluginLsgallery_ModuleAlbum_EntityAlbum */
         $oAlbum = $this->PluginLsgallery_Album_GetAlbumById($iAlbumId);
@@ -80,12 +78,11 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             $this->Message_AddError($this->Lang_Get('system_error'), $this->Lang_Get('error'));
             return false;
         }
-        $iCountPhotos = $oAlbum->getImageCount();
 
         /**
          * Максимальное количество фото в album
          */
-        if ($iCountPhotos >= Config::Get('plugin.lsgallery.count_image_max')) {
+        if ($oAlbum->getImageCount() >= Config::Get('plugin.lsgallery.count_image_max')) {
             $this->Message_AddError($this->Lang_Get('lsgallery_images_too_much_images', array('MAX' => Config::Get('plugin.lsgallery.count_image_max'))), $this->Lang_Get('error'));
             return false;
         }
@@ -105,12 +102,8 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             $oImage->setUserId($this->oUserCurrent->getId());
             $oImage->setAlbumId($oAlbum->getId());
             $oImage->setFilename($sFile);
-
+//
             if ($oImage = $this->PluginLsgallery_Image_AddImage($oImage)) {
-                $oAlbum = $this->PluginLsgallery_Album_GetAlbumById($iAlbumId);
-                $oAlbum->setImageCount($oAlbum->getImageCount() + 1);
-                $this->PluginLsgallery_Album_UpdateAlbum($oAlbum);
-
                 $this->Viewer_AssignAjax('file', $oImage->getWebPath('100crop'));
                 $this->Viewer_AssignAjax('id', $oImage->getId());
                 $this->Message_AddNotice($this->Lang_Get('lsgallery_image_added'), $this->Lang_Get('attention'));
@@ -148,8 +141,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
                 return false;
             }
             $this->PluginLsgallery_Image_DeleteImage($oImage);
-            //@todo перерасчет альбома, некст-прев
-//            $oAlbum = $this->PluginLsgallery_Album_RegroupAlbum($oAlbum);
+            
             $this->Message_AddNotice($this->Lang_Get('lsgallery_image_deleted'), $this->Lang_Get('attention'));
             return;
         }
@@ -198,7 +190,6 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
     {
         $this->Viewer_SetResponseAjax('json');
 
-        
         $sTags = getRequest('tags', null, 'post');
 
         $aTags = explode(',', $sTags);
@@ -216,7 +207,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         } else {
             $sTags = join(',', $aTagsNew);
         }
-        
+
         /* @var $oImage PluginLsgallery_ModuleImage_EntityImage */
         $oImage = $this->PluginLsgallery_Image_GetImageById(getRequest('id'));
         if ($oImage) {
@@ -227,7 +218,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
                 return false;
             }
 
-            $oImage->setImageTags($sTags);
+            $oImage->setImageTags($sTag);
             $this->PluginLsgallery_Image_UpdateImage($oImage);
         }
     }

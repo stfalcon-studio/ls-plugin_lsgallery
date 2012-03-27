@@ -54,31 +54,38 @@ ls.gallery = (function ($) {
         opt.button_text_style = null;
         opt.button_window_mode = "window";
         opt.button_placeholder_id = 'images-start-upload';
+        opt.file_dialog_complete_handler = this.handlerFileDialogComplete;
+        opt.upload_success_handler = this.handlerUploadSuccess;
+        opt.upload_complete_handler = this.handlerUploadComplete;
+        opt.upload_progress_handler = this.handlerUploadProgress;
         $(ls.swfupload).bind('load', function () {
             this.swfu = ls.swfupload.init(opt);
-
-            $(this.swfu).bind('eUploadProgress', this.swfHandlerUploadProgress);
-            $(this.swfu).bind('eFileDialogComplete', this.swfHandlerFileDialogComplete);
-            $(this.swfu).bind('eUploadSuccess', this.swfHandlerUploadSuccess);
-            $(this.swfu).bind('eUploadComplete', this.swfHandlerUploadComplete);
         }.bind(this));
         ls.swfupload.loadSwf();
     };
-    this.swfHandlerUploadProgress = function (e, file, bytesLoaded, percent) {
+    this.handlerUploadProgress = function (file, bytesLoaded) {
+        var percent = Math.ceil((bytesLoaded / file.size) * 100);
         jQuery('#gallery_image_empty_progress').text(file.name + ': ' + (percent == 100 ? 'resize..' : percent +'%'));
     };
-    this.swfHandlerFileDialogComplete = function(e, numFilesSelected, numFilesQueued) {
-        if (numFilesQueued > 0) {
+    this.handlerFileDialogComplete = function(numFilesSelected, numFilesQueued) {
+        var stats = this.getStats();
+        if (stats.files_queued == numFilesSelected && numFilesSelected > 0) {
+            this.startUpload();
             ls.gallery.addImageEmpty();
         }
-    };
-    this.swfHandlerUploadSuccess = function(e, file, serverData) {
+
+	};
+    this.handlerUploadSuccess = function(file, serverData) {
         ls.gallery.addImage(jQuery.parseJSON(serverData));
-    };
-    this.swfHandlerUploadComplete = function(e, file, next) {
-        if (next > 0) {
+        var next = this.getStats().files_queued;
+		if (next > 0) {
+			this.startUpload();
             ls.gallery.addImageEmpty();
-        }
+		}
+		$(this).trigger('eUploadSuccess',[file, serverData]);
+	};
+    this.swfHandlerUploadComplete = function(e, file, next) {
+        return;
     };
     this.addImageEmpty = function () {
         var template = '<li id="gallery_image_empty"><img src="' + DIR_STATIC_SKIN + '/images/loader.gif'+'" alt="image" style="margin-left: 35px;margin-top: 20px;" />'

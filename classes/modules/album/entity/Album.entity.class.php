@@ -57,6 +57,15 @@ class PluginLsgallery_ModuleAlbum_EntityAlbum extends Entity
         return $this->_aData['image_count'];
     }
     
+    public function getFirstImageId()
+    {
+        return $this->_aData['first_image_id'];
+    }
+
+    public function getLastImageId()
+    {
+        return $this->_aData['last_image_id'];
+    }
     
     public static function getLocalizedTypes($engine)
     {
@@ -147,5 +156,14 @@ class PluginLsgallery_ModuleAlbum_EntityAlbum extends Entity
     {
         $this->_aData['image_count'] = $data;
     }
+    
+    public function setFirstImageId($data)
+    {
+        $this->_aData['first_image_id'] = $data;
+    }
 
+    public function setLastImageId($data)
+    {
+        $this->_aData['last_image_id'] = $data;
+    }
 }

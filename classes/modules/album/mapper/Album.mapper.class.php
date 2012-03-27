@@ -48,12 +48,15 @@ class PluginLsgallery_ModuleAlbum_MapperAlbum extends Mapper
                     album_type = ?,
                     album_date_edit = ?,
                     album_cover_image_id= ?d,
-                    image_count = ?d
+                    image_count = ?d,
+                    first_image_id = ?d,
+                    last_image_id = ?d
                 WHERE
                     album_id = ?d
                 ";
         if ($this->oDb->query($sql, $oAlbum->getTitle(), $oAlbum->getDescription(), $oAlbum->getType(),
-                $oAlbum->getDateEdit(), $oAlbum->getCoverId(), $oAlbum->getImageCount(), $oAlbum->getId())) {
+                $oAlbum->getDateEdit(), $oAlbum->getCoverId(), $oAlbum->getImageCount(), $oAlbum->getFirstImageId(),
+                $oAlbum->getLastImageId(), $oAlbum->getId())) {
             return true;
         }
         return false;
