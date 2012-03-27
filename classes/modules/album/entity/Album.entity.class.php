@@ -3,15 +3,16 @@
 /**
  * Album entity
  * 
- *@method ModuleUser_EntityUser getUser 
- *@method PluginLsgallery_ModuleImage_EntityImage getCover 
+ * @method ModuleUser_EntityUser getUser 
+ * @method PluginLsgallery_ModuleImage_EntityImage getCover 
  */
 class PluginLsgallery_ModuleAlbum_EntityAlbum extends Entity
 {
+
     const TYPE_OPEN = 'open';
     const TYPE_FRIEND = 'friend';
     const TYPE_PERSONAL = 'personal';
-    
+
     public function getId()
     {
         return $this->_aData['album_id'];
@@ -56,23 +57,13 @@ class PluginLsgallery_ModuleAlbum_EntityAlbum extends Entity
     {
         return $this->_aData['image_count'];
     }
-    
-    public function getFirstImageId()
-    {
-        return $this->_aData['first_image_id'];
-    }
 
-    public function getLastImageId()
-    {
-        return $this->_aData['last_image_id'];
-    }
-    
     public static function getLocalizedTypes($engine)
     {
         return array(
-            self::TYPE_OPEN  => $engine->Lang_Get('lsgallery_type_open'),
-            self::TYPE_FRIEND  => $engine->Lang_Get('lsgallery_type_friend'),
-            self::TYPE_PERSONAL  => $engine->Lang_Get('lsgallery_type_personal'),
+            self::TYPE_OPEN => $engine->Lang_Get('lsgallery_type_open'),
+            self::TYPE_FRIEND => $engine->Lang_Get('lsgallery_type_friend'),
+            self::TYPE_PERSONAL => $engine->Lang_Get('lsgallery_type_personal'),
         );
     }
 
@@ -80,24 +71,24 @@ class PluginLsgallery_ModuleAlbum_EntityAlbum extends Entity
     {
         switch ($type) {
             case 'view':
-                $sPath = Router::GetPath('gallery') . 'album/' . $this->getId(); 
+                $sPath = Router::GetPath('gallery') . 'album/' . $this->getId();
                 break;
             case 'edit':
-                $sPath = Router::GetPath('gallery') . 'update/' . $this->getId(); 
+                $sPath = Router::GetPath('gallery') . 'update/' . $this->getId();
                 break;
             case 'delete':
-                $sPath = Router::GetPath('gallery') . 'delete/' . $this->getId(); 
+                $sPath = Router::GetPath('gallery') . 'delete/' . $this->getId();
                 break;
-                $sPath = Router::GetPath('gallery') . 'add-images/' . $this->getId(); 
+                $sPath = Router::GetPath('gallery') . 'add-images/' . $this->getId();
                 break;
             case 'images':
-                $sPath = Router::GetPath('gallery') . 'admin-images/' . $this->getId(); 
+                $sPath = Router::GetPath('gallery') . 'admin-images/' . $this->getId();
                 break;
             default:
-                $sPath = Router::GetPath('gallery') . 'aldbum/' . $this->getId(); 
+                $sPath = Router::GetPath('gallery') . 'aldbum/' . $this->getId();
                 break;
         }
-        
+
         return $sPath;
     }
 
@@ -105,7 +96,7 @@ class PluginLsgallery_ModuleAlbum_EntityAlbum extends Entity
     {
         return Plugin::GetTemplateWebPath('lsgallery') . 'images/default-cover.png';
     }
-    
+
     public function setId($data)
     {
         $this->_aData['album_id'] = $data;
@@ -156,14 +147,5 @@ class PluginLsgallery_ModuleAlbum_EntityAlbum extends Entity
     {
         $this->_aData['image_count'] = $data;
     }
-    
-    public function setFirstImageId($data)
-    {
-        $this->_aData['first_image_id'] = $data;
-    }
 
-    public function setLastImageId($data)
-    {
-        $this->_aData['last_image_id'] = $data;
-    }
 }

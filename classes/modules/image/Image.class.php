@@ -24,7 +24,7 @@ class PluginLsgallery_ModuleImage extends Module
     /**
      * Add image
      * @param PluginLsgallery_ModuleImage_EntityImage $oImage
-     * @return PluginLsgallery_ModuleImage_EntityImage|boolean 
+     * @return PluginLsgallery_ModuleImage_EntityImage|boolean
      */
     public function AddImage($oImage)
     {
@@ -41,7 +41,6 @@ class PluginLsgallery_ModuleImage extends Module
             $oAlbum->setImageCount($oAlbum->getImageCount() + 1);
             $this->PluginLsgallery_Album_UpdateAlbum($oAlbum);
             $this->Cache_Clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array('image_new'));
-            $this->RegroupAlbumImages($oAlbum, $oImage);
             return $oImage;
         }
         return false;
@@ -49,8 +48,8 @@ class PluginLsgallery_ModuleImage extends Module
 
     /**
      * Edit image
-     * 
-     * @param PluginLsgallery_ModuleImage_EntityImage $oImage 
+     *
+     * @param PluginLsgallery_ModuleImage_EntityImage $oImage
      * @return boolean
      */
     public function UpdateImage($oImage)
@@ -98,9 +97,9 @@ class PluginLsgallery_ModuleImage extends Module
     }
 
     /**
-     * Upload Image 
+     * Upload Image
      * @param array $aFile
-     * @return string|boolean 
+     * @return string|boolean
      */
     public function UploadImage($aFile)
     {
@@ -165,27 +164,26 @@ class PluginLsgallery_ModuleImage extends Module
 
     /**
      * Delete image
-     * 
-     * @param PluginLsgallery_ModuleImage_EntityImage $oImage 
+     *
+     * @param PluginLsgallery_ModuleImage_EntityImage $oImage
      * @return boolean
      */
     public function DeleteImage($oImage)
     {
         $oAlbum = $this->PluginLsgallery_Album_GetAlbumById($oImage->getAlbumId());
-        
-        
+
+
         if ($oAlbum->getCoverId() == $oImage->getId()) {
             $oAlbum->setCoverId(null);
         }
 
         $oAlbum->setImageCount($oAlbum->getImageCount() - 1);
         $this->PluginLsgallery_Album_UpdateAlbum($oAlbum);
-        
+
         $this->Cache_Clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array("image_update"));
         $this->Cache_Delete("image_{$oImage->getId()}");
-        
+
         $this->oMapper->DeleteImage($oImage->getId());
-        $this->RegroupAlbumImages($oAlbum);
         //@todo удаление комментариев и голосований
         @unlink($this->Image_GetServerPath(rtrim(Config::Get('path.root.web'), '/') . $oImage->getWebPath()));
 
@@ -259,11 +257,11 @@ class PluginLsgallery_ModuleImage extends Module
 
     /**
      * Get images additional data
-     * 
+     *
      * @todo Подтягивание голосов, избранного, комментов
      * @param array $aImagesId
      * @param array $aAllowData
-     * @return array 
+     * @return array
      */
     public function GetImagesAdditionalData($aImagesId, $aAllowData = array('user' => array(), 'vote', 'favourite', 'comment_new'))
     {
@@ -329,7 +327,7 @@ class PluginLsgallery_ModuleImage extends Module
 
     /**
      * Get favourite image
-     * 
+     *
      * @param string $sImageId
      * @param type $sUserId
      * @return ModuleFavourite_EntityFavourite|null
@@ -341,7 +339,7 @@ class PluginLsgallery_ModuleImage extends Module
 
     /**
      * Get favourite images
-     * 
+     *
      * @param array $aImages
      * @param string $sUserId
      * @return \ModuleFavourite_EntityFavourite
@@ -353,9 +351,9 @@ class PluginLsgallery_ModuleImage extends Module
 
     /**
      * Get images by array Id
-     * 
+     *
      * @param array $aImageId
-     * @return array 
+     * @return array
      */
     public function GetImagesByArrayId($aImageId)
     {
@@ -421,9 +419,9 @@ class PluginLsgallery_ModuleImage extends Module
 
     /**
      * Get images by array id from solid cache
-     * 
+     *
      * @param array $aImagesId
-     * @return array 
+     * @return array
      */
     public function GetImagesByArrayIdSolid($aImagesId)
     {
@@ -446,9 +444,9 @@ class PluginLsgallery_ModuleImage extends Module
 
     /**
      * Set image read
-     * 
+     *
      * @param PluginLsgallery_ModuleImage_EntityImageRead $oImageRead
-     * @return boolean 
+     * @return boolean
      */
     public function SetimageRead($oImageRead)
     {
@@ -466,10 +464,10 @@ class PluginLsgallery_ModuleImage extends Module
 
     /**
      * Get image read
-     * 
+     *
      * @param string $sImageId
      * @param string $sUserId
-     * @return PluginLsgallery_ModuleImage_EntityImageRead|null 
+     * @return PluginLsgallery_ModuleImage_EntityImageRead|null
      */
     public function GetImageRead($sImageId, $sUserId)
     {
@@ -482,7 +480,7 @@ class PluginLsgallery_ModuleImage extends Module
 
     /**
      * Delete image read by array of image id
-     * 
+     *
      * @param array|int $aImageId
      * @return boolean
      */
@@ -495,10 +493,10 @@ class PluginLsgallery_ModuleImage extends Module
 
     /**
      * Get images read by images and user
-     * 
+     *
      * @param array $aImageId
      * @param string $sUserId
-     * @return \PluginLsgallery_ModuleImage_EntityImageRead 
+     * @return \PluginLsgallery_ModuleImage_EntityImageRead
      */
     public function GetImagesReadByArray($aImageId, $sUserId)
     {
@@ -561,7 +559,7 @@ class PluginLsgallery_ModuleImage extends Module
 
     /**
      * Get images read by images and user from solid cache
-     * 
+     *
      * @param array $aImageId
      * @param string $sUserId
      * @return \PluginLsgallery_ModuleImage_EntityImageRead
@@ -587,7 +585,7 @@ class PluginLsgallery_ModuleImage extends Module
 
     /**
      * Inreace image comment count
-     * 
+     *
      * @param string $sImageId
      * @return boolean
      */
@@ -599,84 +597,9 @@ class PluginLsgallery_ModuleImage extends Module
     }
 
     /**
-     * Regroup images by album id
-     * 
-     * @param PluginLsgallery_ModuleAlbum_EntityAlbum $oAlbum
-     * @param PluginLsgallery_ModuleImage_EntityImage $oImage
-     * 
-     * @return type 
-     */
-    public function RegroupAlbumImages($oAlbum, $oImage = null)
-    {
-
-        if ($oAlbum->getImageCount() == 0) {
-            $oAlbum->setFirstImageId(null);
-            $oAlbum->setLastImageId(null);
-            $this->PluginLsgallery_Album_UpdateAlbum($oAlbum);
-            return;
-        }
-
-        if (is_null($oImage) || (is_null($oAlbum->getFirstImageId()) && is_null($oAlbum->getLastImageId()))) {
-            $aResult = $this->GetImagesByAlbumId($oAlbum->getId());
-            $aImages = $aResult['collection'];
-            if ($aResult['count'] == 1) {
-                /* @var $oImageCur PluginLsgallery_ModuleImage_EntityImage */
-                $oImageCur = array_shift($aImages);
-                $oImageCur->setNextImageId(null);
-                $oImageCur->setPrevImageId(null);
-                $this->UpdateImage($oImageCur);
-
-                $oAlbum->setFirstImageId($oImage->getId());
-                $oAlbum->setLastImageId(null);
-                $this->PluginLsgallery_Album_UpdateAlbum($oAlbum);
-                return;
-            }
-            $aImagesId = array_keys($aImages);
-            foreach ($aImages as $oImageCur) {
-                $iCurKey = array_search($oImageCur->getId(), $aImagesId);
-                if (isset($aImagesId[$iCurKey + 1])) {
-                    $oImageCur->setPrevImageId($aImagesId[$iCurKey + 1]);
-                } else {
-                    $oImageCur->setPrevImageId(null);
-                }
-                if (isset($aImagesId[$iCurKey - 1])) {
-                    $oImageCur->setNextImageId($aImagesId[$iCurKey - 1]);
-                } else {
-                    $oImageCur->setNextImageId(null);
-                }
-                $this->UpdateImage($oImageCur);
-            }
-        } else {
-            if ($oAlbum->getImageCount() == 1) {
-                $oAlbum->setFirstImageId($oImage->getId());
-                $this->PluginLsgallery_Album_UpdateAlbum($oAlbum);
-                return;
-            }
-
-            if (is_null($oAlbum->getLastImageId())) {
-                $iPrevImageId = $oAlbum->getFirstImageId();
-            } else {
-                $iPrevImageId = $oAlbum->getLastImageId();
-            }
-
-            $oPrevImage = $this->GetImageById($iPrevImageId);
-            $oPrevImage->setNextImageId($oImage->getId());
-            $this->UpdateImage($oPrevImage);
-
-            $oImage->setPrevImageId($oPrevImage->getId());
-            $oImage->setNextImageId(null);
-            $this->UpdateImage($oImage);
-
-            $oAlbum->setLastImageId($oImage->getId());
-            $this->PluginLsgallery_Album_UpdateAlbum($oAlbum);
-            return;
-        }
-    }
-
-    /**
      * Get image of day
-     * 
-     * @return PluginLsgallery_ModuleImage_EntityImage|null 
+     *
+     * @return PluginLsgallery_ModuleImage_EntityImage|null
      */
     public function GetImageOfDay()
     {
@@ -699,7 +622,7 @@ class PluginLsgallery_ModuleImage extends Module
 
     /**
      * Get new images
-     * 
+     *
      * @param int $iPage
      * @param int $iPerPage
      * @return \PluginLsgallery_ModuleImage_EntityImage
@@ -725,7 +648,7 @@ class PluginLsgallery_ModuleImage extends Module
 
     /**
      * Get best images
-     * 
+     *
      * @param int $iPage
      * @param int $iPerPage
      * @return \PluginLsgallery_ModuleImage_EntityImage
@@ -755,7 +678,7 @@ class PluginLsgallery_ModuleImage extends Module
     /**
      * Get random images
      * @param int $iLimit
-     * @return \PluginLsgallery_ModuleImage_EntityImage 
+     * @return \PluginLsgallery_ModuleImage_EntityImage
      */
     public function GetRandomImages($iLimit = 5)
     {
@@ -766,7 +689,7 @@ class PluginLsgallery_ModuleImage extends Module
 
     /**
      * Get tags for open images
-     * 
+     *
      * @param int $iLimit
      * @return \PluginLsgallery_ModuleImage_EntityImageTag
      */
@@ -818,7 +741,7 @@ class PluginLsgallery_ModuleImage extends Module
 
     /**
      * Get favourite open images by user
-     * 
+     *
      * @param string $sUserId
      * @param int $iCurrPage
      * @param int $iPerPage
@@ -843,7 +766,7 @@ class PluginLsgallery_ModuleImage extends Module
 
     /**
      * Get count fav images by user
-     * 
+     *
      * @param string $sUserId
      * @return int
      */
@@ -854,7 +777,7 @@ class PluginLsgallery_ModuleImage extends Module
 
     /**
      * Get count open fav images by user
-     * 
+     *
      * @param string $sUserId
      * @return int
      */
@@ -874,9 +797,9 @@ class PluginLsgallery_ModuleImage extends Module
 
     /**
      * Add image user
-     * 
+     *
      * @param PluginLsgallery_ModuleImage_EntityImageUser $oImageUser
-     * @return PluginLsgallery_ModuleImage_EntityImageUser|boolean 
+     * @return PluginLsgallery_ModuleImage_EntityImageUser|boolean
      */
     public function AddImageUser($oImageUser)
     {
@@ -890,10 +813,10 @@ class PluginLsgallery_ModuleImage extends Module
 
     /**
      * Get image user
-     * 
+     *
      * @param type $sUserId
      * @param type $sImageId
-     * @return type 
+     * @return type
      */
     public function GetImageUser($sUserId, $sImageId)
     {
@@ -902,7 +825,7 @@ class PluginLsgallery_ModuleImage extends Module
 
     /**
      * Get image user by image id
-     * 
+     *
      * @param string $sImageId
      * @return \PluginLsgallery_ModuleImage_EntityImageUser
      */
@@ -919,7 +842,7 @@ class PluginLsgallery_ModuleImage extends Module
 
     /**
      * Change image user status
-     * 
+     *
      * @param PluginLsgallery_ModuleImage_EntityImageUser $oImageUser
      * @return boolean
      */
@@ -932,7 +855,7 @@ class PluginLsgallery_ModuleImage extends Module
 
     /**
      * Delete image user
-     * 
+     *
      * @param PluginLsgallery_ModuleImage_EntityImageUser $oImageUser
      * @return boolean
      */
@@ -959,4 +882,35 @@ class PluginLsgallery_ModuleImage extends Module
         return $data;
     }
 
+    /**
+     * Get prev image id
+     *
+     * @param PluginLsgallery_ModuleImage_EntityImage$oImage
+     *
+     * @return PluginLsgallery_ModuleImage_EntityImage|null
+     */
+    public function GetPrevImage($oImage)
+    {
+        if (false === ($sId = $this->Cache_Get("image_prev_{$oImage->getId()}"))) {
+            $sId = $this->oMapper->GetPrevImageId($oImage);
+            $this->Cache_Set($sId, "image_prev_{$oImage->getId()}", array('image_update', 'image_new'), 60 * 60 * 24 * 1);
+        }
+        return $this->GetImageById($sId);
+    }
+
+    /**
+     * Get next image id
+     *
+     * @param PluginLsgallery_ModuleImage_EntityImage$oImage
+     *
+     * @return PluginLsgallery_ModuleImage_EntityImage|null
+     */
+    public function GetNextImage($oImage)
+    {
+        if (false === ($sId = $this->Cache_Get("image_next_{$oImage->getId()}"))) {
+            $sId = $this->oMapper->GetNextImageId($oImage);
+            $this->Cache_Set($sId, "image_next_{$oImage->getId()}", array('image_update', 'image_new'), 60 * 60 * 24 * 1);
+        }
+        return $this->GetImageById($sId);
+    }
 }

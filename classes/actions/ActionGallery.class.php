@@ -90,13 +90,6 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->SetTemplateAction('photo');
 
         $oImage = $this->PluginLsgallery_Image_GetImageOfDay();
-        
-        if ($oImage) {
-            $oAlbum = $this->PluginLsgallery_Album_GetAlbumById($oImage->getAlbumId());
-            $this->Viewer_Assign('oAlbum', $oAlbum);
-        }
-        
-        
         $aRandomImages = $this->PluginLsgallery_Image_GetRandomImages(Config::Get('plugin.lsgallery.images_random'));
         $aResult = $this->PluginLsgallery_Album_GetAlbumsIndex(1, Config::Get('plugin.lsgallery.album_block'));
 
@@ -327,33 +320,38 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
             $oImageRead->setCommentIdLast($iMaxIdComment);
             $oImageRead->setDateRead();
             $this->PluginLsgallery_Image_SetImageRead($oImageRead);
-            
+
             $oCurrentImageUser = $this->PluginLsgallery_Image_GetImageUser($this->oUserCurrent->getId(), $oImage->getId());
             $this->Viewer_Assign('oCurrentImageUser', $oCurrentImageUser);
         }
 
         $this->SetTemplateAction('view');
-        
+
         $aImageUser = $this->PluginLsgallery_Image_GetImageUsersByImageId($oImage->getId());
-        
+
+        $oPrevImage = $this->PluginLsgallery_Image_GetPrevImage($oImage);
+        $oNextImage = $this->PluginLsgallery_Image_GetNextImage($oImage);
+
         $this->Viewer_Assign('oImage', $oImage);
-        $this->Viewer_Assign('oAlbum', $oAlbum);
+        $this->Viewer_Assign('oPrevImage', $oPrevImage);
+        $this->Viewer_Assign('oNextImage', $oNextImage);
+
         $this->Viewer_Assign('aImageUser', $aImageUser);
         $this->Viewer_Assign('aComments', $aComments);
         $this->Viewer_Assign('iMaxIdComment', $iMaxIdComment);
 
         $this->Viewer_AddBlock('right', 'Album', array('plugin' => 'lsgallery', 'oAlbum' => $oAlbum), 110);
         $this->Viewer_AddBlock('right', 'StreamGallery', array('plugin' => 'lsgallery'), 20);
-        
+
         $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/fancybox/jquery.fancybox.pack.js');
         $this->Viewer_AppendStyle(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/fancybox/jquery.fancybox.css');
-        
+
         $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/imgareaselect/jquery.imgareaselect.dev.js');
         $this->Viewer_AppendStyle(Plugin::GetTemplateWebPath('lsgallery') . 'css/imgareaselect-default.css');
     }
 
     public function EventViewAlbum()
-    {   
+    {
         $sId = $this->GetParam(0);
 
         /* @var $oAlbum PluginLsgallery_ModuleAlbum_EntityAlbum */
@@ -365,15 +363,15 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
             $this->Message_AddErrorSingle($this->Lang_Get('not_access'), $this->Lang_Get('error'));
             return Router::Action('error');
         }
-        
+
         $this->sMenuItemSelect = 'album';
-        
+
         if ($this->oUserCurrent && $this->oUserCurrent->getId() == $oAlbum->getUserId()) {
             $this->sMenuSubItemSelect = 'my';
         } else {
             $this->sMenuSubItemSelect = 'all';
         }
-        
+
         $this->SetTemplateAction('album');
 
         $iPage = $this->_getPage();
@@ -388,14 +386,14 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
         $this->Viewer_AddBlock('right', 'Album', array('plugin' => 'lsgallery', 'oAlbum' => $oAlbum), 110);
         $this->Viewer_AddBlock('right', 'GalleryTags', array('plugin' => 'lsgallery'), 10);
-        
+
         $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/fancybox/jquery.fancybox.pack.js');
         $this->Viewer_AppendStyle(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/fancybox/jquery.fancybox.css');
-        
+
         $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/fancybox/jquery.fancybox-buttons.js');
         $this->Viewer_AppendStyle(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/fancybox/jquery.fancybox-buttons.css');
-        
-        
+
+
     }
 
     public function EventViewGallery()
@@ -419,10 +417,10 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $aAlbums = $aResult['collection'];
 
         $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, Config::Get('plugin.lsgallery.album_per_page'), 4, Router::GetPath('lsgallery') . 'albums/' . $sType);
-        
+
         $this->Viewer_AddBlock('right', 'GalleryTags', array('plugin' => 'lsgallery'), 10);
         $this->Viewer_AddBlock('right', 'StreamGallery', array('plugin' => 'lsgallery'), 20);
-        
+
         $this->Viewer_Assign('aAlbums', $aAlbums);
         $this->Viewer_Assign('aPaging', $aPaging);
     }
@@ -446,7 +444,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->Viewer_Assign('aAlbums', $aAlbums);
         $this->Viewer_Assign('aPaging', $aPaging);
     }
-    
+
     public function EventUserMarked()
     {
         $sLogin = $this->GetParam(0);
@@ -718,9 +716,9 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
     /**
      * Validate album fields
-     * 
+     *
      * @param PluginLsgallery_ModuleAlbum_EntityAlbum $oAlbum
-     * @return boolean 
+     * @return boolean
      */
     protected function _checkAlbumFields($oAlbum = null)
     {
@@ -738,7 +736,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
             $this->Message_AddError($this->Lang_Get('lsgallery_album_title_error'), $this->Lang_Get('error'));
             $bOk = false;
         }
-        
+
         $sDescription = getRequest('album_description');
         if ($sDescription && !func_check($sDescription, 'text', 10, 512)) {
             $this->Message_AddError($this->Lang_Get('lsgallery_album_description_error'), $this->Lang_Get('error'));

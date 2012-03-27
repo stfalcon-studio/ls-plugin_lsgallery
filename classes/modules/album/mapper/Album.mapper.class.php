@@ -8,19 +8,19 @@ class PluginLsgallery_ModuleAlbum_MapperAlbum extends Mapper
 
     /**
      * Create album
-     * 
+     *
      * @param PluginLsgallery_ModuleAlbum_EntityAlbum $oAlbum
-     * @return boolean|PluginLsgallery_ModuleAlbum_EntityAlbum 
+     * @return boolean|PluginLsgallery_ModuleAlbum_EntityAlbum
      */
     public function CreateAlbum($oAlbum)
     {
-        $sql = "INSERT INTO 
-                    " . Config::Get('db.table.lsgallery.album') . " 
+        $sql = "INSERT INTO
+                    " . Config::Get('db.table.lsgallery.album') . "
                 (
                  album_user_id,
                  album_title,
                  album_description,
-                 album_type,			
+                 album_type,
                  album_date_add
                 )
                 VALUES
@@ -34,56 +34,53 @@ class PluginLsgallery_ModuleAlbum_MapperAlbum extends Mapper
 
     /**
      * Update album
-     * 
+     *
      * @param PluginLsgallery_ModuleAlbum_EntityAlbum $oAlbum
-     * @return boolean 
+     * @return boolean
      */
     public function UpdateAlbum($oAlbum)
     {
-        $sql = "UPDATE 
-                    " . Config::Get('db.table.lsgallery.album') . " 
-                SET 
+        $sql = "UPDATE
+                    " . Config::Get('db.table.lsgallery.album') . "
+                SET
                     album_title = ?,
                     album_description = ?,
                     album_type = ?,
                     album_date_edit = ?,
                     album_cover_image_id= ?d,
-                    image_count = ?d,
-                    first_image_id = ?d,
-                    last_image_id = ?d
+                    image_count = ?d
                 WHERE
                     album_id = ?d
                 ";
         if ($this->oDb->query($sql, $oAlbum->getTitle(), $oAlbum->getDescription(), $oAlbum->getType(),
-                $oAlbum->getDateEdit(), $oAlbum->getCoverId(), $oAlbum->getImageCount(), $oAlbum->getFirstImageId(),
-                $oAlbum->getLastImageId(), $oAlbum->getId())) {
+                $oAlbum->getDateEdit(), $oAlbum->getCoverId(), $oAlbum->getImageCount(), $oAlbum->getId())) {
             return true;
         }
         return false;
     }
-    
+
     /**
      * Delete album by id
-     * 
+     *
      * @param int $iAlbumId
-     * @return boolean 
+     * @return boolean
      */
 	public function DeleteAlbum($iAlbumId) {
-		$sql = "DELETE FROM 
-                    " . Config::Get('db.table.lsgallery.album') . " 
-                WHERE 
-                    album_id = ?d				
-    		";			
+		$sql = "DELETE FROM
+                    " . Config::Get('db.table.lsgallery.album') . "
+                WHERE
+                    album_id = ?d
+    		";
 		if ($this->oDb->query($sql,$iAlbumId)) {
 			return true;
 		}
 		return false;
 	}
-    
+
     /**
      * Get albums by array id
      * @param array $aArrayId
-     * @return \PluginLsgallery_ModuleAlbum_EntityAlbum 
+     * @return \PluginLsgallery_ModuleAlbum_EntityAlbum
      */
     public function GetAlbumsByArrayId($aArrayId)
     {
@@ -91,13 +88,13 @@ class PluginLsgallery_ModuleAlbum_MapperAlbum extends Mapper
             return array();
         }
 
-        $sql = "SELECT 
-					*							 
-				FROM 
-					" . Config::Get('db.table.lsgallery.album') . " 
-				WHERE 
-					album_id IN(?a) 		
-				ORDER BY 						
+        $sql = "SELECT
+					*
+				FROM
+					" . Config::Get('db.table.lsgallery.album') . "
+				WHERE
+					album_id IN(?a)
+				ORDER BY
 					FIELD(album_id,?a)";
 
         $aAlbums = array();
@@ -108,7 +105,7 @@ class PluginLsgallery_ModuleAlbum_MapperAlbum extends Mapper
         }
         return $aAlbums;
     }
-    
+
     public function GetAlbums($aFilter, &$iCount, $iCurrPage, $iPerPage)
     {
         $sWhere = $this->buildFilter($aFilter);
@@ -120,18 +117,18 @@ class PluginLsgallery_ModuleAlbum_MapperAlbum extends Mapper
             $aFilter['order'] = array($aFilter['order']);
         }
 
-        $sql = "SELECT 
-                    a.album_id							
-                FROM 
+        $sql = "SELECT
+                    a.album_id
+                FROM
                     " . Config::Get('db.table.lsgallery.album') . " as a
-                WHERE 
-                    1=1					
+                WHERE
+                    1=1
                     " . $sWhere . "
-                GROUP BY       
+                GROUP BY
                     a.album_id
                 ORDER BY " .
                 implode(', ', $aFilter['order']) . "
-                LIMIT 
+                LIMIT
                     ?d, ?d";
         $aAlbums = array();
         if ($aRows = $this->oDb->selectPage($iCount, $sql, ($iCurrPage - 1) * $iPerPage, $iPerPage)) {
@@ -145,14 +142,14 @@ class PluginLsgallery_ModuleAlbum_MapperAlbum extends Mapper
     public function GetCountAlbums($aFilter)
     {
         $sWhere = $this->buildFilter($aFilter);
-        $sql = "SELECT 
-					count(a.album_id) as count									
-				FROM 
+        $sql = "SELECT
+					count(a.album_id) as count
+				FROM
                     " . Config::Get('db.table.lsgallery.album') . " as a
-				WHERE 
+				WHERE
 					1=1
 				" . $sWhere . "
-                GROUP BY       
+                GROUP BY
                     a.album_id";
         if ($aRow = $this->oDb->selectRow($sql)) {
             return $aRow['count'];
@@ -171,16 +168,16 @@ class PluginLsgallery_ModuleAlbum_MapperAlbum extends Mapper
             $aFilter['order'] = array($aFilter['order']);
         }
 
-        $sql = "SELECT 
-                    a.album_id							
-                FROM 
+        $sql = "SELECT
+                    a.album_id
+                FROM
                     " . Config::Get('db.table.lsgallery.album') . " as a
-                WHERE 
+                WHERE
                     1=1" .
                 $sWhere . "
-                GROUP BY       
+                GROUP BY
                     a.album_id
-				ORDER BY 
+				ORDER BY
                     " . implode(', ', $aFilter['order']) . " ";
         $aAlbums = array();
         if ($aRows = $this->oDb->select($sql)) {
@@ -199,7 +196,7 @@ class PluginLsgallery_ModuleAlbum_MapperAlbum extends Mapper
         if (isset($aFilter['album_new'])) {
             $sWhere.=" AND a.album_date_add >=  '" . $aFilter['album_new'] . "'";
         }
-        
+
         if (isset($aFilter['not_empty'])) {
             $sWhere.=" AND a.image_count > 0 ";
         }
@@ -211,7 +208,7 @@ class PluginLsgallery_ModuleAlbum_MapperAlbum extends Mapper
         if (isset($aFilter['album_type']) and is_array($aFilter['album_type'])) {
             $aAlbumTypes = array();
             foreach ($aFilter['album_type'] as $sType => $aAlbumId) {
-                
+
                 if ($sType == 'open') {
                     $aAlbumTypes[] = " a.album_type = 'open' ";
                 }
@@ -220,9 +217,9 @@ class PluginLsgallery_ModuleAlbum_MapperAlbum extends Mapper
                 }
             }
             $sWhere.=" AND (".join(" OR ",(array)$aAlbumTypes).")";
-            
+
         }
         return $sWhere;
     }
-    
+
 }

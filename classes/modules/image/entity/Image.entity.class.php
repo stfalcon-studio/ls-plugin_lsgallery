@@ -58,16 +58,6 @@ class PluginLsgallery_ModuleImage_EntityImage extends Entity
         return $this->_aData['image_date_edit'];
     }
 
-    public function getNextImageId()
-    {
-        return $this->_aData['next_image_id'];
-    }
-
-    public function getPrevImageId()
-    {
-        return $this->_aData['prev_image_id'];
-    }
-
     public function getCountComment()
     {
         return $this->_aData['image_count_comment'];
@@ -194,16 +184,6 @@ class PluginLsgallery_ModuleImage_EntityImage extends Entity
             $data = date('Y-m-d H::i:s');
         }
         $this->_aData['image_date_edit'] = $data;
-    }
-
-    public function setNextImageId($data)
-    {
-        $this->_aData['next_image_id'] = $data;
-    }
-
-    public function setPrevImageId($data)
-    {
-        $this->_aData['prev_image_id'] = $data;
     }
 
     public function setCountComment($data)
