@@ -34,7 +34,7 @@
     {if $bSliderImage}
         <div class="gallery-navigation">
             {if $oPrevImage}
-                <a class="gal-right" href="{$oPrevImage->getUrlFull()}">
+                <a class="gal-right ajaxy" href="{$oPrevImage->getUrlFull()}">
                     <img src="{$oPrevImage->getWebPath('40crop')}" alt="Image" />
                     →
                 </a>
@@ -43,7 +43,7 @@
             <a class="gal-expend" href="{$oImage->getWebPath()}">{$aLang.lsgallery_image_zoom}</a>
 
             {if $oNextImage}
-                <a class="gal-left" href="{$oNextImage->getUrlFull()}">
+                <a class="gal-left ajaxy" href="{$oNextImage->getUrlFull()}">
                     ←
                     <img src="{$oNextImage->getWebPath('40crop')}" alt="image">
                 </a>

@@ -11,7 +11,7 @@
                         <div class="bk">
                             <a href="{$oAlbum->getUrlFull()}">
                                 {if $oImage}
-                                <img class="100-image" src="{$oImage->getWebPath('100crop')}" alt="{$oAlbum->getTitle()|escape:'html'}" />
+                                <img class="image-100" src="{$oImage->getWebPath('100crop')}" alt="{$oAlbum->getTitle()|escape:'html'}" />
                                 {else}
                                     <div class="empty-album"></div>
                                 {/if}    

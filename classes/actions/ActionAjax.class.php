@@ -43,6 +43,8 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
 
         $this->AddEvent('autocompleteimagetag', 'EventAutocompeleteImageTags');
         $this->AddEvent('autocompletefriend', 'EventAutocompeleteFriend');
+
+        $this->AddEvent('getimage', 'EventGetImage');
     }
 
     /**
@@ -141,7 +143,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
                 return false;
             }
             $this->PluginLsgallery_Image_DeleteImage($oImage);
-            
+
             $this->Message_AddNotice($this->Lang_Get('lsgallery_image_deleted'), $this->Lang_Get('attention'));
             return;
         }
@@ -458,7 +460,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         }
 
         if ($this->PluginLsgallery_Image_AddImageUser($oImageUser)) {
-            
+
             if ($oUserMarked->getId() != $this->oUserCurrent->getId()) {
                 $this->Notify_Send($oUserMarked, 'notify.marked.tpl', $this->Lang_Get('lsgallery_marked_subject'), array('oUser' => $this->oUserCurrent, 'oImage' => $oImage), 'lsgallery');
             }
@@ -531,7 +533,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
         }
     }
-    
+
     public function EventRemoveMark()
     {
         if (!$this->oUserCurrent) {
@@ -567,4 +569,88 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         }
     }
 
+    public function EventGetImage()
+    {
+        $sId = getRequest('id');
+        /* @var $oImage PluginLsgallery_ModuleImage_EntityImage */
+        if (!$oImage = $this->PluginLsgallery_Image_GetImageById($sId)) {
+            $this->Message_AddErrorSingle($this->Lang_Get('system_error_404'),'404');
+            return;
+        }
+        /* @var $oAlbum PluginLsgallery_ModuleAlbum_EntityAlbum */
+        if (!$oAlbum = $this->PluginLsgallery_Album_GetAlbumById($oImage->getAlbumId())) {
+            $this->Message_AddErrorSingle($this->Lang_Get('system_error_404'),'404');
+            return;
+        }
+
+        if (!$this->ACL_AllowViewAlbumImages($this->oUserCurrent, $oAlbum)) {
+            $this->Message_AddErrorSingle($this->Lang_Get('not_access'), $this->Lang_Get('error'));
+            return;
+        }
+
+
+        $oViewer = $this->Viewer_GetLocalViewer();
+        if (!Config::Get('module.comment.nested_page_reverse') and Config::Get('module.comment.use_nested') and Config::Get('module.comment.nested_per_page')) {
+            $iPageDef = ceil($this->Comment_GetCountCommentsRootByTargetId($oTopic->getId(), 'topic') / Config::Get('module.comment.nested_per_page'));
+        } else {
+            $iPageDef = 1;
+        }
+
+        $iPage = getRequest('cmtpage', 0) ? (int) getRequest('cmtpage', 0) : $iPageDef;
+        $aReturn = $this->Comment_GetCommentsByTargetId($oImage->getId(), 'image', $iPage, Config::Get('module.comment.nested_per_page'));
+        $iMaxIdComment = $aReturn['iMaxIdComment'];
+        $aComments = $aReturn['comments'];
+
+        if (Config::Get('module.comment.use_nested') and Config::Get('module.comment.nested_per_page')) {
+            $aPaging = $this->Viewer_MakePaging($aReturn['count'], $iPage, Config::Get('module.comment.nested_per_page'), 4, '');
+            if (!Config::Get('module.comment.nested_page_reverse') and $aPaging) {
+                // переворачиваем страницы в обратном порядке
+                $aPaging['aPagesLeft'] = array_reverse($aPaging['aPagesLeft']);
+                $aPaging['aPagesRight'] = array_reverse($aPaging['aPagesRight']);
+            }
+            $oViewer->Assign('aPagingCmt', $aPaging);
+        }
+
+        if ($this->oUserCurrent) {
+            $oImageRead = new PluginLsgallery_ModuleImage_EntityImageRead();
+            $oImageRead->setImageId($oImage->getId());
+            $oImageRead->setUserId($this->oUserCurrent->getId());
+            $oImageRead->setCommentCountLast($oImage->getCountComment());
+            $oImageRead->setCommentIdLast($iMaxIdComment);
+            $oImageRead->setDateRead();
+            $this->PluginLsgallery_Image_SetImageRead($oImageRead);
+
+            $oCurrentImageUser = $this->PluginLsgallery_Image_GetImageUser($this->oUserCurrent->getId(), $oImage->getId());
+            $this->Viewer_Assign('oCurrentImageUser', $oCurrentImageUser);
+        }
+
+        // Image
+        $aImageUser = $this->PluginLsgallery_Image_GetImageUsersByImageId($oImage->getId());
+
+        $oPrevImage = $this->PluginLsgallery_Image_GetPrevImage($oImage);
+        $oNextImage = $this->PluginLsgallery_Image_GetNextImage($oImage);
+
+        $this->Viewer_AssignAjax('sImageUrl', $oImage->getWebPath('600'));
+
+        $oViewer->Assign('oUserCurrent', $this->oUserCurrent);
+        $oViewer->Assign('oImage', $oImage);
+        $oViewer->Assign('oPrevImage', $oPrevImage);
+        $oViewer->Assign('oNextImage', $oNextImage);
+        $oViewer->Assign('bSliderImage', true);
+        $oViewer->Assign('bSelectFriends', true);
+        $oViewer->Assign('aImageUser', $aImageUser);
+        $this->Viewer_AssignAjax('sImageContent',$oViewer->Fetch(Plugin::GetTemplatePath(__CLASS__) . "photo_view.tpl"));
+
+        $oViewer->Assign('iTargetId', $oImage->getId());
+        $oViewer->Assign('sTargetType', 'image');
+        $oViewer->Assign('iCountComment', $oImage->getCountComment());
+        $oViewer->Assign('sDateReadLast', $oImage->getDateRead());
+        $oViewer->Assign('bAllowNewComment', false);
+        $oViewer->Assign('sNoticeNotAllow', $this->Lang_Get('topic_comment_notallow'));
+        $oViewer->Assign('sNoticeCommentAdd', $this->Lang_Get('topic_comment_add'));
+        $oViewer->Assign('aComments', $aComments);
+        $oViewer->Assign('iMaxIdComment', $iMaxIdComment);
+        $this->Viewer_AssignAjax('sCommentContent',$oViewer->Fetch("comment_tree.tpl"));
+
+    }
 }

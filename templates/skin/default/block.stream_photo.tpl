@@ -5,7 +5,7 @@
         {assign var="oVote" value=$oImage->getVote()}
         <li>
             <a class="gallery-item tooltiped" href="{$oImage->getUrlFull()}">
-                <img class="100-image" src="{$oImage->getWebPath('100crop')}" alt="Image" />
+                <img class="image-100" src="{$oImage->getWebPath('100crop')}" alt="Image" />
             </a>
             
             <div class="gallery-bubble tooltip">

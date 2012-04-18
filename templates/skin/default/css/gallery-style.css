@@ -69,7 +69,7 @@
 #image{
 	display:inline-block;
 	position:relative;
-        overflow:visible;
+    overflow: visible;
 	}
 	#submit-selected-friend{
 		font-weight:bold;
@@ -170,7 +170,7 @@
 	position:relative;
 	}
 	.gal-prev .gallery-bubble{
-		
+
 		}
 		.gal-prev .gallery-bubble .gallery-bubble-content{
 			width:140px;
@@ -228,7 +228,7 @@
 		float:left;
 		}
 		.gallery-albums-preview .gallery-all{
-			
+
 			}
 		.gallery-albums-preview #gallery-reload{
 			display:block;
@@ -280,9 +280,9 @@
 				.gallery-albums-preview li a img{
 					display:block;
 					}
-		
-.gallery-albums-list{	
-	
+
+.gallery-albums-list{
+
 	}
 	.gallery-albums-list ul{
 		margin-left:0px !important;
@@ -321,7 +321,7 @@
 						}
 
 .gallery-photos-list{
-	
+
 	}
 	.gallery-photos-list ul{
 		margin-left:0px !important;
@@ -331,7 +331,7 @@
 			margin:0 2px 2px 0;
             padding:0;
 			}
-			.gallery-photos-list li a{	
+			.gallery-photos-list li a{
 				float:left;
 				padding:5px;
 				border:1px solid #cdcdcd;
@@ -342,7 +342,7 @@
 				.gallery-photos-list li img{
 					display:block;
 					}
-					
+
 	.gallery-bubble{
 		display:none;
 		}
@@ -379,8 +379,8 @@
 					}
 					.gallery-bubble-content .gallery-album-about .rating .negative{
 						color:red;
-						}	
-					.gallery-bubble-content .gallery-album-about .rating .positive{	
+						}
+					.gallery-bubble-content .gallery-album-about .rating .positive{
 						color:#339900;
 						}
 				.gallery-bubble-content .gallery-album-about .date{
@@ -397,7 +397,7 @@
 				font-weight:normal;
 				}
 		.gallery-bubble .tail{
-			
+
 			}
 	.block-content .gallery-photos li{
 		width:110px;
@@ -412,10 +412,10 @@
 			}
 a.remove{display:inline-block; width:11px; height:11px; background:url(../images/close.png) 0 0 no-repeat; vertical-align:middle; text-indent:-99999px; position:relative; top:-2px;}
 *+ html a.remove, *html a.remove{display:inline; zoom:1;}
-			
+
 .gallery-big-photo{display:block; margin:0 auto;}
-.empty-album {width: 100px; height: 100px; background-color: #BBB;}			
-			
+.empty-album {width: 100px; height: 100px; background-color: #BBB;}
+
 *+ html .gal-prev .gallery-bubble li, *+ html .gallery-albums-list ul li, *+ html .gallery-photos-list li, *+ html .block-content .gallery-photos li{display:inline; zoom:1;}
 
 #ls_gallery_create_album input[type=text], #ls_gallery_create_album textarea {
@@ -424,7 +424,7 @@ a.remove{display:inline-block; width:11px; height:11px; background:url(../images
 
 #albums li {vertical-align: top;}
 
-.100-image {
+.image-100 {
     width: 100px;
     height: 100px;
 }
@@ -504,12 +504,12 @@ a.remove{display:inline-block; width:11px; height:11px; background:url(../images
 }
 
 #select-people-notice span {
-    float: left; 
+    float: left;
     padding-left: 15px;
 }
 
 #select-people-notice a {
-    float: right; 
+    float: right;
     padding-right: 15px;
 }
 

@@ -63,10 +63,12 @@ ls.gallery = (function ($) {
         }.bind(this));
         ls.swfupload.loadSwf();
     };
+    // process image loading, percentage
     this.handlerUploadProgress = function (file, bytesLoaded) {
         var percent = Math.ceil((bytesLoaded / file.size) * 100);
         jQuery('#gallery_image_empty_progress').text(file.name + ': ' + (percent == 100 ? 'resize..' : percent +'%'));
     };
+    // dialog uplaod complete, load image
     this.handlerFileDialogComplete = function(numFilesSelected, numFilesQueued) {
         var stats = this.getStats();
         if (stats.files_queued == numFilesSelected && numFilesSelected > 0) {
@@ -74,28 +76,28 @@ ls.gallery = (function ($) {
             ls.gallery.addImageEmpty();
         }
 
-	};
+    };
+    // upload success, place image
     this.handlerUploadSuccess = function(file, serverData) {
         ls.gallery.addImage(jQuery.parseJSON(serverData));
         var next = this.getStats().files_queued;
-		if (next > 0) {
-			this.startUpload();
+        if (next > 0) {
+            this.startUpload();
             ls.gallery.addImageEmpty();
-		}
-		$(this).trigger('eUploadSuccess',[file, serverData]);
-	};
-    this.swfHandlerUploadComplete = function(e, file, next) {
-        return;
+        }
+        $(this).trigger('eUploadSuccess',[file, serverData]);
     };
+    // place empty upload in html
     this.addImageEmpty = function () {
         var template = '<li id="gallery_image_empty"><img src="' + DIR_STATIC_SKIN + '/images/loader.gif'+'" alt="image" style="margin-left: 35px;margin-top: 20px;" />'
         + '<div id="gallery_image_empty_progress" style="height: 60px;width: 350px;padding: 3px;border: 1px solid #DDDDDD;"></div><br /></li>';
         jQuery('#swfu_images').prepend(template);
     };
+    // place uploaded image in html
     this.addImage = function (response) {
         jQuery('#gallery_image_empty').remove();
         if (!response.bStateError) {
-            var template = '<li id="image_' + response.id + '"><img class="100-image" src="' + response.file + '" alt="image" />' 
+            var template = '<li id="image_' + response.id + '"><img class="image-100" src="' + response.file + '" alt="image" />'
             + '<label class="description">' + ls.lang.get('lsgallery_image_description') + '</label><br/>'
             + '<textarea onBlur="ls.gallery.setImageDescription('+response.id+', this.value)"></textarea><br />'
             + '<label class="tags">' + ls.lang.get('lsgallery_image_tags') + '</label><br/>'
@@ -109,7 +111,7 @@ ls.gallery = (function ($) {
             ls.msg.error(response.sMsgTitle, response.sMsg);
         }
     };
-
+    // process delete image
     this.deleteImage = function (id) {
         if (!confirm(ls.lang.get('lsgallery_album_image_delete_confirm'))) {
             return;
@@ -125,7 +127,7 @@ ls.gallery = (function ($) {
             }
         });
     };
-
+    // set image as album preview
     this.setPreview = function (id) {
         ls.ajax(aRouter['galleryajax'] + 'markascover', {
             'id': id
@@ -144,7 +146,7 @@ ls.gallery = (function ($) {
         });
 
     };
-    
+    // set image descr
     this.setImageDescription = function (id, text) {
         if (!text) {
             return;
@@ -161,7 +163,7 @@ ls.gallery = (function ($) {
             }
         });
     };
-    
+    // set image tags
     this.setImageTags = function (id, text) {
         if (jQuery('ul.ui-autocomplete').css('display') === 'block') {
             return;
@@ -181,7 +183,7 @@ ls.gallery = (function ($) {
             }
         });
     };
-    
+    // chaneg image people mark
     this.changeMark = function(idImage, idUser, status, a) {
         ls.ajax(aRouter['galleryajax'] + 'changemark', {
             'idImage': idImage,
@@ -196,7 +198,7 @@ ls.gallery = (function ($) {
             }
         });
     }
-    
+    // remove image user mark
     this.removeMark = function(idImage, idUser, a) {
         ls.ajax(aRouter['galleryajax'] + 'removemark', {
             'idImage': idImage,
@@ -212,37 +214,38 @@ ls.gallery = (function ($) {
             }
         });
     }
-    
-    
+
+
     return this;
 }).call(ls.gallery || {},jQuery);
-
+ias = null;
 jQuery('document').ready(function(){
+    // autocomplete for image tags
     ls.autocomplete.add($(".autocomplete-image-tags"), aRouter['galleryajax']+'autocompleteimagetag/', true);
-    
+    // init fancybox for gallery
     if (jQuery('a.gal-expend').length) {
         jQuery('a.gal-expend').fancybox();
     };
-    
+    // show marker on mark over
     jQuery('div.image-marker').live('mouseover', function(){
         jQuery(this).find('div.marker-wrap').first().show();
     });
-    
+    // hide marker on mark out
     jQuery('div.image-marker').live('mouseout', function(){
         jQuery(this).find('div.marker-wrap').first().hide();
     });
-    
+    // show marker on people over
     jQuery('#selected-people li').live('mouseover', function(){
         var id = jQuery(this).attr('id').replace('target-', '');
         jQuery('#marked-user-' + id + ' div.marker-wrap').show();
     });
-    
+    // hide marker on people out
     jQuery('#selected-people li').live('mouseout', function(){
         var id = jQuery(this).attr('id').replace('target-', '');
         jQuery('#marked-user-' + id + ' div.marker-wrap').hide();
     });
-    
-    jQuery('#gallery-reload').click(function(event){
+    // change random images
+    jQuery('#gallery-reload').live('click',function(event){
         event.preventDefault();
         ls.ajax(aRouter['galleryajax'] + 'getrandomimages', {},
             function (result) {
@@ -251,24 +254,24 @@ jQuery('document').ready(function(){
                 }
             });
     });
-    
-    jQuery('[id^="block_gallery_item"]').click(function(){
+    // change tab in block
+    jQuery('[id^="block_gallery_item"]').live('click', function(){
         ls.blocks.load(this, 'block_gallery');
         return false;
     });
-    
+    // add tooltip
     jQuery('#stream-images a.tooltiped').tooltip({
         position: "bottom center",
         offset: [-40, 0]
     });
-    
+
     // Поиск по тегам
-    $('#tag__image_search_form').submit(function(){
+    $('#tag__image_search_form').live('submit', function(){
         window.location = aRouter['gallery'] + 'tag/' + $('#tag_search').val()+'/';
         return false;
     });
-    
-    jQuery('#gallery-slideshow').click(function(event){
+    // show slideshow
+    jQuery('#gallery-slideshow').live('click', function(event){
         event.preventDefault();
         jQuery('a.image-slideshow').fancybox({
             arrows:true,
@@ -281,9 +284,13 @@ jQuery('document').ready(function(){
         });
         jQuery('a.image-slideshow').first().trigger('click');
     });
-    
+    // imgAreaSelect for people mark
     if (jQuery('#select-friends').length) {
-        var ias = jQuery('#image img').imgAreaSelect({
+        initMark();
+    }
+
+    function initMark() {
+        ias = jQuery('#image img').imgAreaSelect({
             instance: true,
             handles: true,
             minHeight: 100,
@@ -291,8 +298,8 @@ jQuery('document').ready(function(){
             disable: true
         });
     }
-    
-    jQuery('#mark').click(function(event){
+    // show mark
+    jQuery('#mark').live('click', function(event){
         event.preventDefault();
         if (jQuery('div.mark-name.current').length) {
             cancelMarkFriend();
@@ -313,14 +320,14 @@ jQuery('document').ready(function(){
                 scrollTop: $("#content").offset().top
             }, 600);
         }
-        
+
     });
-    
+    // cancel set mark
     jQuery('div.mark-name.current .cancel-selected-friend').live('click',function(event){
         event.preventDefault();
         hideMarkFriend();
     });
-    
+    // submit mark
     jQuery('div.mark-name.current .submit-selected-friend').live('click', function(event){
         event.preventDefault();
         var selection = ias.getSelection();
@@ -344,7 +351,7 @@ jQuery('document').ready(function(){
                 jQuery('#selected-people').append(li);
                 var div = '<div class="image-marker" id="marked-user-' + response.idUser + '" style="top: '+ selection.y1 +'px; left: ' +
                 selection.x1 + 'px; width: ' + selection.width + 'px; height: ' + selection.height + 'px;">' +
-                '<div class="marker-wrap" style="width: '+ selection.width + 'px; height: '+ selection.height + 'px;  display: none;">' + 
+                '<div class="marker-wrap" style="width: '+ selection.width + 'px; height: '+ selection.height + 'px;  display: none;">' +
                 '<div class="marker-inside" style="width: '+ (selection.width -2) + '}px; height: '+ (selection.height -2) + 'px"></div>'+
                 '<div class="user-href-wrap"><a class="user" href="' + response.sPath + '">' + login + '</a></div>'+
                 '</div></div>';
@@ -352,9 +359,9 @@ jQuery('document').ready(function(){
                 hideMarkFriend();
                 ls.msg.notice(response.sMsgTitle, response.sMsg);
             }
-        }); 
+        });
     })
-    
+    // cancel mark
     jQuery('#image-mark-ready').live('click', function(event){
         event.preventDefault();
         cancelMarkFriend();
@@ -376,17 +383,42 @@ jQuery('document').ready(function(){
             hide: true
         });
     }
-    
+    // positioning select mark
     jQuery('#image img.select-pic').live('click', function(event){
         event.preventDefault();
         clickSelect(event);
     })
-    
+    // positioning select mark
     jQuery('.imgareaselect-outer').live('click', function(event){
         event.preventDefault();
         clickSelect(event);
     })
-    
+    // next|prev img on img click
+    jQuery('#image img.gallery-big-photo:not(.select-pic)').live('click', function(event){
+        event.preventDefault();
+        var offset = jQuery('#image img.gallery-big-photo').offset();
+        var width = jQuery('#image img.gallery-big-photo').width();
+        if (jQuery('a.gal-left').length && (offset.left + width * 0.4) > event.pageX ) {
+            jQuery('a.gal-left').click();
+        }
+        if (jQuery('a.gal-right').length && (offset.left + width * 0.6) < event.pageX ) {
+            jQuery('a.gal-right').click();
+        }
+    });
+
+    jQuery('#image img.gallery-big-photo:not(.select-pic)').live('mousemove', function(event){
+        event.preventDefault();
+        var offset = jQuery('#image img.gallery-big-photo').offset();
+        var width = jQuery('#image img.gallery-big-photo').width();
+        if (jQuery('a.gal-left').length && (offset.left + width * 0.4) > event.pageX ) {
+            $(this).css('cursor', 'pointer');
+        } else if (jQuery('a.gal-right').length && (offset.left + width * 0.6) < event.pageX ) {
+            $(this).css('cursor', 'pointer');
+        } else {
+            $(this).css('cursor', 'auto');
+        }
+    });
+
     function clickSelect(event) {
         var offset = jQuery('#image img.select-pic').offset();
         var X1, X2, Y1, Y2;
@@ -407,7 +439,7 @@ jQuery('document').ready(function(){
             X1 = 0;
             X2 = 100
         }
-        
+
         if ((event.pageY - offset.top - 50) > 0 ) {
             Y1 = event.pageY - offset.top - 50;
             if ((event.pageY - offset.top + 50) < jQuery('#image img.select-pic').height()) {
@@ -425,11 +457,121 @@ jQuery('document').ready(function(){
             Y1 = 0;
             Y2 = 100;
         }
-        
-        
+
+
         ias.setSelection(X1, Y1, X2, Y2);
         ias.setOptions({
             show: true
+        });
+    }
+    // add ajax load image
+    if (jQuery('.gallery-navigation').length) {
+        // handle keypress
+        $(document).keydown(function(event){
+            if ((event.keyCode || event.which) == 37 && event.ctrlKey) {
+                event.preventDefault();
+                jQuery('a.gal-left').click();
+            } else if ((event.keyCode || event.which) == 39 && event.ctrlKey) {
+                event.preventDefault();
+                jQuery('a.gal-right').click();
+                return false;
+            }
+        });
+
+        var History = window.History; // Note: We are using a capital H instead of a lower h
+        if ( !History.enabled ) {
+            // History.js is disabled for this browser.
+            // This is because we can optionally choose to support HTML4 browsers or not.
+            return false;
+        }
+
+        var title = document.title,
+            rootUrl = History.getRootUrl();
+
+
+        jQuery('a.ajaxy').live('click', function(event){
+            if (ias) {
+                cancelMarkFriend();
+                $(".imgareaselect-selection").parent().remove();
+                $(".imgareaselect-outer").remove();
+                ias = null;
+            }
+            var
+                $this = $(this),
+                url = $this.attr('href'),
+                title = $this.attr('title')||null;
+
+            // Continue as normal for cmd clicks etc
+            if ( event.which == 2 || event.metaKey ) {
+                return true;
+            }
+
+            // Ajaxify this link
+            History.pushState(null,title,url);
+            event.preventDefault();
+            return false;
+        });
+        function imageLoaded(data) {
+            jQuery('#view-image').html(data.sImageContent);
+            jQuery('#image-comments').html(data.sCommentContent);
+            if (jQuery('#select-friends').length) {
+                initMark();
+            }
+        }
+        History.Adapter.bind(window,'statechange',function(){ // Note: We are using statechange instead of popstate
+            var State = History.getState(),
+                url = State.url,
+                relativeUrl = url.replace(rootUrl,''),
+                match = url.match(/image\/(\d+)/i);
+            // search image id
+            if (!match || !match[1]) {
+                document.location.href = url;
+                return false;
+            }
+
+            var params = {
+                id : match[1],
+                security_ls_key: LIVESTREET_SECURITY_KEY
+            };
+            // load blocks
+            $.ajax({
+				url: aRouter['galleryajax'] + 'getimage',
+                type: 'POST',
+                data: params,
+				success: function(data, textStatus, jqXHR){
+                    if (data.bStateError || !data.sImageContent || !data.sCommentContent) {
+                        document.location.href = url;
+                        return false;
+                    }
+                    // preload image
+                    if (data.sImageUrl) {
+                        var galleryImage = new Image();
+                        galleryImage.onload = function(){
+                            imageLoaded(data);
+                        }
+                        galleryImage.src = data.sImageUrl;
+                    } else {
+                        imageLoaded(data)
+                    }
+
+                    document.title = title;
+
+					// Inform Google Analytics of the change
+					if ( typeof window.pageTracker !== 'undefined' ) {
+						window.pageTracker._trackPageview(relativeUrl);
+					}
+
+					// Inform ReInvigorate of a state change
+					if ( typeof window.reinvigorate !== 'undefined' && typeof window.reinvigorate.ajax_track !== 'undefined' ) {
+						reinvigorate.ajax_track(url);
+						// ^ we use the full url here as that is what reinvigorate supports
+					}
+				},
+				error: function(jqXHR, textStatus, errorThrown){
+					document.location.href = url;
+					return false;
+				}
+			}); // end ajax
         });
     }
 });

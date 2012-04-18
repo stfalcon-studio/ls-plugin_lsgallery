@@ -26,7 +26,7 @@ if (jQuery.browser.flash) {
                     {assign var=bIsMainImage value=true}
                 {/if}
                 <li id="image_{$oImage->getId()}" {if $bIsMainImage}class="marked-as-preview"{/if}>
-                    <img class="100-image" src="{$oImage->getWebPath('100crop')}" alt="image" />
+                    <img class="image-100" src="{$oImage->getWebPath('100crop')}" alt="image" />
                     <label class="description">{$aLang.lsgallery_image_description}</label><br/>
                     <textarea onBlur="ls.gallery.setImageDescription({$oImage->getId()}, this.value)">{$oImage->getDescription()}</textarea><br />
                     <label class="tags">{$aLang.lsgallery_image_tags}</label><br/>
