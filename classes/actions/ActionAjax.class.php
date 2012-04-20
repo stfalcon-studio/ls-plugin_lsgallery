@@ -31,6 +31,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         $this->AddEvent('setimagedescription', 'EventSetImageDescription');
         $this->AddEvent('setimagetags', 'EventSetImageTags');
         $this->AddEvent('markascover', 'EventSetImageAsCover');
+        $this->AddEvent('toggleforbidcomment', 'EventToggleForbidComment');
 
         $this->AddEvent('markfriend', 'EventSetImageUser');
         $this->AddEvent('changemark', 'EventChangeMark');
@@ -574,12 +575,12 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         $sId = getRequest('id');
         /* @var $oImage PluginLsgallery_ModuleImage_EntityImage */
         if (!$oImage = $this->PluginLsgallery_Image_GetImageById($sId)) {
-            $this->Message_AddErrorSingle($this->Lang_Get('system_error_404'),'404');
+            $this->Message_AddErrorSingle($this->Lang_Get('system_error_404'), '404');
             return;
         }
         /* @var $oAlbum PluginLsgallery_ModuleAlbum_EntityAlbum */
         if (!$oAlbum = $this->PluginLsgallery_Album_GetAlbumById($oImage->getAlbumId())) {
-            $this->Message_AddErrorSingle($this->Lang_Get('system_error_404'),'404');
+            $this->Message_AddErrorSingle($this->Lang_Get('system_error_404'), '404');
             return;
         }
 
@@ -639,7 +640,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         $oViewer->Assign('bSliderImage', true);
         $oViewer->Assign('bSelectFriends', true);
         $oViewer->Assign('aImageUser', $aImageUser);
-        $this->Viewer_AssignAjax('sImageContent',$oViewer->Fetch(Plugin::GetTemplatePath(__CLASS__) . "photo_view.tpl"));
+        $this->Viewer_AssignAjax('sImageContent', $oViewer->Fetch(Plugin::GetTemplatePath(__CLASS__) . "photo_view.tpl"));
 
         $oViewer->Assign('iTargetId', $oImage->getId());
         $oViewer->Assign('sTargetType', 'image');
@@ -650,7 +651,32 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         $oViewer->Assign('sNoticeCommentAdd', $this->Lang_Get('topic_comment_add'));
         $oViewer->Assign('aComments', $aComments);
         $oViewer->Assign('iMaxIdComment', $iMaxIdComment);
-        $this->Viewer_AssignAjax('sCommentContent',$oViewer->Fetch("comment_tree.tpl"));
-
+        $this->Viewer_AssignAjax('sCommentContent', $oViewer->Fetch("comment_tree.tpl"));
     }
+
+    public function EventToggleForbidComment()
+    {
+        $this->Viewer_SetResponseAjax('json');
+
+        /* @var $oImage PluginLsgallery_ModuleImage_EntityImage */
+        $oImage = $this->PluginLsgallery_Image_GetImageById(getRequest('id'));
+        if ($oImage) {
+            /* @var $oAlbum PluginLsgallery_ModuleAlbum_EntityAlbum */
+            $oAlbum = $this->PluginLsgallery_Album_GetAlbumById($oImage->getAlbumId());
+            if (!$oAlbum || !$this->ACL_AllowAdminAlbumImages($this->oUserCurrent, $oAlbum)) {
+                $this->Message_AddError($this->Lang_Get('no_access'), $this->Lang_Get('error'));
+                return false;
+            }
+            if ($oImage->getForbidComment()) {
+                $oImage->setForbidComment(0);
+                $sText = $this->Lang_Get('lsgallery_set_forbid_comments');
+            } else {
+                $oImage->setForbidComment(1);
+                $sText = $this->Lang_Get('lsgallery_unset_forbid_comments');
+            }
+            $this->PluginLsgallery_Image_UpdateImage($oImage);
+            $this->Viewer_AssignAjax('sText', $sText);
+        }
+    }
+
 }

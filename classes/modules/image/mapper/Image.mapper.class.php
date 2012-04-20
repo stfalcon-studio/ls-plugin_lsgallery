@@ -48,11 +48,12 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
                     image_count_comment = ?d,
                     image_rating = ?,
                     image_count_vote = ?d,
-                    image_count_favourite =?
+                    image_count_favourite =?d,
+                    image_forbid_comment = ?d
                 WHERE
                     image_id = ?d
                 ";
-        if ($this->oDb->query($sql, $oImage->getDescription(), $oImage->getImageTags(), $oImage->getDateEdit(), $oImage->getCountComment(), $oImage->getRating(), $oImage->getCountVote(), $oImage->getCountFavourite(), $oImage->getId())) {
+        if ($this->oDb->query($sql, $oImage->getDescription(), $oImage->getImageTags(), $oImage->getDateEdit(), $oImage->getCountComment(), $oImage->getRating(), $oImage->getCountVote(), $oImage->getCountFavourite(), $oImage->getForbidComment(), $oImage->getId())) {
             return true;
         }
         return false;
@@ -746,7 +747,7 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
             ORDER BY
                 image_id DESC
             ";
-        
+
         if ($aRow = $this->oDb->selectRow($sql, $oImage->getId(), $oImage->getAlbumId())) {
             return $aRow['image_id'];
         }
