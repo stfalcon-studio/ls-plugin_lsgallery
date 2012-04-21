@@ -564,10 +564,10 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
             return;
         }
 
-        if ($oШьфпу->getForbidComment()) {
-			$this->Message_AddErrorSingle($this->Lang_Get('image_comment_notallow'),$this->Lang_Get('error'));
-			return;
-		}
+        if ($oImage->getForbidComment()) {
+	    $this->Message_AddErrorSingle($this->Lang_Get('image_comment_notallow'),$this->Lang_Get('error'));
+	    return;
+	}
 
         /**
          * Проверяем текст комментария
