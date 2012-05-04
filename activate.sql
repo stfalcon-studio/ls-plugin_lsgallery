@@ -35,7 +35,6 @@ CREATE TABLE IF NOT EXISTS `prefix_lsgallery_image` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE utf8_general_ci ;
 
 ALTER TABLE `prefix_lsgallery_image`
-  ADD CONSTRAINT `prefix_lsgallery_image_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `prefix_user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `prefix_lsgallery_image_ibfk_2` FOREIGN KEY (`album_id`) REFERENCES `prefix_lsgallery_album` (`album_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `prefix_lsgallery_album`
