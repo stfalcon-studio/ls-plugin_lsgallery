@@ -31,9 +31,7 @@ CREATE TABLE IF NOT EXISTS `prefix_lsgallery_image` (
   `image_count_favourite` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`image_id`),
   KEY `album_id` (`album_id`),
-  KEY `user_id` (`user_id`),
-  KEY `next_image_id` (`next_image_id`),
-  KEY `prev_image_id` (`prev_image_id`)
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE utf8_general_ci ;
 
 ALTER TABLE `prefix_lsgallery_image`
