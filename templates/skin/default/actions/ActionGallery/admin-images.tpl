@@ -39,7 +39,9 @@ if (jQuery.browser.flash) {
                                 <a href="javascript:ls.gallery.setPreview({$oImage->getId()})" class="mark-as-preview">{$aLang.lsgallery_album_set_image_cover}</a>
                             {/if}
                         </span>
+
                         <a href="javascript:ls.gallery.deleteImage({$oImage->getId()})" class="image-delete">{$aLang.lsgallery_album_image_delete}</a>
+                        <a href="javascript:ls.gallery.toggleForbidComment({$oImage->getId()})" class="image-comment">{if $oImage->getForbidComment()}{$aLang.lsgallery_unset_forbid_comments}{else}{$aLang.lsgallery_set_forbid_comments}{/if}</a>
                     </div>
                 </li>
                 {assign var=bIsMainImage value=false}
@@ -48,5 +50,5 @@ if (jQuery.browser.flash) {
     </ul>
 </div>
 {include file='paging.tpl' aPaging="$aPaging"}
-            
+
 {include file='footer.tpl'}
