@@ -105,7 +105,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             $oImage->setUserId($this->oUserCurrent->getId());
             $oImage->setAlbumId($oAlbum->getId());
             $oImage->setFilename($sFile);
-//
+
             if ($oImage = $this->PluginLsgallery_Image_AddImage($oImage)) {
                 $this->Viewer_AssignAjax('file', $oImage->getWebPath('100crop'));
                 $this->Viewer_AssignAjax('id', $oImage->getId());
@@ -150,7 +150,10 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         }
         $this->Message_AddError($this->Lang_Get('system_error'), $this->Lang_Get('error'));
     }
-
+    
+    /**
+     * Сохраняем описание картинки
+     */
     public function EventSetImageDescription()
     {
         $this->Viewer_SetResponseAjax('json');
@@ -169,7 +172,10 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             $this->PluginLsgallery_Image_UpdateImage($oImage);
         }
     }
-
+   
+    /**
+     * Отмечаем картинку как обложку
+     */
     public function EventSetImageAsCover()
     {
         $this->Viewer_SetResponseAjax('json');
@@ -188,7 +194,10 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             $this->PluginLsgallery_Album_UpdateAlbum($oAlbum);
         }
     }
-
+  
+    /**
+     * Сохраняем теги картинки
+     */
     public function EventSetImageTags()
     {
         $this->Viewer_SetResponseAjax('json');
@@ -225,7 +234,10 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             $this->PluginLsgallery_Image_UpdateImage($oImage);
         }
     }
-
+    
+    /**
+     * Автокомплит тегов картинок
+     */
     public function EventAutocompeleteImageTags()
     {
         if (!($sValue = getRequest('value', null, 'post'))) {
@@ -239,7 +251,10 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         }
         $this->Viewer_AssignAjax('aItems', $aItems);
     }
-
+    
+    /**
+     * Сохраняем картинку в избранное
+     */
     protected function EventFavouriteImage()
     {
         if (!$this->oUserCurrent) {
@@ -306,6 +321,9 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         }
     }
 
+    /**
+     * Голосуем за картинку
+     */
     public function EventVoteImage()
     {
         if (!$this->oUserCurrent) {
@@ -379,7 +397,10 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             return;
         }
     }
-
+    
+    /**
+     * Получаем случайные картинки
+     */
     protected function EventGetRandomImages()
     {
         $aRandomImages = $this->PluginLsgallery_Image_GetRandomImages(Config::Get('plugin.lsgallery.images_random'));
@@ -391,6 +412,9 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         $this->Viewer_AssignAjax('sHtml', $sHtml);
     }
 
+    /**
+     * Получаем последние картинки
+     */
     public function EventGetNewImages()
     {
         $aResult = $this->PluginLsgallery_Image_GetImagesNew(1, Config::Get('plugin.lsgallery.image_row'));
@@ -403,7 +427,10 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             $this->Viewer_AssignAjax('sText', $sTextResult);
         }
     }
-
+    
+    /**
+     * Получаем лучшие картинки
+     */
     public function EventGetBestImages()
     {
         $aResult = $this->PluginLsgallery_Image_GetImagesBest(1, Config::Get('plugin.lsgallery.image_row'));
@@ -417,6 +444,9 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         }
     }
 
+    /**
+     * Отмечаем пользователя на картинке
+     */
     public function EventSetImageUser()
     {
         if (!$this->oUserCurrent) {
@@ -472,7 +502,10 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
         }
     }
-
+    
+    /**
+     * Автокомплит друзей
+     */
     public function EventAutocompeleteFriend()
     {
         if (!($sValue = getRequest('value', null, 'post'))) {
@@ -491,6 +524,9 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         $this->Viewer_AssignAjax('aItems', $aItems);
     }
 
+    /**
+     * Изменяем статус отметки
+     */
     public function EventChangeMark()
     {
         if (!$this->oUserCurrent) {
@@ -534,7 +570,10 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
         }
     }
-
+    
+    /**
+     * Удаляем отметку
+     */
     public function EventRemoveMark()
     {
         if (!$this->oUserCurrent) {
@@ -569,7 +608,10 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
         }
     }
-
+  
+    /**
+     * Получаем картинку
+     */
     public function EventGetImage()
     {
         $sId = getRequest('id');
@@ -653,7 +695,10 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         $oViewer->Assign('iMaxIdComment', $iMaxIdComment);
         $this->Viewer_AssignAjax('sCommentContent', $oViewer->Fetch("comment_tree.tpl"));
     }
-
+    
+    /**
+     * Запрещаем комментировать изображение
+     */
     public function EventToggleForbidComment()
     {
         $this->Viewer_SetResponseAjax('json');
