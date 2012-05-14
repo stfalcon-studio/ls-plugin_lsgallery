@@ -11,4 +11,8 @@ ALTER TABLE `prefix_lsgallery_image`
   DROP `next_image_id`,
   DROP `prev_image_id`;
 
+Update to v0.1.2
+Возможность запрета комментирвоать изображение
+ALTER TABLE `prefix_lsgallery_image` ADD `image_forbid_comment` TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '0';
+
 

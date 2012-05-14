@@ -28,7 +28,8 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
             'lsgallery_image_tags_updated',
             'lsgallery_image_description',
             'lsgallery_image_description_updated',
-            'lsgallery_save'
+            'lsgallery_save',
+            'lsgallery_set_forbid_comments'
         ));
         $this->SetDefaultEvent('photo');
     }
@@ -562,6 +563,11 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
             $this->Message_AddErrorSingle($this->Lang_Get('topic_comment_limit'), $this->Lang_Get('error'));
             return;
         }
+
+        if ($oImage->getForbidComment()) {
+	    $this->Message_AddErrorSingle($this->Lang_Get('image_comment_notallow'),$this->Lang_Get('error'));
+	    return;
+	}
 
         /**
          * Проверяем текст комментария

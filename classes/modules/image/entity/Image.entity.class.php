@@ -2,8 +2,8 @@
 
 /**
  * Image entity
- * 
- * @method ModuleUser_EntityUser getUser  
+ *
+ * @method ModuleUser_EntityUser getUser
  * @method boolean getIsFavourite
  * @method ModuleVote_EntityVote getVote
  */
@@ -65,7 +65,7 @@ class PluginLsgallery_ModuleImage_EntityImage extends Entity
 
     public function getRating()
     {
-        return number_format(round($this->_aData['image_rating'],2), 0, '.', '');
+        return number_format(round($this->_aData['image_rating'], 2), 0, '.', '');
     }
 
     public function getCountVote()
@@ -92,40 +92,20 @@ class PluginLsgallery_ModuleImage_EntityImage extends Entity
         }
     }
 
-    public function getNextImage()
+    public function getForbidComment()
     {
-        if (!isset($this->_aData['next_image'])) {
-            if (is_null($this->getNextImageId())) {
-                $this->_aData['next_image'] = null;
-            } else {
-                $this->_aData['next_image'] = $this->PluginLsgallery_Image_GetImageById($this->getNextImageId());
-            }
-        }
-
-        return $this->_aData['next_image'];
+        return $this->_aData['image_forbid_comment'];
     }
 
-    public function getPrevImage()
-    {
-        if (!isset($this->_aData['prev_image'])) {
-            if (is_null($this->getPrevImageId())) {
-                $this->_aData['prev_image'] = null;
-            } else {
-                $this->_aData['prev_image'] = $this->PluginLsgallery_Image_GetImageById($this->getPrevImageId());
-            }
-        }
-
-        return $this->_aData['prev_image'];
-    }
-    
     public function getAlbum()
     {
         if (!isset($this->_aData['album'])) {
             $this->_aData['album'] = $this->PluginLsgallery_Album_GetAlbumById($this->getAlbumId());
         }
-        
+
         return $this->_aData['album'];
     }
+
     public function getUrlFull($type = 'view')
     {
         switch ($type) {
@@ -204,6 +184,11 @@ class PluginLsgallery_ModuleImage_EntityImage extends Entity
     public function setCountFavourite($data)
     {
         $this->_aData['image_count_favourite'] = $data;
+    }
+
+    public function setForbidComment($data)
+    {
+        $this->_aData['image_forbid_comment'] = $data;
     }
 
 }

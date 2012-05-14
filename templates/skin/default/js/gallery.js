@@ -1,11 +1,13 @@
 var ls = ls || {};
+var aRouter = aRouter || {};
+var jQuery = jQuery || {};
 
 ls.comments  = ls.comments || {};
 
 if (ls.comments) {
     ls.comments.options.type.image = {
-        url_add: aRouter['gallery'] + 'ajaxaddcomment/',
-        url_response: aRouter['gallery'] + 'ajaxresponsecomment/'
+        url_add: aRouter.gallery + 'ajaxaddcomment/',
+        url_response: aRouter.gallery + 'ajaxresponsecomment/'
     };
 }
 
@@ -13,7 +15,7 @@ ls.favourite  = ls.favourite || {};
 
 if (ls.favourite) {
     ls.favourite.options.type.image = {
-        url: aRouter['galleryajax'] + 'favourite/',
+        url: aRouter.galleryajax + 'favourite/',
         targetName: 'idImage'
     };
 }
@@ -22,7 +24,7 @@ ls.vote  = ls.vote || {};
 
 if (ls.vote) {
     ls.vote.options.type.image = {
-        url: aRouter['galleryajax'] + 'vote/',
+        url: aRouter.galleryajax + 'vote/',
         targetName: 'idImage'
     };
 }
@@ -31,10 +33,10 @@ ls.blocks  = ls.blocks || {};
 
 if (ls.blocks) {
     ls.blocks.options.type.block_gallery_item_new = {
-        url: aRouter['galleryajax'] + 'getnewimages/'
+        url: aRouter.galleryajax + 'getnewimages/'
     };
     ls.blocks.options.type.block_gallery_item_best = {
-        url: aRouter['galleryajax'] + 'getbestimages/'
+        url: aRouter.galleryajax + 'getbestimages/'
     };
 }
 
@@ -48,7 +50,7 @@ ls.gallery = (function ($) {
         opt.debug = false;
         opt.button_width = 205;
         opt.button_height = 34;
-        opt.upload_url =  aRouter['galleryajax'] + "upload";
+        opt.upload_url =  aRouter.galleryajax + "upload";
         opt.button_image_url = DIR_WEB_LSGALLERY_SKIN + "images/add-btn.png";
         opt.button_text = null;
         opt.button_text_style = null;
@@ -78,7 +80,7 @@ ls.gallery = (function ($) {
 
     };
     // upload success, place image
-    this.handlerUploadSuccess = function(file, serverData) {
+    this.handlerUploadSuccess = function (file, serverData) {
         ls.gallery.addImage(jQuery.parseJSON(serverData));
         var next = this.getStats().files_queued;
         if (next > 0) {
@@ -90,7 +92,7 @@ ls.gallery = (function ($) {
     // place empty upload in html
     this.addImageEmpty = function () {
         var template = '<li id="gallery_image_empty"><img src="' + DIR_STATIC_SKIN + '/images/loader.gif'+'" alt="image" style="margin-left: 35px;margin-top: 20px;" />'
-        + '<div id="gallery_image_empty_progress" style="height: 60px;width: 350px;padding: 3px;border: 1px solid #DDDDDD;"></div><br /></li>';
+            + '<div id="gallery_image_empty_progress" style="height: 60px;width: 350px;padding: 3px;border: 1px solid #DDDDDD;"></div><br /></li>';
         jQuery('#swfu_images').prepend(template);
     };
     // place uploaded image in html
@@ -98,14 +100,16 @@ ls.gallery = (function ($) {
         jQuery('#gallery_image_empty').remove();
         if (!response.bStateError) {
             var template = '<li id="image_' + response.id + '"><img class="image-100" src="' + response.file + '" alt="image" />'
-            + '<label class="description">' + ls.lang.get('lsgallery_image_description') + '</label><br/>'
-            + '<textarea onBlur="ls.gallery.setImageDescription('+response.id+', this.value)"></textarea><br />'
-            + '<label class="tags">' + ls.lang.get('lsgallery_image_tags') + '</label><br/>'
-            + '<input type="text" class="autocomplete-image-tags" onBlur="ls.gallery.setImageTags('+response.id+', this.value)"/><br/>'
-            + '<div class="options-line"><span id="image_preview_state_' + response.id + '" class="photo-preview-state"><a href="javascript:ls.gallery.setPreview(' + response.id + ')" class="mark-as-preview">' + ls.lang.get('lsgallery_album_set_image_cover') + '</a></span>'
-            + '<a href="javascript:ls.gallery.deleteImage(' + response.id + ')" class="image-delete">' + ls.lang.get('lsgallery_album_image_delete') + '</a></div></li>';
+                + '<label class="description">' + ls.lang.get('lsgallery_image_description') + '</label><br/>'
+                + '<textarea onBlur="ls.gallery.setImageDescription(' + response.id + ', this.value)"></textarea><br />'
+                + '<label class="tags">' + ls.lang.get('lsgallery_image_tags') + '</label><br/>'
+                + '<input type="text" class="autocomplete-image-tags" onBlur="ls.gallery.setImageTags(' + response.id + ', this.value)"/><br/>'
+                + '<div class="options-line"><span id="image_preview_state_' + response.id + '" class="photo-preview-state"><a href="javascript:ls.gallery.setPreview(' + response.id + ')" class="mark-as-preview">' + ls.lang.get('lsgallery_album_set_image_cover') + '</a></span>'
+                + '<a href="javascript:ls.gallery.deleteImage(' + response.id + ')" class="image-delete">' + ls.lang.get('lsgallery_album_image_delete') + '</a>'
+                + '<a href="javascript:ls.gallery.toggleForbidComment(' + response.id + ')" class="image-comment">' + ls.lang.get('lsgallery_set_forbid_comments') + '</a>'
+                + '</div></li>';
             jQuery('#swfu_images').prepend(template);
-            ls.autocomplete.add($(".autocomplete-image-tags"), aRouter['galleryajax']+'autocompleteimagetag/', true);
+            ls.autocomplete.add($(".autocomplete-image-tags"), aRouter['galleryajax'] + 'autocompleteimagetag/', true);
             ls.msg.notice(response.sMsgTitle, response.sMsg);
         } else {
             ls.msg.error(response.sMsgTitle, response.sMsg);
@@ -116,7 +120,7 @@ ls.gallery = (function ($) {
         if (!confirm(ls.lang.get('lsgallery_album_image_delete_confirm'))) {
             return;
         }
-        ls.ajax(aRouter['galleryajax'] + 'deleteimage', {
+        ls.ajax(aRouter.galleryajax + 'deleteimage', {
             'id': id
         }, function (response) {
             if (!response.bStateError) {
@@ -129,7 +133,7 @@ ls.gallery = (function ($) {
     };
     // set image as album preview
     this.setPreview = function (id) {
-        ls.ajax(aRouter['galleryajax'] + 'markascover', {
+        ls.ajax(aRouter.galleryajax + 'markascover', {
             'id': id
         }, function (response) {
             if (!response.bStateError) {
@@ -138,8 +142,22 @@ ls.gallery = (function ($) {
                     var tmpId = $(el).attr('id').slice($(el).attr('id').lastIndexOf('_') + 1);
                     $('#image_preview_state_' + tmpId).html('<a href="javascript:ls.gallery.setPreview(' + tmpId + ')" class="mark-as-preview">' + ls.lang.get('lsgallery_album_set_image_cover') + '</a>');
                 });
-                $('#image_'+id).addClass('marked-as-preview');
+                $('#image_' + id).addClass('marked-as-preview');
                 $('#image_preview_state_' + id).html(ls.lang.get('lsgallery_album_image_cover'));
+            } else {
+                ls.msg.error(response.sMsgTitle, response.sMsg);
+            }
+        });
+
+    };
+
+    // forbid image comment
+    this.toggleForbidComment = function (id) {
+        ls.ajax(aRouter.galleryajax + 'toggleforbidcomment', {
+            'id': id
+        }, function (response) {
+            if (!response.bStateError) {
+                $('#image_' + id + ' a.image-comment').html(response.sText);
             } else {
                 ls.msg.error(response.sMsgTitle, response.sMsg);
             }
@@ -152,7 +170,7 @@ ls.gallery = (function ($) {
             return;
         }
         jQuery('#image_' + id + ' label.description').html(ls.lang.get('lsgallery_image_description'));
-        ls.ajax(aRouter['galleryajax'] + 'setimagedescription', {
+        ls.ajax(aRouter.galleryajax + 'setimagedescription', {
             'id': id,
             'text': text
         },  function (result) {
@@ -172,7 +190,7 @@ ls.gallery = (function ($) {
             return;
         }
         jQuery('#image_' + id + ' label.tags').html(ls.lang.get('lsgallery_image_tags'));
-        ls.ajax(aRouter['galleryajax'] + 'setimagetags', {
+        ls.ajax(aRouter.galleryajax + 'setimagetags', {
             'id': id,
             'tags': text
         },  function (result) {
@@ -184,8 +202,8 @@ ls.gallery = (function ($) {
         });
     };
     // chaneg image people mark
-    this.changeMark = function(idImage, idUser, status, a) {
-        ls.ajax(aRouter['galleryajax'] + 'changemark', {
+    this.changeMark = function (idImage, idUser, status, a) {
+        ls.ajax(aRouter.galleryajax + 'changemark', {
             'idImage': idImage,
             'idUser': idUser,
             'status': status
@@ -197,10 +215,10 @@ ls.gallery = (function ($) {
                 ls.msg.notice(response.sMsgTitle, response.sMsg);
             }
         });
-    }
+    };
     // remove image user mark
-    this.removeMark = function(idImage, idUser, a) {
-        ls.ajax(aRouter['galleryajax'] + 'removemark', {
+    this.removeMark = function (idImage, idUser, a) {
+        ls.ajax(aRouter.galleryajax + 'removemark', {
             'idImage': idImage,
             'idUser': idUser
         },  function (response) {
@@ -213,41 +231,41 @@ ls.gallery = (function ($) {
                 ls.msg.notice(response.sMsgTitle, response.sMsg);
             }
         });
-    }
+    };
 
 
     return this;
-}).call(ls.gallery || {},jQuery);
-ias = null;
+}).call(ls.gallery || {}, jQuery);
+var ias = null;
 jQuery('document').ready(function(){
     // autocomplete for image tags
-    ls.autocomplete.add($(".autocomplete-image-tags"), aRouter['galleryajax']+'autocompleteimagetag/', true);
+    ls.autocomplete.add(jQuery(".autocomplete-image-tags"), aRouter.galleryajax + 'autocompleteimagetag/', true);
     // init fancybox for gallery
     if (jQuery('a.gal-expend').length) {
         jQuery('a.gal-expend').fancybox();
     };
     // show marker on mark over
-    jQuery('div.image-marker').live('mouseover', function(){
+    jQuery('div.image-marker').live('mouseover', function () {
         jQuery(this).find('div.marker-wrap').first().show();
     });
     // hide marker on mark out
-    jQuery('div.image-marker').live('mouseout', function(){
+    jQuery('div.image-marker').live('mouseout', function () {
         jQuery(this).find('div.marker-wrap').first().hide();
     });
     // show marker on people over
-    jQuery('#selected-people li').live('mouseover', function(){
+    jQuery('#selected-people li').live('mouseover', function () {
         var id = jQuery(this).attr('id').replace('target-', '');
         jQuery('#marked-user-' + id + ' div.marker-wrap').show();
     });
     // hide marker on people out
-    jQuery('#selected-people li').live('mouseout', function(){
+    jQuery('#selected-people li').live('mouseout', function () {
         var id = jQuery(this).attr('id').replace('target-', '');
         jQuery('#marked-user-' + id + ' div.marker-wrap').hide();
     });
     // change random images
-    jQuery('#gallery-reload').live('click',function(event){
+    jQuery('#gallery-reload').live('click', function (event) {
         event.preventDefault();
-        ls.ajax(aRouter['galleryajax'] + 'getrandomimages', {},
+        ls.ajax(aRouter.galleryajax + 'getrandomimages', {},
             function (result) {
                 if (result.sHtml) {
                     jQuery('#block-random-images').html(result.sHtml);
@@ -255,7 +273,7 @@ jQuery('document').ready(function(){
             });
     });
     // change tab in block
-    jQuery('[id^="block_gallery_item"]').live('click', function(){
+    jQuery('[id^="block_gallery_item"]').live('click', function () {
         ls.blocks.load(this, 'block_gallery');
         return false;
     });
@@ -266,15 +284,15 @@ jQuery('document').ready(function(){
     });
 
     // Поиск по тегам
-    $('#tag__image_search_form').live('submit', function(){
-        window.location = aRouter['gallery'] + 'tag/' + $('#tag_search').val()+'/';
+    jQuery('#tag__image_search_form').live('submit', function () {
+        window.location = aRouter.gallery + 'tag/' + jQuery('#tag_search').val() + '/';
         return false;
     });
     // show slideshow
-    jQuery('#gallery-slideshow').live('click', function(event){
+    jQuery('#gallery-slideshow').live('click', function (event) {
         event.preventDefault();
         jQuery('a.image-slideshow').fancybox({
-            arrows:true,
+            arrows: true,
             helpers : {
                 title : {
                     type : 'inside'
@@ -284,11 +302,7 @@ jQuery('document').ready(function(){
         });
         jQuery('a.image-slideshow').first().trigger('click');
     });
-    // imgAreaSelect for people mark
-    if (jQuery('#select-friends').length) {
-        initMark();
-    }
-
+    // init imgAreaSelect
     function initMark() {
         ias = jQuery('#image img').imgAreaSelect({
             instance: true,
@@ -298,78 +312,11 @@ jQuery('document').ready(function(){
             disable: true
         });
     }
-    // show mark
-    jQuery('#mark').live('click', function(event){
-        event.preventDefault();
-        if (jQuery('div.mark-name.current').length) {
-            cancelMarkFriend();
-        } else {
-            jQuery('#image img').addClass('select-pic');
-            jQuery('#select-people-notice').css('opacity', 0).slideDown(70).animate({
-                opacity:1
-            }, 200);
-            var name = jQuery('div.mark-name').clone();
-            name.addClass('current').show();
-            var acp = name.find('input.autocomplete-friend').first();
-            ls.autocomplete.add(acp, aRouter['ajax']+'autocompleter/user/', false);
-            jQuery('.imgareaselect-handle:last').parent('div').first().append(name);
-            ias.setOptions({
-                enable: true
-            });
-            $('html, body').animate({
-                scrollTop: $("#content").offset().top
-            }, 600);
-        }
-
-    });
-    // cancel set mark
-    jQuery('div.mark-name.current .cancel-selected-friend').live('click',function(event){
-        event.preventDefault();
-        hideMarkFriend();
-    });
-    // submit mark
-    jQuery('div.mark-name.current .submit-selected-friend').live('click', function(event){
-        event.preventDefault();
-        var selection = ias.getSelection();
-        var login = jQuery('div.mark-name.current .autocomplete-friend').val();
-        if (!selection.height || !login) {
-            return;
-        }
-        var idImage = jQuery('#image img').attr('id');
-        ls.ajax(aRouter['galleryajax'] + 'markfriend', {
-            'idImage': idImage,
-            'login': login,
-            'selection': selection
-        },  function (response) {
-            if (response.bStateError) {
-                ls.msg.error(response.sMsgTitle, response.sMsg);
-            } else {
-                var li = '<li id="target-' + response.idUser + '" class="selected-new">'+
-                '<a class="user" href="' + response.sPath + '">' + login + '</a>'+
-                '<a href="#" class="remove" onclick="ls.gallery.removeMark(' + idImage +', ' + response.idUser + ', this); return false;"></a>'+
-                '</li>';
-                jQuery('#selected-people').append(li);
-                var div = '<div class="image-marker" id="marked-user-' + response.idUser + '" style="top: '+ selection.y1 +'px; left: ' +
-                selection.x1 + 'px; width: ' + selection.width + 'px; height: ' + selection.height + 'px;">' +
-                '<div class="marker-wrap" style="width: '+ selection.width + 'px; height: '+ selection.height + 'px;  display: none;">' +
-                '<div class="marker-inside" style="width: '+ (selection.width -2) + '}px; height: '+ (selection.height -2) + 'px"></div>'+
-                '<div class="user-href-wrap"><a class="user" href="' + response.sPath + '">' + login + '</a></div>'+
-                '</div></div>';
-                jQuery('#image').append(div);
-                hideMarkFriend();
-                ls.msg.notice(response.sMsgTitle, response.sMsg);
-            }
-        });
-    })
-    // cancel mark
-    jQuery('#image-mark-ready').live('click', function(event){
-        event.preventDefault();
-        cancelMarkFriend();
-    })
+    //cancel marking
     function cancelMarkFriend() {
         jQuery('#image img').removeClass('select-pic');
         jQuery('#select-people-notice').animate({
-            opacity:0
+            opacity: 0
         }, 0).slideUp(30);
         jQuery('div.mark-name.current').remove();
         ias.setOptions({
@@ -377,58 +324,28 @@ jQuery('document').ready(function(){
             hide: true
         });
     }
-    function hideMarkFriend(){
+    // hide markind
+    function hideMarkFriend() {
         jQuery('div.mark-name.current input').val('');
         ias.setOptions({
             hide: true
         });
     }
-    // positioning select mark
-    jQuery('#image img.select-pic').live('click', function(event){
-        event.preventDefault();
-        clickSelect(event);
-    })
-    // positioning select mark
-    jQuery('.imgareaselect-outer').live('click', function(event){
-        event.preventDefault();
-        clickSelect(event);
-    })
-    // next|prev img on img click
-    jQuery('#image img.gallery-big-photo:not(.select-pic)').live('click', function(event){
-        event.preventDefault();
-        var offset = jQuery('#image img.gallery-big-photo').offset();
-        var width = jQuery('#image img.gallery-big-photo').width();
-        if (jQuery('a.gal-left').length && (offset.left + width * 0.4) > event.pageX ) {
-            jQuery('a.gal-left').click();
-        }
-        if (jQuery('a.gal-right').length && (offset.left + width * 0.6) < event.pageX ) {
-            jQuery('a.gal-right').click();
-        }
-    });
 
-    jQuery('#image img.gallery-big-photo:not(.select-pic)').live('mousemove', function(event){
-        event.preventDefault();
-        var offset = jQuery('#image img.gallery-big-photo').offset();
-        var width = jQuery('#image img.gallery-big-photo').width();
-        if (jQuery('a.gal-left').length && (offset.left + width * 0.4) > event.pageX ) {
-            $(this).css('cursor', 'pointer');
-        } else if (jQuery('a.gal-right').length && (offset.left + width * 0.6) < event.pageX ) {
-            $(this).css('cursor', 'pointer');
-        } else {
-            $(this).css('cursor', 'auto');
-        }
-    });
-
+    // process clicking on image while mark
     function clickSelect(event) {
-        var offset = jQuery('#image img.select-pic').offset();
-        var X1, X2, Y1, Y2;
+        var offset = jQuery('#image img.select-pic').offset(),
+            X1,
+            X2,
+            Y1,
+            Y2;
         if ((event.pageX - offset.left - 50) > 0 ) {
             X1 = event.pageX - offset.left - 50;
             if ((event.pageX - offset.left + 50) < jQuery('#image img.select-pic').width()) {
                 X2 = (event.pageX - offset.left + 50);
             } else {
                 X2 = jQuery('#image img.select-pic').width();
-                if ((X2 - 100) > 0 ) {
+                if ((X2 - 100) > 0) {
                     X1 = X2 - 100;
                 } else {
                     X1 = 0;
@@ -437,7 +354,7 @@ jQuery('document').ready(function(){
             }
         } else {
             X1 = 0;
-            X2 = 100
+            X2 = 100;
         }
 
         if ((event.pageY - offset.top - 50) > 0 ) {
@@ -446,7 +363,7 @@ jQuery('document').ready(function(){
                 Y2 = (event.pageY - offset.top + 50);
             } else {
                 Y2 = jQuery('#image img.select-pic').height();
-                if ((Y2 - 100) > 0 ) {
+                if ((Y2 - 100) > 0) {
                     Y1 = Y2 - 100;
                 } else {
                     Y1 = 0;
@@ -464,10 +381,127 @@ jQuery('document').ready(function(){
             show: true
         });
     }
+    // imgAreaSelect for people mark
+    if (jQuery('#select-friends').length) {
+        initMark();
+    }
+
+    // show mark
+    jQuery('#mark').live('click', function (event) {
+        event.preventDefault();
+        if (jQuery('div.mark-name.current').length) {
+            cancelMarkFriend();
+        } else {
+            jQuery('#image img').addClass('select-pic');
+            jQuery('#select-people-notice').css('opacity', 0).slideDown(70).animate({
+                opacity: 1
+            }, 200);
+            var name = jQuery('div.mark-name').clone(),
+                acp = name.find('input.autocomplete-friend').first();
+            name.addClass('current').show();
+            ls.autocomplete.add(acp, aRouter.ajax + 'autocompleter/user/', false);
+            jQuery('.imgareaselect-handle:last').parent('div').first().append(name);
+            ias.setOptions({
+                enable: true
+            });
+            jQuery('html, body').animate({
+                scrollTop: $("#content").offset().top
+            }, 600);
+        }
+
+    });
+    // cancel set mark
+    jQuery('div.mark-name.current .cancel-selected-friend').live('click', function (event) {
+        event.preventDefault();
+        hideMarkFriend();
+    });
+    // submit mark
+    jQuery('div.mark-name.current .submit-selected-friend').live('click', function (event) {
+        event.preventDefault();
+        var selection = ias.getSelection(),
+            login = jQuery('div.mark-name.current .autocomplete-friend').val(),
+            idImage = jQuery('#image img').attr('id');
+        if (!selection.height || !login) {
+            return;
+        }
+        ls.ajax(aRouter.galleryajax + 'markfriend', {
+            'idImage': idImage,
+            'login': login,
+            'selection': selection
+        },  function (response) {
+            if (response.bStateError) {
+                ls.msg.error(response.sMsgTitle, response.sMsg);
+            } else {
+                var li = '<li id="target-' + response.idUser + '" class="selected-new">'
+                    + '<a class="user" href="' + response.sPath + '">' + login + '</a>'
+                    + '<a href="#" class="remove" onclick="ls.gallery.removeMark('
+                    + idImage + ', ' + response.idUser + ', this); return false;"></a>'
+                    + '</li>',
+                    div = '<div class="image-marker" id="marked-user-' + response.idUser + '" style="top: ' + selection.y1 + 'px; left: '
+                    + selection.x1 + 'px; width: ' + selection.width + 'px; height: ' + selection.height + 'px;">'
+                    + '<div class="marker-wrap" style="width: ' + selection.width + 'px; height: ' + selection.height + 'px;  display: none;">'
+                    + '<div class="marker-inside" style="width: ' + (selection.width - 2) + '}px; height: ' + (selection.height - 2) + 'px"></div>'
+                    + '<div class="user-href-wrap"><a class="user" href="' + response.sPath + '">' + login + '</a></div>'
+                    + '</div></div>';
+                jQuery('#selected-people').append(li);
+                jQuery('#image').append(div);
+                hideMarkFriend();
+                ls.msg.notice(response.sMsgTitle, response.sMsg);
+            }
+        });
+    });
+    // cancel mark
+    jQuery('#image-mark-ready').live('click', function (event) {
+        event.preventDefault();
+        cancelMarkFriend();
+    });
+
+    // positioning select mark
+    jQuery('#image img.select-pic').live('click', function (event) {
+        event.preventDefault();
+        clickSelect(event);
+    });
+    // positioning select mark
+    jQuery('.imgareaselect-outer').live('click', function (event) {
+        event.preventDefault();
+        clickSelect(event);
+    });
+    // next|prev img on img click
+    jQuery('#image img.gallery-big-photo:not(.select-pic)').live('click', function (event) {
+        event.preventDefault();
+        var offset = jQuery('#image img.gallery-big-photo').offset(),
+            width = jQuery('#image img.gallery-big-photo').width();
+        if (jQuery('a.gal-left').length && (offset.left + width * 0.4) > event.pageX) {
+            jQuery('a.gal-left').click();
+        }
+        if (jQuery('a.gal-right').length && (offset.left + width * 0.6) < event.pageX) {
+            jQuery('a.gal-right').click();
+        }
+    });
+
+    jQuery('#image img.gallery-big-photo:not(.select-pic)').live('mousemove', function (event) {
+        event.preventDefault();
+        var offset = jQuery('#image img.gallery-big-photo').offset(),
+            width = jQuery('#image img.gallery-big-photo').width();
+        if (jQuery('a.gal-left').length && (offset.left + width * 0.4) > event.pageX ) {
+            jQuery(this).css('cursor', 'pointer');
+        } else if (jQuery('a.gal-right').length && (offset.left + width * 0.6) < event.pageX ) {
+            jQuery(this).css('cursor', 'pointer');
+        } else {
+            jQuery(this).css('cursor', 'auto');
+        }
+    });
+    function imageLoaded(data) {
+        jQuery('#view-image').html(data.sImageContent);
+        jQuery('#image-comments').html(data.sCommentContent);
+        if (jQuery('#select-friends').length) {
+            initMark();
+        }
+    }
     // add ajax load image
     if (jQuery('.gallery-navigation').length) {
         // handle keypress
-        $(document).keydown(function(event){
+        jQuery(document).keydown(function(event){
             if ((event.keyCode || event.which) == 37 && event.ctrlKey) {
                 event.preventDefault();
                 jQuery('a.gal-left').click();
@@ -479,7 +513,7 @@ jQuery('document').ready(function(){
         });
 
         var History = window.History; // Note: We are using a capital H instead of a lower h
-        if ( !History.enabled ) {
+        if (!History.enabled) {
             // History.js is disabled for this browser.
             // This is because we can optionally choose to support HTML4 browsers or not.
             return false;
@@ -489,35 +523,29 @@ jQuery('document').ready(function(){
             rootUrl = History.getRootUrl();
 
 
-        jQuery('a.ajaxy').live('click', function(event){
+        jQuery('a.ajaxy').live('click', function (event) {
             if (ias) {
                 cancelMarkFriend();
-                $(".imgareaselect-selection").parent().remove();
-                $(".imgareaselect-outer").remove();
+                jQuery(".imgareaselect-selection").parent().remove();
+                jQuery(".imgareaselect-outer").remove();
                 ias = null;
             }
             var
-                $this = $(this),
+                $this = jQuery(this),
                 url = $this.attr('href'),
-                title = $this.attr('title')||null;
+                title = $this.attr('title') || null;
 
             // Continue as normal for cmd clicks etc
-            if ( event.which == 2 || event.metaKey ) {
+            if (event.which == 2 || event.metaKey) {
                 return true;
             }
 
             // Ajaxify this link
-            History.pushState(null,title,url);
+            History.pushState(null, title, url);
             event.preventDefault();
             return false;
         });
-        function imageLoaded(data) {
-            jQuery('#view-image').html(data.sImageContent);
-            jQuery('#image-comments').html(data.sCommentContent);
-            if (jQuery('#select-friends').length) {
-                initMark();
-            }
-        }
+
         History.Adapter.bind(window,'statechange',function(){ // Note: We are using statechange instead of popstate
             var State = History.getState(),
                 url = State.url,
@@ -534,11 +562,11 @@ jQuery('document').ready(function(){
                 security_ls_key: LIVESTREET_SECURITY_KEY
             };
             // load blocks
-            $.ajax({
-				url: aRouter['galleryajax'] + 'getimage',
+            jQuery.ajax({
+				url: aRouter.galleryajax + 'getimage',
                 type: 'POST',
                 data: params,
-				success: function(data, textStatus, jqXHR){
+				success: function(data, textStatus, jqXHR) {
                     if (data.bStateError || !data.sImageContent || !data.sCommentContent) {
                         document.location.href = url;
                         return false;
@@ -546,28 +574,28 @@ jQuery('document').ready(function(){
                     // preload image
                     if (data.sImageUrl) {
                         var galleryImage = new Image();
-                        galleryImage.onload = function(){
+                        galleryImage.onload = function () {
                             imageLoaded(data);
-                        }
+                        };
                         galleryImage.src = data.sImageUrl;
                     } else {
-                        imageLoaded(data)
+                        imageLoaded(data);
                     }
 
                     document.title = title;
 
 					// Inform Google Analytics of the change
-					if ( typeof window.pageTracker !== 'undefined' ) {
+					if (typeof window.pageTracker !== 'undefined') {
 						window.pageTracker._trackPageview(relativeUrl);
 					}
 
 					// Inform ReInvigorate of a state change
-					if ( typeof window.reinvigorate !== 'undefined' && typeof window.reinvigorate.ajax_track !== 'undefined' ) {
+					if (typeof window.reinvigorate !== 'undefined' && typeof window.reinvigorate.ajax_track !== 'undefined') {
 						reinvigorate.ajax_track(url);
 						// ^ we use the full url here as that is what reinvigorate supports
 					}
 				},
-				error: function(jqXHR, textStatus, errorThrown){
+				error: function(jqXHR, textStatus, errorThrown) {
 					document.location.href = url;
 					return false;
 				}
