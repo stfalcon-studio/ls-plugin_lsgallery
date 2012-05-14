@@ -84,12 +84,12 @@ return array(
     'lsgallery_image_vote_error_time' => 'Истек срок голосования за эту картинку!',
     'lsgallery_image_vote_error_acl' => 'Недостаточно кармы для голосования!',
     'lsgallery_image_vote_ok' => 'Ваш голос учтен',
-	'lsgallery_image_vote_ok_abstain' => 'Вы воздержались для просмотра рейтинга картинки',
-	'lsgallery_set_forbid_comments' => 'Запретить комментировать',
-	'lsgallery_unset_forbid_comments' => 'Разрешить комментировать',
+    'lsgallery_image_vote_ok_abstain' => 'Вы воздержались для просмотра рейтинга картинки',
+    'lsgallery_set_forbid_comments' => 'Запретить комментировать',
+    'lsgallery_unset_forbid_comments' => 'Разрешить комментировать',
     'image_comment_notallow' => 'Автор изображения запретил добавлять комментарии ',
 
-	'lsgallery_album_slideshow' => 'Показать слайдшоу',
+    'lsgallery_album_slideshow' => 'Показать слайдшоу',
 
     'lsgallery_image_zoom' => 'Увеличить',
     'lsgallery_cancel' => 'Отмена',
