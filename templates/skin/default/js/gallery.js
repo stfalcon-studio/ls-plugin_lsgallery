@@ -433,7 +433,7 @@ jQuery('document').ready(function(){
                 ls.msg.error(response.sMsgTitle, response.sMsg);
             } else {
                 var li = '<li id="target-' + response.idUser + '" class="selected-new">'
-                    + '<a class="user" href="' + response.sPath + '">' + login + '</a>'
+                    + '<a class="user" href="' + response.sPath + '">' + login + '</a>\n'
                     + '<a href="#" class="remove" onclick="ls.gallery.removeMark('
                     + idImage + ', ' + response.idUser + ', this); return false;"></a>'
                     + '</li>',
