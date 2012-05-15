@@ -32,12 +32,16 @@ if (jQuery.browser.flash) {
                     <label class="tags">{$aLang.lsgallery_image_tags}</label><br/>
                     <input type="text" class="autocomplete-image-tags" onBlur="ls.gallery.setImageTags({$oImage->getId()}, this.value)" value="{$oImage->getImageTags()}"/><br/>
                     <div class="options-line">
-                        <span id="image_preview_state_{$oImage->getId()}" class="photo-preview-state">
+                        <span class="photo-preview-state">
+                            <span id="image_preview_state_{$oImage->getId()}">
                             {if $bIsMainImage}
                                 {$aLang.lsgallery_album_image_cover}
                             {else}
                                 <a href="javascript:ls.gallery.setPreview({$oImage->getId()})" class="mark-as-preview">{$aLang.lsgallery_album_set_image_cover}</a>
                             {/if}
+                            </span>
+                            <br/>
+                            <a href="javascript:ls.gallery.toggleForbidComment({$oImage->getId()})" class="image-comment">{if $oImage->getForbidComment()}{$aLang.lsgallery_unset_forbid_comments}{else}{$aLang.lsgallery_set_forbid_comments}{/if}</a>
                         </span>
 
                         <a href="javascript:ls.gallery.deleteImage({$oImage->getId()})" class="image-delete">{$aLang.lsgallery_album_image_delete}</a>
