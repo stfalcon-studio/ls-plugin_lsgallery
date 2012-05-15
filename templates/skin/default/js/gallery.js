@@ -465,6 +465,9 @@ jQuery('document').ready(function(){
     });
     // next|prev img on img click
     jQuery('#image img.gallery-big-photo:not(.select-pic)').live('click', function (event) {
+        if (jQuery(this).parent('a').length) {
+            return;
+        }
         event.preventDefault();
         var offset = jQuery('#image img.gallery-big-photo').offset(),
             width = jQuery('#image img.gallery-big-photo').width();
