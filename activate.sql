@@ -13,9 +13,6 @@ CREATE TABLE IF NOT EXISTS `prefix_lsgallery_album` (
   KEY `album_cover_image_id` (`album_cover_image_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-ALTER TABLE `prefix_lsgallery_album`
-  ADD CONSTRAINT `prefix_lsgallery_album_ibfk_1` FOREIGN KEY (`album_user_id`) REFERENCES `prefix_user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
 CREATE TABLE IF NOT EXISTS `prefix_lsgallery_image` (
   `image_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) unsigned NOT NULL,
