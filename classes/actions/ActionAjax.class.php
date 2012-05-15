@@ -493,7 +493,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         if ($this->PluginLsgallery_Image_AddImageUser($oImageUser)) {
 
             if ($oUserMarked->getId() != $this->oUserCurrent->getId()) {
-                $this->Notify_Send($oUserMarked, 'notify.marked.tpl', $this->Lang_Get('lsgallery_marked_subject'), array('oUser' => $this->oUserCurrent, 'oImage' => $oImage), 'lsgallery');
+                $this->Notify_Send($oUserMarked, 'notify.marked.tpl', $this->Lang_Get('lsgallery_marked_subject'), array('oUser' => $this->oUserCurrent, 'oImage' => $oImage), __CLASS__);
             }
             $this->Viewer_AssignAjax('sPath', $oUserMarked->getUserWebPath());
             $this->Viewer_AssignAjax('idUser', $oUserMarked->getId());
