@@ -377,6 +377,9 @@ jQuery('document').ready(function(){
         ias.setOptions({
             show: true
         });
+      
+        jQuery('.mark-name input.autocomplete-friend').focus();
+        return false;
     }
     // imgAreaSelect for people mark
     if (jQuery('#select-friends').length) {
