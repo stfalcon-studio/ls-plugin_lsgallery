@@ -16,6 +16,9 @@
 	background:none !important;
 	width:auto;
 	font-size:11px;
+        height: auto;
+        padding: 0;
+        line-height: inherit;
 	}
 .favourite.gallery-favourite .icon{ background: url(../images/icons.gif) no-repeat scroll -40px -40px; width:9px; height:8px; display:inline-block; vertical-align:middle; padding:0px; margin-right:3px;}
 .favourite.gallery-favourite:hover .icon{ background: url(../images/icons.gif) no-repeat scroll -50px -40px; }
