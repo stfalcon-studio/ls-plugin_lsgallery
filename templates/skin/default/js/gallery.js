@@ -1,7 +1,3 @@
-var ls = ls || {};
-var aRouter = aRouter || {};
-var jQuery = jQuery || {};
-
 ls.comments  = ls.comments || {};
 
 if (ls.comments) {
@@ -104,9 +100,10 @@ ls.gallery = (function ($) {
                 + '<textarea onBlur="ls.gallery.setImageDescription(' + response.id + ', this.value)"></textarea><br />'
                 + '<label class="tags">' + ls.lang.get('lsgallery_image_tags') + '</label><br/>'
                 + '<input type="text" class="autocomplete-image-tags" onBlur="ls.gallery.setImageTags(' + response.id + ', this.value)"/><br/>'
-                + '<div class="options-line"><span id="image_preview_state_' + response.id + '" class="photo-preview-state"><a href="javascript:ls.gallery.setPreview(' + response.id + ')" class="mark-as-preview">' + ls.lang.get('lsgallery_album_set_image_cover') + '</a></span>'
+                + '<div class="options-line"><span class="photo-preview-state"><span id="image_preview_state_' + response.id + '">'
+                + '<a href="javascript:ls.gallery.setPreview(' + response.id + ')" class="mark-as-preview">' + ls.lang.get('lsgallery_album_set_image_cover') + '</a></span><br/>'
+                + '<a href="javascript:ls.gallery.toggleForbidComment(' + response.id + ')" class="image-comment">' + ls.lang.get('lsgallery_set_forbid_comments') + '</a></span>'
                 + '<a href="javascript:ls.gallery.deleteImage(' + response.id + ')" class="image-delete">' + ls.lang.get('lsgallery_album_image_delete') + '</a>'
-                + '<a href="javascript:ls.gallery.toggleForbidComment(' + response.id + ')" class="image-comment">' + ls.lang.get('lsgallery_set_forbid_comments') + '</a>'
                 + '</div></li>';
             jQuery('#swfu_images').prepend(template);
             ls.autocomplete.add($(".autocomplete-image-tags"), aRouter['galleryajax'] + 'autocompleteimagetag/', true);
