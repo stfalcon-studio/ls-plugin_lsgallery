@@ -45,7 +45,6 @@ if (jQuery.browser.flash) {
                         </span>
 
                         <a href="javascript:ls.gallery.deleteImage({$oImage->getId()})" class="image-delete">{$aLang.lsgallery_album_image_delete}</a>
-                        <a href="javascript:ls.gallery.toggleForbidComment({$oImage->getId()})" class="image-comment">{if $oImage->getForbidComment()}{$aLang.lsgallery_unset_forbid_comments}{else}{$aLang.lsgallery_set_forbid_comments}{/if}</a>
                     </div>
                 </li>
                 {assign var=bIsMainImage value=false}
