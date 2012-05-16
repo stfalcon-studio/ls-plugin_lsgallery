@@ -19,6 +19,36 @@ Config::Set('acl.vote.image.rating', -1); // мин карма для голос
 
 Config::Set('module.image.lsgallery.jpg_quality', 95);
 
+Config::Set('block.rule_stream_gallery', array(
+    'action'  => array(
+        'gallery' => array(
+            'photo', 'image', 'albums'
+            )
+    ),
+    'blocks'  => array(
+        'right' => array(
+            'StreamGallery'=>array(
+                'params' => array('plugin' => 'lsgallery'),
+                'priority'=>100)
+            )
+    ),
+));
+
+Config::Set('block.rule_tags_gallery', array(
+    'action'  => array(
+        'gallery' => array(
+            'photo', 'album', 'albums'
+            )
+    ),
+    'blocks'  => array(
+        'right' => array(
+            'GalleryTags'=>array(
+                'params' => array('plugin' => 'lsgallery'),
+                'priority'=>10)
+            )
+    ),
+));
+
 return array(
     'images_new_time' => 60*60*24*1, // сколько времени картинка считается лучшей
     'images_best' => 1, // мин рейтинг для попадания картинки в топ
@@ -29,6 +59,7 @@ return array(
     'album_per_page' => 12, // альбомов на страницу
     'image_max_size' => 6 * 1024, //Kb  // максимально допустимый размер фото
     'count_image_max' => 100, // макс колво картинок пользователя
+    'priority_album_block' => 110,
     'size' => array(array(  // параметры ресайза изображения
             'w' => 600,
             'h' => null,
