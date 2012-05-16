@@ -6,7 +6,7 @@
 	<author>
 		<lang name="default">Web studio stfalcon.com</lang>
 	</author>
-	<homepage>http://stfalcon.com/</homepage>
+	<homepage>http://stfalcon.com</homepage>
 	<version>0.2.0</version>
 	<requires>
 		<livestreet>0.5.0</livestreet>
