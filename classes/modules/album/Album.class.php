@@ -66,21 +66,34 @@ class PluginLsgallery_ModuleAlbum extends Module
         if ($iAlbumId instanceof PluginLsgallery_ModuleAlbum_EntityAlbum) {
             $iAlbumId = $iAlbumId->getId();
         }
+
+        $aResult = $this->PluginLsGallery_Image_GetImagesByAlbumId($iAlbumId);
+
         if (!$this->oMapper->DeleteAlbum($iAlbumId)) {
             return false;
         }
+
+        if ($aResult['count']) {
+            $aImages = $aResult['collection'];
+            $aImagesId = array_keys($aImages);
+            foreach ($aImages as $oImage) {
+                $this->PluginLsGallery_Image_DeleteImageFiles($oImage);
+            }
+            $this->Vote_DeleteVoteByTarget($aImagesId, 'image');
+            $this->Favourite_DeleteFavouriteByTargetId($aImagesId, 'image');
+            $this->Comment_DeleteCommentByTargetId($aImagesId, 'image');
+        }
+
         /**
          * Чистим кеш
          */
         $this->Cache_Clean(
                 Zend_Cache::CLEANING_MODE_MATCHING_TAG, array(
-            "album_update", "image_update", "vote_update", "comment_update"
+                    "album_update", "image_update", "comment_update"
                 )
         );
 
-        //@todo удаление комментариев и голосов к картинкам
         $this->Cache_Delete("album_{$iAlbumId}");
-
 
         return true;
     }

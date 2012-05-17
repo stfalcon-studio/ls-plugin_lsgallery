@@ -184,6 +184,9 @@ class PluginLsgallery_ModuleImage extends Module
     {
         $oAlbum = $this->PluginLsgallery_Album_GetAlbumById($oImage->getAlbumId());
 
+        if (!$this->oMapper->DeleteImage($oImage->getId())) {
+            return false;
+        }
 
         if ($oAlbum->getCoverId() == $oImage->getId()) {
             $oAlbum->setCoverId(null);
@@ -195,8 +198,22 @@ class PluginLsgallery_ModuleImage extends Module
         $this->Cache_Clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array("image_update"));
         $this->Cache_Delete("image_{$oImage->getId()}");
 
-        $this->oMapper->DeleteImage($oImage->getId());
-        //@todo удаление комментариев и голосований
+        $this->DeleteImageFiles($oImage);
+
+        $this->Vote_DeleteVoteByTarget($oImage->getId(), 'image');
+        $this->Favourite_DeleteFavouriteByTargetId($oImage->getId(), 'image');
+        $this->Comment_DeleteCommentByTargetId($oImage->getId(), 'image');
+
+        return true;
+    }
+
+    /**
+     * Delete image files
+     *
+     * @param PluginLsgallery_ModuleImage_EntityImage $oImage
+     */
+    public function DeleteImageFiles($oImage)
+    {
         @unlink($this->Image_GetServerPath(rtrim(Config::Get('path.root.web'), '/') . $oImage->getWebPath()));
 
         $aSizes = Config::Get('plugin.lsgallery.size');
@@ -208,7 +225,6 @@ class PluginLsgallery_ModuleImage extends Module
             }
             @unlink($this->Image_GetServerPath(rtrim(Config::Get('path.root.web'), '/') . $oImage->getWebPath($sSize)));
         }
-        return true;
     }
 
     /**
