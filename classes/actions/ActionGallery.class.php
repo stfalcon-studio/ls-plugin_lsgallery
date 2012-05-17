@@ -345,7 +345,6 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/imgareaselect/jquery.imgareaselect.dev.js');
         $this->Viewer_AppendStyle(Plugin::GetTemplateWebPath('lsgallery') . 'css/imgareaselect-default.css');
 
-        $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/history/jquery.history.js');
     }
 
     public function EventViewAlbum()
