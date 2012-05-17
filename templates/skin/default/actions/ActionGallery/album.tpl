@@ -18,7 +18,7 @@
     <div class="content">
         {if count($aImages)}
             {include file="`$sTemplatePathLsgallery`photo_list.tpl" aImages=$aImages bSlideshow=true}
-        {else}
+        {else if $oUserCurrent && ($oUserCurrent->isAdministrator() || $oUserCurrent->getId() == $oAlbum->getUserId())}
             <div class="centered">
                 <a id="album-add-images" class="add-images" href="{$oAlbum->getUrlFull('images')}">{$aLang.lsgallery_album_add_image}</a>
             </div>
