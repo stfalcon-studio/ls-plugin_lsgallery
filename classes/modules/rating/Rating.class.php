@@ -4,7 +4,8 @@ class PluginLsgallery_ModuleRating extends PluginLsgallery_Inherit_ModuleRating
 {
 
     /**
-     *
+     * Vote for image
+     * 
      * @param ModuleUser_EntityUser $oUser
      * @param PluginLsgallery_ModuleImage_EntityImage $oImage
      * @param int $iValue
@@ -13,7 +14,7 @@ class PluginLsgallery_ModuleRating extends PluginLsgallery_Inherit_ModuleRating
     public function VoteImage(ModuleUser_EntityUser $oUser, PluginLsgallery_ModuleImage_EntityImage $oImage, $iValue)
     {
         $skill = $oUser->getSkill();
-        
+
         $iDeltaRating = $iValue;
         if ($skill >= 100 and $skill < 250) {
             $iDeltaRating = $iValue * 2;

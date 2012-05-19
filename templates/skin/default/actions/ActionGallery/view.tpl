@@ -1,6 +1,7 @@
 {include file='header.tpl' menu="album"}
+<script src="{$sHistoryJsPath}"></script>
 <div id="view-image" class="topic gallery-topic">
-    {include file='photo_view.tpl' oImage=$oImage bSelectFriends=true bSliderImage=true}
+    {include file="`$sTemplatePathLsgallery`photo_view.tpl" oImage=$oImage bSelectFriends=true bSliderImage=true}
 </div>
 
 <div id="image-comments">

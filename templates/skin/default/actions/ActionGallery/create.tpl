@@ -1,9 +1,9 @@
 {include file='header.tpl' menu="album"}
 
 {if $sEvent=='create'}
-	<h2>{$aLang.lsgallery_create_album_title}</h2>
+    <h2>{$aLang.lsgallery_create_album_title}</h2>
 {else}
-	{include file='menu.album_edit.tpl'}
+    {include file="`$sTemplatePathLsgallery`menu.album_edit.tpl"}
 {/if}
 
 <form id="ls_gallery_create_album" action="" method="POST">
@@ -31,12 +31,4 @@
         <input type="submit" name="submit_create_album" value="{$aLang.lsgallery_save}" />
     </p>
 </form>
-<script language="javascript" type="text/javascript">
-function imposeMaxLength(Object, MaxLen)
-{
-    if (Object.value.length > MaxLen) {
-        Object.value = Object.value.substring(0, MaxLen);
-    }    
-}
-</script>        
 {include file='footer.tpl'}

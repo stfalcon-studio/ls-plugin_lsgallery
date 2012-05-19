@@ -1,6 +1,6 @@
 {include file='header.tpl' menu="album"}
 
-{include file='menu.album_edit.tpl'}
+{include file="`$sTemplatePathLsgallery`menu.album_edit.tpl"}
 
 {assign var=oImages value=$oAlbumEdit->getImages()}
 

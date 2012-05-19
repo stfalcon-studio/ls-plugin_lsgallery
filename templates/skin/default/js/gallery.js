@@ -233,7 +233,9 @@ ls.gallery = (function ($) {
 
     return this;
 }).call(ls.gallery || {}, jQuery);
+
 var ias = null;
+
 jQuery('document').ready(function(){
     // autocomplete for image tags
     ls.autocomplete.add(jQuery(".autocomplete-image-tags"), aRouter.galleryajax + 'autocompleteimagetag/', true);
@@ -299,6 +301,7 @@ jQuery('document').ready(function(){
         });
         jQuery('a.image-slideshow').first().trigger('click');
     });
+
     // init imgAreaSelect
     function initMark() {
         ias = jQuery('#image img').imgAreaSelect({
@@ -377,7 +380,7 @@ jQuery('document').ready(function(){
         ias.setOptions({
             show: true
         });
-      
+
         jQuery('.mark-name input.autocomplete-friend').focus();
         return false;
     }
@@ -501,6 +504,7 @@ jQuery('document').ready(function(){
             initMark();
         }
     }
+
     // add ajax load image
     if (jQuery('.gallery-navigation').length) {
         // handle keypress
@@ -605,4 +609,11 @@ jQuery('document').ready(function(){
 			}); // end ajax
         });
     }
+
 });
+
+function imposeMaxLength(Object, MaxLen) {
+    if (Object.value.length > MaxLen) {
+        Object.value = Object.value.substring(0, MaxLen);
+    }
+}

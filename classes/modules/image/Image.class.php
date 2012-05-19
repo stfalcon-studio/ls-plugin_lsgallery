@@ -82,6 +82,12 @@ class PluginLsgallery_ModuleImage extends Module
         return true;
     }
 
+    /**
+     * Get image tags by like
+     * @param string $sTag
+     * @param int $iLimit
+     * @return \PluginLsgallery_ModuleImage_EntityImageTag
+     */
     public function GetImageTagsByLike($sTag, $iLimit)
     {
         if (false === ($data = $this->Cache_Get("image_like_{$sTag}_{$iLimit}"))) {
@@ -91,6 +97,12 @@ class PluginLsgallery_ModuleImage extends Module
         return $data;
     }
 
+    /**
+     * Delete image tags by image
+     *
+     * @param string $sImageId
+     * @return boolean
+     */
     public function DeleteImageTagsByImageId($sImageId)
     {
         return $this->oMapper->DeleteImageTagsByImageId($sImageId);
@@ -172,6 +184,9 @@ class PluginLsgallery_ModuleImage extends Module
     {
         $oAlbum = $this->PluginLsgallery_Album_GetAlbumById($oImage->getAlbumId());
 
+        if (!$this->oMapper->DeleteImage($oImage->getId())) {
+            return false;
+        }
 
         if ($oAlbum->getCoverId() == $oImage->getId()) {
             $oAlbum->setCoverId(null);
@@ -183,8 +198,22 @@ class PluginLsgallery_ModuleImage extends Module
         $this->Cache_Clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array("image_update"));
         $this->Cache_Delete("image_{$oImage->getId()}");
 
-        $this->oMapper->DeleteImage($oImage->getId());
-        //@todo удаление комментариев и голосований
+        $this->DeleteImageFiles($oImage);
+
+        $this->Vote_DeleteVoteByTarget($oImage->getId(), 'image');
+        $this->Favourite_DeleteFavouriteByTargetId($oImage->getId(), 'image');
+        $this->Comment_DeleteCommentByTargetId($oImage->getId(), 'image');
+
+        return true;
+    }
+
+    /**
+     * Delete image files
+     *
+     * @param PluginLsgallery_ModuleImage_EntityImage $oImage
+     */
+    public function DeleteImageFiles($oImage)
+    {
         @unlink($this->Image_GetServerPath(rtrim(Config::Get('path.root.web'), '/') . $oImage->getWebPath()));
 
         $aSizes = Config::Get('plugin.lsgallery.size');
@@ -196,9 +225,16 @@ class PluginLsgallery_ModuleImage extends Module
             }
             @unlink($this->Image_GetServerPath(rtrim(Config::Get('path.root.web'), '/') . $oImage->getWebPath($sSize)));
         }
-        return true;
     }
 
+    /**
+     * Get images by album id per page
+     *
+     * @param int $iAlbumId
+     * @param int $iPage
+     * @param int $iPerPage
+     * @return PluginLsgallery_ModuleImage_EntityImage
+     */
     public function GetImagesByAlbumId($iAlbumId, $iPage = 0, $iPerPage = 0)
     {
         if ($iAlbumId instanceof PluginLsgallery_ModuleAlbum_EntityAlbum) {
@@ -211,6 +247,16 @@ class PluginLsgallery_ModuleImage extends Module
         return $this->GetImagesByFilter($aFilter, $iPage, $iPerPage);
     }
 
+    /**
+     * Get images by filter
+     *
+     * @param array $aFilter
+     * @param int $iPage
+     * @param int $iPerPage
+     * @param array $aAllowData
+     * @param boolean $bOnlyIds
+     * @return PluginLsgallery_ModuleImage_EntityImage
+     */
     public function GetImagesByFilter($aFilter, $iPage = 0, $iPerPage = 0, $aAllowData = array('user' => array(), 'vote', 'favourite', 'comment_new'), $bOnlyIds = false)
     {
         $s = serialize($aFilter);
@@ -230,6 +276,12 @@ class PluginLsgallery_ModuleImage extends Module
         return $data;
     }
 
+    /**
+     * Get count images by filter
+     *
+     * @param array $aFilter
+     * @return int
+     */
     public function GetCountImagesByFilter($aFilter)
     {
         $s = serialize($aFilter);
@@ -865,6 +917,14 @@ class PluginLsgallery_ModuleImage extends Module
         return $this->oMapper->DeleteImageUser($oImageUser);
     }
 
+    /**
+     * Get images by user marked per page
+     *
+     * @param string $sUserId
+     * @param int $iCurrPage
+     * @param int $iPerPage
+     * @return PluginLsgallery_ModuleImage_EntityImage
+     */
     public function GetImagesByUserMarked($sUserId, $iCurrPage, $iPerPage)
     {
         if (false === ($data = $this->Cache_Get("image_marked_user_{$sUserId}_{$iCurrPage}_{$iPerPage}"))) {

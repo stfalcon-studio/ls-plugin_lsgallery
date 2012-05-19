@@ -7,24 +7,24 @@
         {$oAlbum->getTitle()|escape:'html'}
     </h1>
     {if $oUserCurrent && ($oUserCurrent->isAdministrator() || $oUserCurrent->getId() == $oAlbum->getUserId()) && count($aImages)}
-    <div class="info-top">    
+    <div class="info-top">
         <ul class="actions">
-                <li>
-                    <a class="add-images" href="{$oAlbum->getUrlFull('images')}" >{$aLang.lsgallery_album_add_image}</a>
-                </li>
+            <li>
+                <a class="add-images" href="{$oAlbum->getUrlFull('images')}" >{$aLang.lsgallery_album_add_image}</a>
+            </li>
         </ul>
-    </div>            
+    </div>
     {/if}
     <div class="content">
         {if count($aImages)}
-            {include file='photo_list.tpl' aImages=$aImages bSlideshow=true}
-        {else}    
-			<div class="centered">
-				<a id="album-add-images" class="add-images" href="{$oAlbum->getUrlFull('images')}">{$aLang.lsgallery_album_add_image}</a>
-			</div>
-        {/if}    
+            {include file="`$sTemplatePathLsgallery`photo_list.tpl" aImages=$aImages bSlideshow=true}
+        {else if $oUserCurrent && ($oUserCurrent->isAdministrator() || $oUserCurrent->getId() == $oAlbum->getUserId())}
+            <div class="centered">
+                <a id="album-add-images" class="add-images" href="{$oAlbum->getUrlFull('images')}">{$aLang.lsgallery_album_add_image}</a>
+            </div>
+        {/if}
     </div>
-    
+
 </div>
 {include file='paging.tpl' aPaging="$aPaging"}
 

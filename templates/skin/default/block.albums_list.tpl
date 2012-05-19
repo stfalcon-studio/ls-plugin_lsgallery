@@ -11,14 +11,14 @@
                         <img class="image-100" src="{$oImage->getWebPath('100crop')}" alt="{$oAlbum->getTitle()|escape:'html'}" />
                         {else}
                             <div class="empty-album"></div>
-                        {/if}    
+                        {/if}
                     </a>
                 </div>
             </li>
         {/foreach}
         <div class="gallery-albums-right">
             {if $oUserProfile}
-                <a class="gallery-next" href="{router page='gallery'}user/{$oUserProfile->getLogin()}">{$aLang.lsgallery_albums_user_all}</a>
+                <a class="gallery-next" href="{router page='my'}{$oUserProfile->getLogin()}/album/">{$aLang.lsgallery_albums_user_all}</a>
             {else}
                 <a class="gallery-next" href="{router page='gallery'}albums/">{$aLang.lsgallery_albums_show_all}</a>
             {/if}
