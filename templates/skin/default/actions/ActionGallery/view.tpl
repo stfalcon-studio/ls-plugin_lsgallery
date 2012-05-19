@@ -1,6 +1,5 @@
 {include file='header.tpl' menu="album"}
-{assign var="scriptJS" value="`$sTemplateWebPathLsgallery`lib/jQuery/plugins/history/jquery.history.js" }
-<script src="{$scriptJS}"></script>
+<script src="{$sHistoryJsPath}"></script>
 <div id="view-image" class="topic gallery-topic">
     {include file="`$sTemplatePathLsgallery`photo_view.tpl" oImage=$oImage bSelectFriends=true bSliderImage=true}
 </div>

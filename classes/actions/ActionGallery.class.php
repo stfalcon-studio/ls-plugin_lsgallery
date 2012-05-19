@@ -339,6 +339,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
         $this->Viewer_AddBlock('right', 'Album', array('plugin' => 'lsgallery', 'oAlbum' => $oAlbum), Config::Get('plugin.lsgallery.priority_album_block'));
 
+        $this->Viewer_Assign('sHistoryJsPath', Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/history/jquery.history.js');
         $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/fancybox/jquery.fancybox.pack.js');
         $this->Viewer_AppendStyle(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/fancybox/jquery.fancybox.css');
 
