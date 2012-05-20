@@ -163,9 +163,7 @@ class PluginLsgallery_ModuleAlbum_MapperAlbum extends Mapper
                     " . Config::Get('db.table.lsgallery.album') . " as a
                 WHERE
                         1=1
-                " . $sWhere . "
-                GROUP BY
-                    a.album_id";
+                " . $sWhere;
         if ($aRow = $this->oDb->selectRow($sql)) {
             return $aRow['count'];
         }
