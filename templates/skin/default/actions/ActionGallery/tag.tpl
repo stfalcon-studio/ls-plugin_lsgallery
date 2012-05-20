@@ -5,8 +5,8 @@
 	<input type="text" name="tag" value="{$sTag|escape:'html'}" class="tags-input" id="tag_search" >
 </form>
 
-{include file='photo_list.tpl' aImages=$aImage bSlideshow=false}
-    
+{include file="`$sTemplatePathLsgallery`photo_list.tpl" aImages=$aImage bSlideshow=false}
+
 {include file='paging.tpl' aPaging="$aPaging"}
 
 {include file='footer.tpl'}

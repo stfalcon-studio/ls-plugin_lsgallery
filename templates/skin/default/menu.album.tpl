@@ -15,9 +15,9 @@
 			<ul class="sub-menu">
 				<li {if $sMenuSubItemSelect=='all'}class="active"{/if}><a href="{router page='gallery'}albums/">{$aLang.lsgallery_all}</a></li>
 				{if $oUserCurrent}
-                    <li {if $sMenuSubItemSelect=='my'}class="active"{/if}><a href="{router page='gallery'}albums/my/">{$aLang.lsgallery_my}</a></li>
+                                <li><a href="{router page='my'}{$oUserCurrent->getLogin()}/album/">{$aLang.lsgallery_my}</a></li>
                 {/if}
-				
+
 			</ul>
 		{/if}
 	</li>

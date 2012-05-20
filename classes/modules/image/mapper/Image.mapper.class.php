@@ -158,13 +158,13 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
         }
 
         $sql = "SELECT
-					*
-				FROM
-					" . Config::Get('db.table.lsgallery.image') . "
-				WHERE
-					image_id IN(?a)
-				ORDER BY
-					FIELD(image_id,?a)";
+                        *
+                FROM
+                        " . Config::Get('db.table.lsgallery.image') . "
+                WHERE
+                        image_id IN(?a)
+                ORDER BY
+                        FIELD(image_id,?a)";
 
         $aImages = array();
         if ($aRows = $this->oDb->select($sql, $aArrayId, $aArrayId)) {
@@ -219,24 +219,35 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
         return $aImages;
     }
 
+    /**
+     * Get count images
+     * @param array $aFilter
+     * @return int
+     */
     public function GetCountImages($aFilter)
     {
         $sWhere = $this->buildFilter($aFilter);
         $sql = "SELECT
-					count(i.image_id) as count
-				FROM
+                    count(i.image_id) as count
+                FROM
                     " . Config::Get('db.table.lsgallery.image') . " as i
                 LEFT JOIN
                     " . Config::Get('db.table.lsgallery.album') . " as a ON a.album_id = i.album_id
-				WHERE
-					1=1
-				" . $sWhere;
+                WHERE
+                    1=1
+                " . $sWhere;
         if ($aRow = $this->oDb->selectRow($sql)) {
             return $aRow['count'];
         }
         return false;
     }
 
+    /**
+     * Get all images by filter
+     *
+     * @param array $aFilter
+     * @return array
+     */
     public function GetAllImages($aFilter)
     {
         $sWhere = $this->buildFilter($aFilter);
@@ -255,11 +266,11 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
                 LEFT JOIN
                     " . Config::Get('db.table.lsgallery.album') . " as a ON a.album_id = i.album_id
                 WHERE
-                    1=1" .
-                $sWhere . "
+                    1=1
+                " . $sWhere . "
                 GROUP BY
                     i.image_id
-				ORDER BY
+                ORDER BY
                     " . implode(', ', $aFilter['order']) . " ";
         $aImages = array();
         if ($aRows = $this->oDb->select($sql)) {
@@ -271,6 +282,12 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
         return $aImages;
     }
 
+    /**
+     * Build filter for sql query
+     *
+     * @param array $aFilter
+     * @return string
+     */
     protected function buildFilter($aFilter)
     {
         $sWhere = '';
@@ -398,14 +415,14 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
         }
 
         $sql = "SELECT
-					ir.*
-				FROM
-					" . Config::Get('db.table.lsgallery.image_read') . " as ir
-				WHERE
-					ir.image_id IN(?a)
-					AND
-					ir.user_id = ?d
-				";
+                        ir.*
+                FROM
+                        " . Config::Get('db.table.lsgallery.image_read') . " as ir
+                WHERE
+                    ir.image_id IN(?a)
+                AND
+                    ir.user_id = ?d
+                ";
         $aReads = array();
         if ($aRows = $this->oDb->select($sql, $aArrayId, $sUserId)) {
             foreach ($aRows as $aRow) {
@@ -466,24 +483,30 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
         return $aImages;
     }
 
+    /**
+     * Get tags of open image
+     *
+     * @param int $iLimit
+     * @return \PluginLsgallery_ModuleImage_EntityImageTag
+     */
     public function GetOpenImageTags($iLimit)
     {
         $sql = "
-			SELECT
-				it.image_tag_text,
-				count(it.image_tag_text)	as count
-			FROM
-				" . Config::Get('db.table.lsgallery.image_tag') . "  as it
-			LEFT JOIN
+                SELECT
+                    it.image_tag_text,
+                    count(it.image_tag_text)	as count
+                FROM
+                    " . Config::Get('db.table.lsgallery.image_tag') . "  as it
+                LEFT JOIN
                     " . Config::Get('db.table.lsgallery.album') . " as a ON a.album_id = it.album_id
-			WHERE
-				a.album_type  = 'open'
-			GROUP BY
-				it.image_tag_text
-			ORDER BY
-				count desc
-			LIMIT 0, ?d
-				";
+                WHERE
+                    a.album_type  = 'open'
+                GROUP BY
+                    it.image_tag_text
+                ORDER BY
+                    count desc
+                LIMIT 0, ?d
+                ";
         $aReturn = array();
         $aReturnSort = array();
         if ($aRows = $this->oDb->select($sql, $iLimit)) {
@@ -498,6 +521,15 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
         return $aReturnSort;
     }
 
+    /**
+     * Get images by tag
+     *
+     * @param string $sTag
+     * @param int $iCount
+     * @param int $iCurrPage
+     * @param int $iPerPage
+     * @return array
+     */
     public function GetImagesByTag($sTag, &$iCount, $iCurrPage, $iPerPage)
     {
         $sql = "SELECT
@@ -522,27 +554,37 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
         return $aImages;
     }
 
+    /**
+     * Get favourite open images by user
+     *
+     * @param string $sUserId
+     * @param int $iCount
+     * @param int $iCurrPage
+     * @param int $iPerPage
+     * @return array
+     */
     public function GetFavouriteOpenImagesByUserId($sUserId, &$iCount, $iCurrPage, $iPerPage)
     {
         $sql = "
-			SELECT f.target_id
-			FROM
-				" . Config::Get('db.table.favourite') . " AS f
-            LEFT JOIN
-                    " . Config::Get('db.table.lsgallery.image') . " as i ON i.image_id = f.target_id
-            LEFT JOIN
-                    " . Config::Get('db.table.lsgallery.album') . " as a ON a.album_id = i.album_id
-			WHERE
-					f.user_id = ?d
-				AND
-					f.target_publish = 1
-				AND
-					f.target_type = 'image'
-				AND
-					a.album_type = 'open'
-            GROUP BY target_id
-            ORDER BY target_id DESC
-            LIMIT ?d, ?d ";
+                SELECT
+                    f.target_id
+                FROM
+                    " . Config::Get('db.table.favourite') . " AS f
+                LEFT JOIN
+                        " . Config::Get('db.table.lsgallery.image') . " as i ON i.image_id = f.target_id
+                LEFT JOIN
+                        " . Config::Get('db.table.lsgallery.album') . " as a ON a.album_id = i.album_id
+                WHERE
+                                f.user_id = ?d
+                        AND
+                                f.target_publish = 1
+                        AND
+                                f.target_type = 'image'
+                        AND
+                                a.album_type = 'open'
+                GROUP BY target_id
+                ORDER BY target_id DESC
+                LIMIT ?d, ?d ";
 
         $aFavourites = array();
         if ($aRows = $this->oDb->selectPage(
@@ -555,26 +597,32 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
         return $aFavourites;
     }
 
+    /**
+     * Get count open fav images by user
+     *
+     * @param type $sUserId
+     * @return int
+     */
     public function GetCountFavouriteOpenImagesByUserId($sUserId)
     {
         $sql = "
-			SELECT
-                count(f.target_id) as count
-			FROM
-				" . Config::Get('db.table.favourite') . " AS f
-            LEFT JOIN
-                    " . Config::Get('db.table.lsgallery.image') . " as i ON i.image_id = f.target_id
-            LEFT JOIN
-                    " . Config::Get('db.table.lsgallery.album') . " as a ON a.album_id = i.album_id
-			WHERE
-					f.user_id = ?d
-				AND
-					f.target_publish = 1
-				AND
-					f.target_type = 'image'
-				AND
-					a.album_type = 'open'
-            ";
+                SELECT
+                    count(f.target_id) as count
+                FROM
+                    " . Config::Get('db.table.favourite') . " AS f
+                LEFT JOIN
+                        " . Config::Get('db.table.lsgallery.image') . " as i ON i.image_id = f.target_id
+                LEFT JOIN
+                        " . Config::Get('db.table.lsgallery.album') . " as a ON a.album_id = i.album_id
+                WHERE
+                        f.user_id = ?d
+                AND
+                        f.target_publish = 1
+                AND
+                        f.target_type = 'image'
+                AND
+                        a.album_type = 'open'
+                ";
 
         if ($aRow = $this->oDb->selectRow($sql, $sUserId)) {
             return $aRow['count'];
@@ -610,6 +658,7 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
 
     /**
      * Get image user
+     *
      * @param string $sUserId
      * @param string $sImageId
      * @return PluginLsgallery_ModuleImage_EntityImageUser
@@ -617,14 +666,14 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
     public function GetImageUser($sUserId, $sImageId)
     {
         $sql = "
-			SELECT
-                *
-			FROM
-				" . Config::Get('db.table.lsgallery.image_user') . "
-			WHERE
+                SELECT
+                    *
+                FROM
+                        " . Config::Get('db.table.lsgallery.image_user') . "
+                WHERE
                     target_user_id = ?d
-				AND
-					image_id = ?d
+                AND
+                    image_id = ?d
             ";
 
         if ($aRow = $this->oDb->selectRow($sql, $sUserId, $sImageId)) {
@@ -642,12 +691,12 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
     public function GetImageUsersByImageId($sImageId)
     {
         $sql = "
-			SELECT
-                *
-			FROM
-				" . Config::Get('db.table.lsgallery.image_user') . "
-			WHERE
-                image_id = ?d
+                SELECT
+                    *
+                FROM
+                    " . Config::Get('db.table.lsgallery.image_user') . "
+                WHERE
+                    image_id = ?d
             ";
 
         $aResult = array();
@@ -706,15 +755,15 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
     public function GetImagesByUserMarked($sUserId, &$iCount, $iCurrPage, $iPerPage)
     {
         $sql = "
-			SELECT
-                image_id
-			FROM
-				" . Config::Get('db.table.lsgallery.image_user') . "
-			WHERE
-					target_user_id = ?d
-				AND
-					status = 'confirmed'
-            LIMIT ?d, ?d ";
+                SELECT
+                    image_id
+                FROM
+                    " . Config::Get('db.table.lsgallery.image_user') . "
+                WHERE
+                        target_user_id = ?d
+                AND
+                        status = 'confirmed'
+                LIMIT ?d, ?d ";
 
         $aImages = array();
         if ($aRows = $this->oDb->selectPage(
@@ -736,16 +785,16 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
     public function GetPrevImageId($oImage)
     {
         $sql = "
-			SELECT
-                image_id
-			FROM
-				" . Config::Get('db.table.lsgallery.image') . "
-			WHERE
-					image_id < ?d
-				AND
-					album_id = ?d
-            ORDER BY
-                image_id DESC
+                SELECT
+                    image_id
+                FROM
+                    " . Config::Get('db.table.lsgallery.image') . "
+                WHERE
+                        image_id < ?d
+                AND
+                        album_id = ?d
+                ORDER BY
+                    image_id DESC
             ";
 
         if ($aRow = $this->oDb->selectRow($sql, $oImage->getId(), $oImage->getAlbumId())) {
@@ -763,17 +812,17 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
     public function GetNextImageId($oImage)
     {
         $sql = "
-			SELECT
-                image_id
-			FROM
-				" . Config::Get('db.table.lsgallery.image') . "
-			WHERE
-					image_id > ?d
-				AND
-					album_id = ?d
-            ORDER BY
-                image_id ASC
-            ";
+                SELECT
+                    image_id
+                FROM
+                    " . Config::Get('db.table.lsgallery.image') . "
+                WHERE
+                    image_id > ?d
+                AND
+                    album_id = ?d
+                ORDER BY
+                    image_id ASC
+                ";
 
         if ($aRow = $this->oDb->selectRow($sql, $oImage->getId(), $oImage->getAlbumId())) {
             return $aRow['image_id'];

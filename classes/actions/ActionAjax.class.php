@@ -43,7 +43,6 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         $this->AddEvent('getbestimages', 'EventGetBestImages');
 
         $this->AddEvent('autocompleteimagetag', 'EventAutocompeleteImageTags');
-        $this->AddEvent('autocompletefriend', 'EventAutocompeleteFriend');
 
         $this->AddEvent('getimage', 'EventGetImage');
     }
@@ -150,7 +149,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         }
         $this->Message_AddError($this->Lang_Get('system_error'), $this->Lang_Get('error'));
     }
-    
+
     /**
      * Сохраняем описание картинки
      */
@@ -172,7 +171,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             $this->PluginLsgallery_Image_UpdateImage($oImage);
         }
     }
-   
+
     /**
      * Отмечаем картинку как обложку
      */
@@ -194,7 +193,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             $this->PluginLsgallery_Album_UpdateAlbum($oAlbum);
         }
     }
-  
+
     /**
      * Сохраняем теги картинки
      */
@@ -219,7 +218,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         } else {
             $sTags = join(',', $aTagsNew);
         }
-
+        
         /* @var $oImage PluginLsgallery_ModuleImage_EntityImage */
         $oImage = $this->PluginLsgallery_Image_GetImageById(getRequest('id'));
         if ($oImage) {
@@ -229,12 +228,11 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
                 $this->Message_AddError($this->Lang_Get('no_access'), $this->Lang_Get('error'));
                 return false;
             }
-
-            $oImage->setImageTags($sTag);
+            $oImage->setImageTags($sTags);
             $this->PluginLsgallery_Image_UpdateImage($oImage);
         }
     }
-    
+
     /**
      * Автокомплит тегов картинок
      */
@@ -251,7 +249,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         }
         $this->Viewer_AssignAjax('aItems', $aItems);
     }
-    
+
     /**
      * Сохраняем картинку в избранное
      */
@@ -397,7 +395,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             return;
         }
     }
-    
+
     /**
      * Получаем случайные картинки
      */
@@ -428,7 +426,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             $this->Viewer_AssignAjax('sText', $sTextResult);
         }
     }
-    
+
     /**
      * Получаем лучшие картинки
      */
@@ -504,27 +502,6 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
         }
     }
-    
-    /**
-     * Автокомплит друзей
-     */
-    public function EventAutocompeleteFriend()
-    {
-        if (!($sValue = getRequest('value', null, 'post'))) {
-            return;
-        }
-
-        if (!$this->oUserCurrent) {
-            return;
-        }
-
-        $aItems = array();
-        $aUsers = $this->User_GetFriendsByLoginLike($sValue, 10);
-        foreach ($aUsers as $oUser) {
-            $aItems[] = $oUser->getLogin();
-        }
-        $this->Viewer_AssignAjax('aItems', $aItems);
-    }
 
     /**
      * Изменяем статус отметки
@@ -572,7 +549,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
         }
     }
-    
+
     /**
      * Удаляем отметку
      */
@@ -610,7 +587,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
         }
     }
-  
+
     /**
      * Получаем картинку
      */
@@ -697,7 +674,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         $oViewer->Assign('iMaxIdComment', $iMaxIdComment);
         $this->Viewer_AssignAjax('sCommentContent', $oViewer->Fetch("comment_tree.tpl"));
     }
-    
+
     /**
      * Запрещаем комментировать изображение
      */

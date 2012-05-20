@@ -52,8 +52,7 @@ class PluginLsgallery_ModuleAlbum_MapperAlbum extends Mapper
                 WHERE
                     album_id = ?d
                 ";
-        if ($this->oDb->query($sql, $oAlbum->getTitle(), $oAlbum->getDescription(), $oAlbum->getType(),
-                $oAlbum->getDateEdit(), $oAlbum->getCoverId(), $oAlbum->getImageCount(), $oAlbum->getId())) {
+        if ($this->oDb->query($sql, $oAlbum->getTitle(), $oAlbum->getDescription(), $oAlbum->getType(), $oAlbum->getDateEdit(), $oAlbum->getCoverId(), $oAlbum->getImageCount(), $oAlbum->getId())) {
             return true;
         }
         return false;
@@ -65,17 +64,18 @@ class PluginLsgallery_ModuleAlbum_MapperAlbum extends Mapper
      * @param int $iAlbumId
      * @return boolean
      */
-	public function DeleteAlbum($iAlbumId) {
-		$sql = "DELETE FROM
+    public function DeleteAlbum($iAlbumId)
+    {
+        $sql = "DELETE FROM
                     " . Config::Get('db.table.lsgallery.album') . "
                 WHERE
                     album_id = ?d
     		";
-		if ($this->oDb->query($sql,$iAlbumId)) {
-			return true;
-		}
-		return false;
-	}
+        if ($this->oDb->query($sql, $iAlbumId)) {
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Get albums by array id
@@ -89,13 +89,13 @@ class PluginLsgallery_ModuleAlbum_MapperAlbum extends Mapper
         }
 
         $sql = "SELECT
-					*
-				FROM
-					" . Config::Get('db.table.lsgallery.album') . "
-				WHERE
-					album_id IN(?a)
-				ORDER BY
-					FIELD(album_id,?a)";
+                        *
+                FROM
+                        " . Config::Get('db.table.lsgallery.album') . "
+                WHERE
+                        album_id IN(?a)
+                ORDER BY
+                        FIELD(album_id,?a)";
 
         $aAlbums = array();
         if ($aRows = $this->oDb->select($sql, $aArrayId, $aArrayId)) {
@@ -106,6 +106,15 @@ class PluginLsgallery_ModuleAlbum_MapperAlbum extends Mapper
         return $aAlbums;
     }
 
+    /**
+     * Get albums by filter paging
+     *
+     * @param array $aFilter
+     * @param int $iCount
+     * @param int $iCurrPage
+     * @param int $iPerPage
+     * @return array
+     */
     public function GetAlbums($aFilter, &$iCount, $iCurrPage, $iPerPage)
     {
         $sWhere = $this->buildFilter($aFilter);
@@ -139,16 +148,22 @@ class PluginLsgallery_ModuleAlbum_MapperAlbum extends Mapper
         return $aAlbums;
     }
 
+    /**
+     * get count albums by filter
+     *
+     * @param array $aFilter
+     * @return int
+     */
     public function GetCountAlbums($aFilter)
     {
         $sWhere = $this->buildFilter($aFilter);
         $sql = "SELECT
-					count(a.album_id) as count
-				FROM
+                    count(a.album_id) as count
+                FROM
                     " . Config::Get('db.table.lsgallery.album') . " as a
-				WHERE
-					1=1
-				" . $sWhere . "
+                WHERE
+                        1=1
+                " . $sWhere . "
                 GROUP BY
                     a.album_id";
         if ($aRow = $this->oDb->selectRow($sql)) {
@@ -157,6 +172,12 @@ class PluginLsgallery_ModuleAlbum_MapperAlbum extends Mapper
         return false;
     }
 
+    /**
+     * Get albums by filter
+     *
+     * @param array $aFilter
+     * @return array
+     */
     public function GetAllAlbums($aFilter)
     {
         $sWhere = $this->buildFilter($aFilter);
@@ -173,11 +194,11 @@ class PluginLsgallery_ModuleAlbum_MapperAlbum extends Mapper
                 FROM
                     " . Config::Get('db.table.lsgallery.album') . " as a
                 WHERE
-                    1=1" .
-                $sWhere . "
+                    1=1
+                " . $sWhere . "
                 GROUP BY
                     a.album_id
-				ORDER BY
+                ORDER BY
                     " . implode(', ', $aFilter['order']) . " ";
         $aAlbums = array();
         if ($aRows = $this->oDb->select($sql)) {
@@ -185,10 +206,15 @@ class PluginLsgallery_ModuleAlbum_MapperAlbum extends Mapper
                 $aAlbums[] = $aRow['album_id'];
             }
         }
-
         return $aAlbums;
     }
 
+    /**
+     * Build sql filter
+     *
+     * @param array $aFilter
+     * @return string
+     */
     protected function buildFilter($aFilter)
     {
         $sWhere = '';
@@ -208,16 +234,15 @@ class PluginLsgallery_ModuleAlbum_MapperAlbum extends Mapper
         if (isset($aFilter['album_type']) and is_array($aFilter['album_type'])) {
             $aAlbumTypes = array();
             foreach ($aFilter['album_type'] as $sType => $aAlbumId) {
-
                 if ($sType == 'open') {
-                    $aAlbumTypes[] = " a.album_type = 'open' ";
-                }
-                if ($sType == 'friend' && is_array($aAlbumId)) {
+                    $aAlbumTypes[] = "a.album_type = 'open'";
+                } else if ($sType == 'friend' && is_array($aAlbumId)) {
                     $aAlbumTypes[] = "(a.album_type = 'friend'  AND a.album_user_id IN (" . implode(', ', $aAlbumId) . ")) ";
+                } else if ($sType == 'personal') {
+                    $aAlbumTypes[] = "a.album_type = 'personal'";
                 }
             }
-            $sWhere.=" AND (".join(" OR ",(array)$aAlbumTypes).")";
-
+            $sWhere.=" AND (" . join(" OR ", (array) $aAlbumTypes) . ")";
         }
         return $sWhere;
     }

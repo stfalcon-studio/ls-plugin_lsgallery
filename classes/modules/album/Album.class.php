@@ -23,9 +23,9 @@ class PluginLsgallery_ModuleAlbum extends Module
 
     /**
      * Create album
-     * 
+     *
      * @param PluginLsgallery_ModuleAlbum_EntityAlbum $oAlbum
-     * @return boolean|PluginLsgallery_ModuleAlbum_EntityAlbum 
+     * @return boolean|PluginLsgallery_ModuleAlbum_EntityAlbum
      */
     public function CreateAlbum($oAlbum)
     {
@@ -40,9 +40,9 @@ class PluginLsgallery_ModuleAlbum extends Module
 
     /**
      * Update album
-     * 
+     *
      * @param PluginLsgallery_ModuleAlbum_EntityAlbum $oAlbum
-     * @return boolean 
+     * @return boolean
      */
     public function UpdateAlbum($oAlbum)
     {
@@ -59,28 +59,41 @@ class PluginLsgallery_ModuleAlbum extends Module
     /**
      * Delete album
      * @param int|PluginLsgallery_ModuleAlbum_EntityAlbum $iAlbumId
-     * @return boolean 
+     * @return boolean
      */
     public function DeleteAlbum($iAlbumId)
     {
         if ($iAlbumId instanceof PluginLsgallery_ModuleAlbum_EntityAlbum) {
             $iAlbumId = $iAlbumId->getId();
         }
+
+        $aResult = $this->PluginLsGallery_Image_GetImagesByAlbumId($iAlbumId);
+
         if (!$this->oMapper->DeleteAlbum($iAlbumId)) {
             return false;
         }
+
+        if ($aResult['count']) {
+            $aImages = $aResult['collection'];
+            $aImagesId = array_keys($aImages);
+            foreach ($aImages as $oImage) {
+                $this->PluginLsGallery_Image_DeleteImageFiles($oImage);
+            }
+            $this->Vote_DeleteVoteByTarget($aImagesId, 'image');
+            $this->Favourite_DeleteFavouriteByTargetId($aImagesId, 'image');
+            $this->Comment_DeleteCommentByTargetId($aImagesId, 'image');
+        }
+
         /**
          * Чистим кеш
          */
         $this->Cache_Clean(
                 Zend_Cache::CLEANING_MODE_MATCHING_TAG, array(
-            "album_update", "image_update", "vote_update", "comment_update"
+                    "album_update", "image_update", "comment_update"
                 )
         );
 
-        //@todo удаление комментариев и голосов к картинкам
         $this->Cache_Delete("album_{$iAlbumId}");
-
 
         return true;
     }
@@ -102,11 +115,11 @@ class PluginLsgallery_ModuleAlbum extends Module
 
     /**
      * Get albums additional data
-     * 
+     *
      * @todo Подтягивание картинок
      * @param array $aAlbumsId
      * @param array $aAllowData
-     * @return array 
+     * @return array
      */
     public function GetAlbumsAdditionalData($aAlbumsId, $aAllowData = array('user' => array(), 'cover' => array()))
     {
@@ -150,9 +163,9 @@ class PluginLsgallery_ModuleAlbum extends Module
 
     /**
      * Get albums by array Id
-     * 
+     *
      * @param array $aAlbumId
-     * @return array 
+     * @return array
      */
     public function GetAlbumsByArrayId($aAlbumId)
     {
@@ -218,9 +231,9 @@ class PluginLsgallery_ModuleAlbum extends Module
 
     /**
      * Get albums by array id from solid cache
-     * 
+     *
      * @param array $aAlbumId
-     * @return array 
+     * @return array
      */
     public function GetAlbumsByArrayIdSolid($aAlbumId)
     {
@@ -241,28 +254,42 @@ class PluginLsgallery_ModuleAlbum extends Module
         return $data;
     }
 
+    /**
+     * Get albums for list
+     *
+     * @param int $iPage
+     * @param int $iPerPage
+     * @param boolean $bMy
+     * @return \PluginLsgallery_ModuleAlbum_EntityAlbum
+     */
     public function GetAlbumsIndex($iPage, $iPerPage, $bMy = false)
     {
-        if ($bMy && $this->oUserCurrent) {
-            $aFilter['user_id'] = $this->oUserCurrent->getId();
-        } else {
-            $aFilter = array(
-                'album_type' => array(
-                    'open' => true
-                ),
-                'not_empty' => true
-            );
+        $aFilter = array(
+            'album_type' => array(
+                'open' => true
+            ),
+            'not_empty' => true
+        );
 
-            if ($this->oUserCurrent) {
-                $aFriends = $this->User_GetUsersFriend($this->oUserCurrent->getId());
-                if (count($aFriends)) {
-                    $aFilter['album_type']['friend'] = array_keys($aFriends);
-                }
+        if ($this->oUserCurrent) {
+            $aFriends = $this->User_GetUsersFriend($this->oUserCurrent->getId());
+            if (count($aFriends)) {
+                $aFilter['album_type']['friend'] = array_keys($aFriends);
             }
         }
         return $this->GetAlbumsByFilter($aFilter, $iPage, $iPerPage);
     }
 
+    /**
+     * Get albims by filter
+     *
+     * @param array $aFilter
+     * @param int $iPage
+     * @param int $iPerPage
+     * @param array $aAllowData
+     * @param boolean $bOnlyIds
+     * @return \PluginLsgallery_ModuleAlbum_EntityAlbum
+     */
     public function GetAlbumsByFilter($aFilter, $iPage = 0, $iPerPage = 0, $aAllowData = array('user' => array(), 'cover' => array()), $bOnlyIds = false)
     {
         $s = serialize($aFilter);
@@ -282,6 +309,12 @@ class PluginLsgallery_ModuleAlbum extends Module
         return $data;
     }
 
+    /**
+     * Get count aldums by filter
+     *
+     * @param array $aFilter
+     * @return int
+     */
     public function GetCountAlbumsByFilter($aFilter)
     {
         $s = serialize($aFilter);
@@ -291,25 +324,34 @@ class PluginLsgallery_ModuleAlbum extends Module
         }
         return $data;
     }
-    
-    public function GetAlbumsPersonalByUser($sUserId,$iPage,$iPerPage) {
-        
+
+    /**
+     * Get user aldums
+     *
+     * @param string $sUserId
+     * @param int $iPage
+     * @param int $iPerPage
+     * @return \PluginLsgallery_ModuleAlbum_EntityAlbum
+     */
+    public function GetAlbumsPersonalByUser($sUserId, $iPage, $iPerPage)
+    {
         $aFilter = array(
             'user_id' => $sUserId,
             'album_type' => array(
                 'open',
             ),
-            
         );
 
         if ($this->oUserCurrent) {
+            if ($this->oUserCurrent->getId() == $sUserId) {
+                $aFilter['album_type']['personal'] = true;
+            }
             $aFriends = $this->User_GetUsersFriend($this->oUserCurrent->getId());
             if (count($aFriends)) {
                 $aFilter['album_type']['friend'] = array_keys($aFriends);
             }
         }
         return $this->GetAlbumsByFilter($aFilter, $iPage, $iPerPage);
-        
-	}
+    }
 
 }

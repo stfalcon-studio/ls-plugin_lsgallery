@@ -49,7 +49,6 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->AddEvent('albums', 'EventViewGallery');
 
         $this->AddEvent('tag', 'EventTag');
-        $this->AddEvent('user', 'EventUserAlbums');
         $this->AddEvent('usermarked', 'EventUserMarked');
 
         $this->AddEvent('photo', 'EventPhoto');
@@ -97,9 +96,6 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->Viewer_Assign('oImage', $oImage);
         $this->Viewer_Assign('aAlbums', $aResult['collection']);
         $this->Viewer_Assign('aRandomImages', $aRandomImages);
-
-        $this->Viewer_AddBlock('right', 'StreamGallery', array('plugin' => 'lsgallery'), 20);
-        $this->Viewer_AddBlock('right', 'GalleryTags', array('plugin' => 'lsgallery'), 10);
 
         $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/fancybox/jquery.fancybox.pack.js');
         $this->Viewer_AppendStyle(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/fancybox/jquery.fancybox.css');
@@ -341,16 +337,15 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->Viewer_Assign('aComments', $aComments);
         $this->Viewer_Assign('iMaxIdComment', $iMaxIdComment);
 
-        $this->Viewer_AddBlock('right', 'Album', array('plugin' => 'lsgallery', 'oAlbum' => $oAlbum), 110);
-        $this->Viewer_AddBlock('right', 'StreamGallery', array('plugin' => 'lsgallery'), 20);
+        $this->Viewer_AddBlock('right', 'Album', array('plugin' => 'lsgallery', 'oAlbum' => $oAlbum), Config::Get('plugin.lsgallery.priority_album_block'));
 
+        $this->Viewer_Assign('sHistoryJsPath', Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/history/jquery.history.js');
         $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/fancybox/jquery.fancybox.pack.js');
         $this->Viewer_AppendStyle(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/fancybox/jquery.fancybox.css');
 
         $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/imgareaselect/jquery.imgareaselect.dev.js');
         $this->Viewer_AppendStyle(Plugin::GetTemplateWebPath('lsgallery') . 'css/imgareaselect-default.css');
 
-        $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/history/jquery.history.js');
     }
 
     public function EventViewAlbum()
@@ -387,8 +382,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->Viewer_Assign('aImages', $aImages);
         $this->Viewer_Assign('aPaging', $aPaging);
 
-        $this->Viewer_AddBlock('right', 'Album', array('plugin' => 'lsgallery', 'oAlbum' => $oAlbum), 110);
-        $this->Viewer_AddBlock('right', 'GalleryTags', array('plugin' => 'lsgallery'), 10);
+        $this->Viewer_AddBlock('right', 'Album', array('plugin' => 'lsgallery', 'oAlbum' => $oAlbum), Config::Get('plugin.lsgallery.priority_album_block'));
 
         $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/fancybox/jquery.fancybox.pack.js');
         $this->Viewer_AppendStyle(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/fancybox/jquery.fancybox.css');
@@ -403,46 +397,14 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
     {
 
         $this->sMenuItemSelect = 'album';
-        $sType = $this->GetParam(0);
-        if ($sType == 'my') {
-            if (!$this->oUserCurrent) {
-                return parent::EventNotFound();
-            }
-            $this->sMenuSubItemSelect = 'my';
-            $bMy = true;
-        } else {
-            $bMy = false;
-        }
+
         $this->SetTemplateAction('gallery');
 
         $iPage = $this->_getPage();
-        $aResult = $this->PluginLsgallery_Album_GetAlbumsIndex($iPage, Config::Get('plugin.lsgallery.album_per_page'), $bMy);
+        $aResult = $this->PluginLsgallery_Album_GetAlbumsIndex($iPage, Config::Get('plugin.lsgallery.album_per_page'));
         $aAlbums = $aResult['collection'];
 
-        $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, Config::Get('plugin.lsgallery.album_per_page'), 4, Router::GetPath('lsgallery') . 'albums/' . $sType);
-
-        $this->Viewer_AddBlock('right', 'GalleryTags', array('plugin' => 'lsgallery'), 10);
-        $this->Viewer_AddBlock('right', 'StreamGallery', array('plugin' => 'lsgallery'), 20);
-
-        $this->Viewer_Assign('aAlbums', $aAlbums);
-        $this->Viewer_Assign('aPaging', $aPaging);
-    }
-
-    public function EventUserAlbums()
-    {
-        $sLogin = $this->GetParam(0);
-        $this->sMenuItemSelect = 'album';
-        if (!$oUser = $this->User_GetUserByLogin($sLogin)) {
-            return parent::EventNotFound();
-        }
-
-        $iPage = $this->_getPage();
-        $aResult = $this->PluginLsgallery_Album_GetAlbumsPersonalByUser($oUser->getId(), $iPage, Config::Get('plugin.lsgallery.album_per_page'));
-        $aAlbums = $aResult['collection'];
-
-        $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, Config::Get('plugin.lsgallery.album_per_page'), 4, Router::GetPath('gallery') . 'user/' . $oUser->getLogin());
-
-        $this->SetTemplateAction('gallery');
+        $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, Config::Get('plugin.lsgallery.album_per_page'), 4, Router::GetPath('lsgallery') . 'albums/');
 
         $this->Viewer_Assign('aAlbums', $aAlbums);
         $this->Viewer_Assign('aPaging', $aPaging);
