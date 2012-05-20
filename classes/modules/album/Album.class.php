@@ -333,7 +333,7 @@ class PluginLsgallery_ModuleAlbum extends Module
      * @param int $iPerPage
      * @return \PluginLsgallery_ModuleAlbum_EntityAlbum
      */
-    public function GetAlbumsPersonalByUser($sUserId, $iPage, $iPerPage)
+    public function GetAlbumsPersonalByUser($sUserId, $iPage = 0, $iPerPage = 0)
     {
         $aFilter = array(
             'user_id' => $sUserId,
