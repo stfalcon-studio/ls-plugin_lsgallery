@@ -32,9 +32,12 @@ class PluginLsgallery_ActionMy extends PluginLsgallery_Inherit_ActionMy
 
     public function EventShutdown()
     {
+        if (!$this->oUserProfile) {
+            return;
+        }
         $this->Viewer_AppendStyle(Plugin::GetTemplateWebPath('lsgallery') . 'css/gallery-style.css');
-        $aResult = $this->PluginLsgallery_Album_GetAlbumsPersonalByUser($this->oUserProfile->getId());
-        $this->Viewer_Assign('iCountAlbumUser',$aResult['count']);
+        $aResult = $this->PluginLsgallery_Album_GetCountAlbumsPersonalByUser($this->oUserProfile->getId());
+        $this->Viewer_Assign('iCountAlbumUser', $aResult);
         parent::EventShutdown();
     }
 
