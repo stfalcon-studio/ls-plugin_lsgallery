@@ -29,7 +29,8 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
             'lsgallery_image_description',
             'lsgallery_image_description_updated',
             'lsgallery_save',
-            'lsgallery_set_forbid_comments'
+            'lsgallery_set_forbid_comments',
+            'lsgallery_image_move_album'
         ));
         $this->SetDefaultEvent('photo');
     }

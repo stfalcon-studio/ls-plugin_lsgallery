@@ -102,7 +102,8 @@ ls.gallery = (function ($) {
                 + '<input type="text" class="autocomplete-image-tags" onBlur="ls.gallery.setImageTags(' + response.id + ', this.value)"/><br/>'
                 + '<div class="options-line"><span class="photo-preview-state"><span id="image_preview_state_' + response.id + '">'
                 + '<a href="javascript:ls.gallery.setPreview(' + response.id + ')" class="mark-as-preview">' + ls.lang.get('lsgallery_album_set_image_cover') + '</a></span><br/>'
-                + '<a href="javascript:ls.gallery.toggleForbidComment(' + response.id + ')" class="image-comment">' + ls.lang.get('lsgallery_set_forbid_comments') + '</a></span>'
+                + '<a href="javascript:ls.gallery.toggleForbidComment(' + response.id + ')" class="image-comment">' + ls.lang.get('lsgallery_set_forbid_comments') + '</a><br/>'
+                + '<a href="#" class="image-move">' + ls.lang.get('lsgallery_image_move_album') + '</a></span>'
                 + '<a href="javascript:ls.gallery.deleteImage(' + response.id + ')" class="image-delete">' + ls.lang.get('lsgallery_album_image_delete') + '</a>'
                 + '</div></li>';
             jQuery('#swfu_images').prepend(template);
@@ -255,6 +256,8 @@ ls.gallery = (function ($) {
 var ias = null;
 
 jQuery('document').ready(function(){
+
+    // перемещаем изображение в другой альбом
     jQuery('#move_image_form').jqm();
     jQuery('.image-move').live('click', function(event){
         event.preventDefault();
