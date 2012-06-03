@@ -526,3 +526,8 @@ a.remove{display:inline-block; width:11px; height:11px; background:url(../images
 #albums li{
     background: none;
 }
+
+#block-random-images img {
+    width: 100px;
+    height: 100px;
+}
