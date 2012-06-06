@@ -102,7 +102,8 @@ ls.gallery = (function ($) {
                 + '<input type="text" class="autocomplete-image-tags" onBlur="ls.gallery.setImageTags(' + response.id + ', this.value)"/><br/>'
                 + '<div class="options-line"><span class="photo-preview-state"><span id="image_preview_state_' + response.id + '">'
                 + '<a href="javascript:ls.gallery.setPreview(' + response.id + ')" class="mark-as-preview">' + ls.lang.get('lsgallery_album_set_image_cover') + '</a></span><br/>'
-                + '<a href="javascript:ls.gallery.toggleForbidComment(' + response.id + ')" class="image-comment">' + ls.lang.get('lsgallery_set_forbid_comments') + '</a></span>'
+                + '<a href="javascript:ls.gallery.toggleForbidComment(' + response.id + ')" class="image-comment">' + ls.lang.get('lsgallery_set_forbid_comments') + '</a><br/>'
+                + '<a href="#" class="image-move">' + ls.lang.get('lsgallery_image_move_album') + '</a></span>'
                 + '<a href="javascript:ls.gallery.deleteImage(' + response.id + ')" class="image-delete">' + ls.lang.get('lsgallery_album_image_delete') + '</a>'
                 + '</div></li>';
             jQuery('#swfu_images').prepend(template);
@@ -190,13 +191,14 @@ ls.gallery = (function ($) {
         ls.ajax(aRouter.galleryajax + 'setimagetags', {
             'id': id,
             'tags': text
-        },  function (result) {
-            if (result.bStateError) {
-                ls.msg.error('Error', 'Please try again later');
-            } else {
-                jQuery('#image_' + id + ' label.tags').html(ls.lang.get('lsgallery_image_tags_updated'));
+            },  function (result) {
+                if (result.bStateError) {
+                    ls.msg.error('Error', 'Please try again later');
+                } else {
+                    jQuery('#image_' + id + ' label.tags').html(ls.lang.get('lsgallery_image_tags_updated'));
+                }
             }
-        });
+        );
     };
     // chaneg image people mark
     this.changeMark = function (idImage, idUser, status, a) {
@@ -230,6 +232,23 @@ ls.gallery = (function ($) {
         });
     };
 
+    this.moveImage = function () {
+        ls.ajax(aRouter.galleryajax + 'moveimage', {
+            idImage: jQuery('#image_move_id').val(),
+            idAlbum: jQuery('#album_to_id').val()
+        },  function (response) {
+            if (response.bStateError) {
+                ls.msg.error(response.sMsgTitle, response.sMsg);
+            } else {
+                var id = jQuery('#image_move_id').val();
+                jQuery('#image_' + id).remove();
+                ls.msg.notice(response.sMsgTitle, response.sMsg);
+            }
+            jQuery('#image_move_id').val('');
+            jQuery('#album_to_id').val('');
+            jQuery('#move_image_form').jqmHide();
+        });
+    }
 
     return this;
 }).call(ls.gallery || {}, jQuery);
@@ -237,6 +256,16 @@ ls.gallery = (function ($) {
 var ias = null;
 
 jQuery('document').ready(function(){
+
+    // перемещаем изображение в другой альбом
+    jQuery('#move_image_form').jqm();
+    jQuery('.image-move').live('click', function(event){
+        event.preventDefault();
+        var id = jQuery(this).parents('li').attr('id').replace('image_', '');
+        jQuery('#image_move_id').val(id);
+        jQuery('#move_image_form').jqmShow();
+    });
+
     // autocomplete for image tags
     ls.autocomplete.add(jQuery(".autocomplete-image-tags"), aRouter.galleryajax + 'autocompleteimagetag/', true);
     // init fancybox for gallery

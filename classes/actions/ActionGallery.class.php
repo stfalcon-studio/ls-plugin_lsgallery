@@ -29,7 +29,8 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
             'lsgallery_image_description',
             'lsgallery_image_description_updated',
             'lsgallery_save',
-            'lsgallery_set_forbid_comments'
+            'lsgallery_set_forbid_comments',
+            'lsgallery_image_move_album'
         ));
         $this->SetDefaultEvent('photo');
     }
@@ -261,10 +262,14 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
         $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, Config::Get('plugin.lsgallery.image_per_page'), 4, rtrim($oAlbum->getUrlFull('images'), '/'));
 
-
+        $aResult = $this->PluginLsgallery_Album_GetAlbumsPersonalByUser($oAlbum->getUserId());
+        $aAlbums = $aResult['collection'];
+        unset($aAlbums[$oAlbum->getId()]);
         $this->Viewer_Assign('aImages', $aImages);
         $this->Viewer_Assign('oAlbumEdit', $oAlbum);
         $this->Viewer_Assign('aPaging', $aPaging);
+        $this->Viewer_Assign('aAlbums', $aAlbums);
+
     }
 
     public function EventViewImage()
