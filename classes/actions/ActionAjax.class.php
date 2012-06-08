@@ -660,7 +660,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         $oViewer->Assign('sTargetType', 'image');
         $oViewer->Assign('iCountComment', $oImage->getCountComment());
         $oViewer->Assign('sDateReadLast', $oImage->getDateRead());
-        $oViewer->Assign('bAllowNewComment', false);
+        $oViewer->Assign('bAllowNewComment', $oImage->getForbidComment());
         $oViewer->Assign('sNoticeNotAllow', $this->Lang_Get('topic_comment_notallow'));
         $oViewer->Assign('sNoticeCommentAdd', $this->Lang_Get('topic_comment_add'));
         $oViewer->Assign('aComments', $aComments);
