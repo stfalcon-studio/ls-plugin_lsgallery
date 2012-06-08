@@ -290,7 +290,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
             return Router::Action('error');
         }
 
-        if (isset($_REQUEST['submit_comment'])) {
+        if (getRequest('submit_comment')) {
             $this->SubmitComment();
         }
 

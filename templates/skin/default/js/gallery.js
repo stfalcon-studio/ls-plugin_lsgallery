@@ -102,7 +102,6 @@ ls.gallery = (function ($) {
                 + '<input type="text" class="autocomplete-image-tags" onBlur="ls.gallery.setImageTags(' + response.id + ', this.value)"/><br/>'
                 + '<div class="options-line"><span class="photo-preview-state"><span id="image_preview_state_' + response.id + '">'
                 + '<a href="javascript:ls.gallery.setPreview(' + response.id + ')" class="mark-as-preview">' + ls.lang.get('lsgallery_album_set_image_cover') + '</a></span><br/>'
-                + '<a href="javascript:ls.gallery.toggleForbidComment(' + response.id + ')" class="image-comment">' + ls.lang.get('lsgallery_set_forbid_comments') + '</a><br/>'
                 + '<a href="#" class="image-move">' + ls.lang.get('lsgallery_image_move_album') + '</a></span>'
                 + '<a href="javascript:ls.gallery.deleteImage(' + response.id + ')" class="image-delete">' + ls.lang.get('lsgallery_album_image_delete') + '</a>'
                 + '</div></li>';
@@ -164,18 +163,20 @@ ls.gallery = (function ($) {
     };
     // set image descr
     this.setImageDescription = function (id, text) {
-        if (!text) {
-            return;
-        }
-        jQuery('#image_' + id + ' label.description').html(ls.lang.get('lsgallery_image_description'));
+        jQuery('#image_' + id + ' label.description').html(ls.lang.get('lsgallery_image_description')).removeClass('gallery-loader-success').addClass('gallery-loader');;
         ls.ajax(aRouter.galleryajax + 'setimagedescription', {
             'id': id,
             'text': text
         },  function (result) {
             if (result.bStateError) {
                 ls.msg.error('Error', 'Please try again later');
+                jQuery('#image_' + id + 'label.description').removeClass('gallery-loader');
             } else {
-                jQuery('#image_' + id + ' label.description').html(ls.lang.get('lsgallery_image_description_updated'));
+                jQuery('#image_' + id + ' label.description').html(ls.lang.get('lsgallery_image_description_updated')).removeClass('gallery-loader').addClass('gallery-loader-success');
+            }
+        }, {
+            error : function () {
+                jQuery('#image_' + id + 'label.description').removeClass('gallery-loader');
             }
         });
     };
@@ -184,18 +185,21 @@ ls.gallery = (function ($) {
         if (jQuery('ul.ui-autocomplete').css('display') === 'block') {
             return;
         }
-        if (!text) {
-            return;
-        }
-        jQuery('#image_' + id + ' label.tags').html(ls.lang.get('lsgallery_image_tags'));
+
+        jQuery('#image_' + id + ' label.tags').html(ls.lang.get('lsgallery_image_tags')).removeClass('gallery-loader-success').addClass('gallery-loader');
         ls.ajax(aRouter.galleryajax + 'setimagetags', {
             'id': id,
             'tags': text
             },  function (result) {
                 if (result.bStateError) {
                     ls.msg.error('Error', 'Please try again later');
+                    jQuery('#image_' + id + 'label.tags').removeClass('gallery-loader');
                 } else {
-                    jQuery('#image_' + id + ' label.tags').html(ls.lang.get('lsgallery_image_tags_updated'));
+                    jQuery('#image_' + id + ' label.tags').html(ls.lang.get('lsgallery_image_tags_updated')).removeClass('gallery-loader').addClass('gallery-loader-success');
+                }
+            }, {
+                error : function () {
+                    jQuery('#image_' + id + 'label.tags').removeClass('gallery-loader');
                 }
             }
         );
@@ -261,6 +265,10 @@ jQuery('document').ready(function(){
     jQuery('#move_image_form').jqm();
     jQuery('.image-move').live('click', function(event){
         event.preventDefault();
+        if (!jQuery('#move_image_form').length) {
+            jQuery(this).remove();
+            return;
+        }
         var id = jQuery(this).parents('li').attr('id').replace('image_', '');
         jQuery('#image_move_id').val(id);
         jQuery('#move_image_form').jqmShow();
