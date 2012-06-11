@@ -29,7 +29,8 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
             'lsgallery_image_description',
             'lsgallery_image_description_updated',
             'lsgallery_save',
-            'lsgallery_set_forbid_comments'
+            'lsgallery_set_forbid_comments',
+            'lsgallery_image_move_album'
         ));
         $this->SetDefaultEvent('photo');
     }
@@ -119,7 +120,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
         $aImages = $aResult['collection'];
 
-        $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, Config::Get('plugin.lsgallery.image_per_page'), 4, Router::GetPath('lsgallery') . 'photo/' . $sType);
+        $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, Config::Get('plugin.lsgallery.image_per_page'), 4, Router::GetPath('gallery') . 'photo/' . $sType);
 
         $this->Viewer_Assign('aImages', $aImages);
         $this->Viewer_Assign('aPaging', $aPaging);
@@ -261,10 +262,14 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
         $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, Config::Get('plugin.lsgallery.image_per_page'), 4, rtrim($oAlbum->getUrlFull('images'), '/'));
 
-
+        $aResult = $this->PluginLsgallery_Album_GetAlbumsPersonalByUser($oAlbum->getUserId());
+        $aAlbums = $aResult['collection'];
+        unset($aAlbums[$oAlbum->getId()]);
         $this->Viewer_Assign('aImages', $aImages);
         $this->Viewer_Assign('oAlbumEdit', $oAlbum);
         $this->Viewer_Assign('aPaging', $aPaging);
+        $this->Viewer_Assign('aAlbums', $aAlbums);
+
     }
 
     public function EventViewImage()
@@ -285,7 +290,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
             return Router::Action('error');
         }
 
-        if (isset($_REQUEST['submit_comment'])) {
+        if (getRequest('submit_comment')) {
             $this->SubmitComment();
         }
 
@@ -404,7 +409,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $aResult = $this->PluginLsgallery_Album_GetAlbumsIndex($iPage, Config::Get('plugin.lsgallery.album_per_page'));
         $aAlbums = $aResult['collection'];
 
-        $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, Config::Get('plugin.lsgallery.album_per_page'), 4, Router::GetPath('lsgallery') . 'albums/');
+        $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, Config::Get('plugin.lsgallery.album_per_page'), 4, Router::GetPath('gallery') . 'albums/');
 
         $this->Viewer_Assign('aAlbums', $aAlbums);
         $this->Viewer_Assign('aPaging', $aPaging);

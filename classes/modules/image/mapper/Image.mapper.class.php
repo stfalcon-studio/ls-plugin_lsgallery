@@ -42,6 +42,7 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
         $sql = "UPDATE
                     " . Config::Get('db.table.lsgallery.image') . "
                 SET
+                    album_id = ?d,
                     image_description = ?,
                     image_tags = ?,
                     image_date_edit = ?,
@@ -53,7 +54,7 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
                 WHERE
                     image_id = ?d
                 ";
-        if ($this->oDb->query($sql, $oImage->getDescription(), $oImage->getImageTags(), $oImage->getDateEdit(), $oImage->getCountComment(), $oImage->getRating(), $oImage->getCountVote(), $oImage->getCountFavourite(), $oImage->getForbidComment(), $oImage->getId())) {
+        if ($this->oDb->query($sql, $oImage->getAlbumId(), $oImage->getDescription(), $oImage->getImageTags(), $oImage->getDateEdit(), $oImage->getCountComment(), $oImage->getRating(), $oImage->getCountVote(), $oImage->getCountFavourite(), $oImage->getForbidComment(), $oImage->getId())) {
             return true;
         }
         return false;

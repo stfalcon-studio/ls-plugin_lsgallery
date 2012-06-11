@@ -526,3 +526,11 @@ a.remove{display:inline-block; width:11px; height:11px; background:url(../images
 #albums li{
     background: none;
 }
+
+#move_image_form {
+    left: 35%
+}
+
+#album_to_id {
+    margin-bottom: 15px;
+}

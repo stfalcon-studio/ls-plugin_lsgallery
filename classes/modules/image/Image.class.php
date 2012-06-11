@@ -961,7 +961,7 @@ class PluginLsgallery_ModuleImage extends Module
     /**
      * Get next image id
      *
-     * @param PluginLsgallery_ModuleImage_EntityImage$oImage
+     * @param PluginLsgallery_ModuleImage_EntityImage $oImage
      *
      * @return PluginLsgallery_ModuleImage_EntityImage|null
      */
@@ -972,5 +972,33 @@ class PluginLsgallery_ModuleImage extends Module
             $this->Cache_Set($sId, "image_next_{$oImage->getId()}", array('image_update', 'image_new'), 60 * 60 * 24 * 1);
         }
         return $this->GetImageById($sId);
+    }
+
+    /**
+     * Move image from one album to other
+     *
+     * @param PluginLsgallery_ModuleImage_EntityImage $oImage
+     * @param PluginLsgallery_ModuleAlbum_EntityAlbum $oAlbumFrom
+     * @param PluginLsgallery_ModuleAlbum_EntityAlbum $oAlbumTo
+     *
+     * @return boolean
+     */
+
+    public function MoveImage($oImage, $oAlbumFrom, $oAlbumTo)
+    {
+        $oImage->setAlbumId($oAlbumTo->getId());
+        $this->UpdateImage($oImage);
+
+        $this->Comment_MoveTargetParent($oAlbumFrom->getId(), 'image', $oAlbumTo->getId());
+
+        if ($oAlbumFrom->getCoverId() == $oImage->getId()) {
+            $oAlbumFrom->setCoverId(null);
+        }
+
+        $oAlbumFrom->setImageCount($oAlbumFrom->getImageCount() - 1);
+        $this->PluginLsgallery_Album_UpdateAlbum($oAlbumFrom);
+
+        $oAlbumTo->setImageCount($oAlbumTo->getImageCount() + 1);
+        $this->PluginLsgallery_Album_UpdateAlbum($oAlbumTo);
     }
 }

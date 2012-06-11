@@ -45,6 +45,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         $this->AddEvent('autocompleteimagetag', 'EventAutocompeleteImageTags');
 
         $this->AddEvent('getimage', 'EventGetImage');
+        $this->AddEvent('moveimage', 'EventMoveImage');
     }
 
     /**
@@ -123,8 +124,6 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
      */
     protected function EventDeleteImage()
     {
-        $this->Viewer_SetResponseAjax('json');
-
         /**
          * Проверяем авторизован ли юзер
          */
@@ -155,8 +154,6 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
      */
     public function EventSetImageDescription()
     {
-        $this->Viewer_SetResponseAjax('json');
-
         /* @var $oImage PluginLsgallery_ModuleImage_EntityImage */
         $oImage = $this->PluginLsgallery_Image_GetImageById(getRequest('id'));
         if ($oImage) {
@@ -177,8 +174,6 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
      */
     public function EventSetImageAsCover()
     {
-        $this->Viewer_SetResponseAjax('json');
-
         /* @var $oImage PluginLsgallery_ModuleImage_EntityImage */
         $oImage = $this->PluginLsgallery_Image_GetImageById(getRequest('id'));
         if ($oImage) {
@@ -199,8 +194,6 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
      */
     public function EventSetImageTags()
     {
-        $this->Viewer_SetResponseAjax('json');
-
         $sTags = getRequest('tags', null, 'post');
 
         $aTags = explode(',', $sTags);
@@ -218,7 +211,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         } else {
             $sTags = join(',', $aTagsNew);
         }
-        
+
         /* @var $oImage PluginLsgallery_ModuleImage_EntityImage */
         $oImage = $this->PluginLsgallery_Image_GetImageById(getRequest('id'));
         if ($oImage) {
@@ -667,7 +660,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         $oViewer->Assign('sTargetType', 'image');
         $oViewer->Assign('iCountComment', $oImage->getCountComment());
         $oViewer->Assign('sDateReadLast', $oImage->getDateRead());
-        $oViewer->Assign('bAllowNewComment', false);
+        $oViewer->Assign('bAllowNewComment', $oImage->getForbidComment());
         $oViewer->Assign('sNoticeNotAllow', $this->Lang_Get('topic_comment_notallow'));
         $oViewer->Assign('sNoticeCommentAdd', $this->Lang_Get('topic_comment_add'));
         $oViewer->Assign('aComments', $aComments);
@@ -680,8 +673,6 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
      */
     public function EventToggleForbidComment()
     {
-        $this->Viewer_SetResponseAjax('json');
-
         /* @var $oImage PluginLsgallery_ModuleImage_EntityImage */
         $oImage = $this->PluginLsgallery_Image_GetImageById(getRequest('id'));
         if ($oImage) {
@@ -701,6 +692,42 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             $this->PluginLsgallery_Image_UpdateImage($oImage);
             $this->Viewer_AssignAjax('sText', $sText);
         }
+    }
+
+    /**
+     * Перемещаем изображение в другой альбом
+     */
+    public function EventMoveImage()
+    {
+        if (!$this->oUserCurrent) {
+            $this->Message_AddErrorSingle($this->Lang_Get('need_authorization'), $this->Lang_Get('error'));
+            return;
+        }
+        $sImageId = getRequest('idImage');
+        $sAlbumId = getRequest('idAlbum');
+
+
+        /* @var $oImage PluginLsgallery_ModuleImage_EntityImage */
+        if (!$oImage = $this->PluginLsgallery_Image_GetImageById($sImageId)) {
+            $this->Message_AddErrorSingle($this->Lang_Get('lsgallery_image_not_found'), $this->Lang_Get('error'));
+            return;
+        }
+
+        /* @var $oAlbumFrom PluginLsgallery_ModuleAlbum_EntityAlbum */
+        $oAlbumFrom = $this->PluginLsgallery_Album_GetAlbumById($oImage->getAlbumId());
+
+        /* @var $oAlbumTo PluginLsgallery_ModuleAlbum_EntityAlbum */
+        if (!$oAlbumTo = $this->PluginLsgallery_Album_GetAlbumById($sAlbumId)){
+            $this->Message_AddErrorSingle($this->Lang_Get('lsgallery_image_not_found'), $this->Lang_Get('error'));
+            return;
+        }
+        if (!$this->ACL_AllowAdminAlbumImages($this->oUserCurrent, $oAlbumFrom) || !$this->ACL_AllowAdminAlbumImages($this->oUserCurrent, $oAlbumTo)) {
+            $this->Message_AddError($this->Lang_Get('no_access'), $this->Lang_Get('error'));
+            return false;
+        }
+
+        $this->PluginLsgallery_Image_MoveImage($oImage, $oAlbumFrom, $oAlbumTo);
+        $this->Message_AddNoticeSingle($this->Lang_Get('lsgallery_image_moved'), $this->Lang_Get('attention'));
     }
 
 }
