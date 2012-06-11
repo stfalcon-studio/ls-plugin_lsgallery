@@ -1,7 +1,7 @@
 <div class="block gallery-block" id="block_album">
 	<h2>{$aLang.lsgallery_albums_about}</h2>
     {if $oUserCurrent && ($oUserCurrent->isAdministrator() || $oUserCurrent->getId() == $oAlbum->getUserId())}
-    <div class="info-top">    
+    <div class="info-top">
         <ul class="actions">
                 <li>
                     <a href="{$oAlbum->getUrlFull('edit')}" title="{$aLang.blog_edit}" class="edit">{$aLang.lsgallery_update_album_title}</a>
@@ -10,7 +10,7 @@
                     <a class="delete" href="{$oAlbum->getUrlFull('delete')}/?security_ls_key={$LIVESTREET_SECURITY_KEY}" title="{$aLang.blog_delete}" onclick="return confirm('{$aLang.lsgallery_album_delete_confirm}');" >{$aLang.lsgallery_delete_album_title}</a>
                 </li>
         </ul>
-    </div>            
+    </div>
     {/if}
 	<div class="block-content" id="block_album_content">
 		{assign var="oImage" value=$oAlbum->getCover()}
@@ -20,7 +20,7 @@
                     <img class="image-100" src="{$oImage->getWebPath('100crop')}" alt="{$oAlbum->getTitle()|escape:'html'}" />
                 {else}
                     <div class="empty-album"></div>
-                {/if} 
+                {/if}
             </a>
             {$oAlbum->getDescription()|strip_tags}
 	</div>
@@ -29,6 +29,6 @@
         {date_format date=$oAlbum->getDateAdd()}
     </div>
 	<div class="bottom">
-		<a href="{router page='gallery'}user/{$oUser->getLogin()}">{$aLang.lsgallery_albums_user_all}</a>
+		<a href="{router page='my'}{$oUser->getLogin()}/album">{$aLang.lsgallery_albums_user_all}</a>
 	</div>
 </div>

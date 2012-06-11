@@ -39,9 +39,13 @@ if (jQuery.browser.flash) {
                             {else}
                                 <a href="javascript:ls.gallery.setPreview({$oImage->getId()})" class="mark-as-preview">{$aLang.lsgallery_album_set_image_cover}</a>
                             {/if}
-                            </span>
+                        </span>
+                            {*
                             <br/>
                             <a href="javascript:ls.gallery.toggleForbidComment({$oImage->getId()})" class="image-comment">{if $oImage->getForbidComment()}{$aLang.lsgallery_unset_forbid_comments}{else}{$aLang.lsgallery_set_forbid_comments}{/if}</a>
+                            *}
+                            <br/>
+                            <a href="#" class="image-move">{$aLang.lsgallery_image_move_album}</a>
                         </span>
 
                         <a href="javascript:ls.gallery.deleteImage({$oImage->getId()})" class="image-delete">{$aLang.lsgallery_album_image_delete}</a>
@@ -52,6 +56,22 @@ if (jQuery.browser.flash) {
         {/if}
     </ul>
 </div>
+{if count($aAlbums)}
+    <div class="move-image-form jqmWindow" id="move_image_form">
+        <form action="" method="POST">
+            <h3>{$aLang.lsgallery_image_select_album}</h3>
+            <select id="album_to_id" name="album_to_id" class="input-wide">
+                {foreach from=$aAlbums item=oAlbum}
+                    <option value="{$oAlbum->getId()}">{$oAlbum->getTitle()}</option>
+                {/foreach}
+            </select>
+
+            <input type="hidden" value="" name="image_move_id" id="image_move_id"/>
+            <input type="button" value="{$aLang.lsgallery_image_move}" class="button" onclick="ls.gallery.moveImage();" />
+            <input type="button" value="{$aLang.lsgallery_cancel}" class="button jqmClose" />
+        </form>
+    </div>
+{/if}
 {include file='paging.tpl' aPaging="$aPaging"}
 
 {include file='footer.tpl'}
