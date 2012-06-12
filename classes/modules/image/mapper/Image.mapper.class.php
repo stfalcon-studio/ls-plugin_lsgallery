@@ -49,12 +49,11 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
                     image_count_comment = ?d,
                     image_rating = ?,
                     image_count_vote = ?d,
-                    image_count_favourite =?d,
-                    image_forbid_comment = ?d
+                    image_count_favourite =?d
                 WHERE
                     image_id = ?d
                 ";
-        if ($this->oDb->query($sql, $oImage->getAlbumId(), $oImage->getDescription(), $oImage->getImageTags(), $oImage->getDateEdit(), $oImage->getCountComment(), $oImage->getRating(), $oImage->getCountVote(), $oImage->getCountFavourite(), $oImage->getForbidComment(), $oImage->getId())) {
+        if ($this->oDb->query($sql, $oImage->getAlbumId(), $oImage->getDescription(), $oImage->getImageTags(), $oImage->getDateEdit(), $oImage->getCountComment(), $oImage->getRating(), $oImage->getCountVote(), $oImage->getCountFavourite(), $oImage->getId())) {
             return true;
         }
         return false;

@@ -92,11 +92,6 @@ class PluginLsgallery_ModuleImage_EntityImage extends Entity
         }
     }
 
-    public function getForbidComment()
-    {
-        return $this->_aData['image_forbid_comment'];
-    }
-
     public function getAlbum()
     {
         if (!isset($this->_aData['album'])) {
@@ -184,11 +179,6 @@ class PluginLsgallery_ModuleImage_EntityImage extends Entity
     public function setCountFavourite($data)
     {
         $this->_aData['image_count_favourite'] = $data;
-    }
-
-    public function setForbidComment($data)
-    {
-        $this->_aData['image_forbid_comment'] = $data;
     }
 
 }
