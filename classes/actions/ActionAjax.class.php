@@ -206,7 +206,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             }
         }
         if (!count($aTagsNew)) {
-            return;
+            $sTags = '';
         } else {
             $sTags = join(',', $aTagsNew);
         }
