@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS `prefix_lsgallery_image` (
   `image_rating` float(9,3) NOT NULL DEFAULT '0.000',
   `image_count_vote` int(11) unsigned NOT NULL DEFAULT '0',
   `image_count_favourite` int(11) unsigned NOT NULL DEFAULT '0',
+  `image_forbid_comment` tinyint( 1 ) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`image_id`),
   KEY `album_id` (`album_id`),
   KEY `user_id` (`user_id`)
