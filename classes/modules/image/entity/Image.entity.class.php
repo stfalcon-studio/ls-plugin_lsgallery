@@ -83,18 +83,13 @@ class PluginLsgallery_ModuleImage_EntityImage extends Entity
         if ($this->getFilename()) {
             if ($sWidth) {
                 $aPathInfo = pathinfo($this->getFilename());
-                return $aPathInfo['dirname'] . '/' . $aPathInfo['filename'] . '_' . $sWidth . '.' . $aPathInfo['extension'];
+                return Config::Get('path.root.web') . $aPathInfo['dirname'] . '/' . $aPathInfo['filename'] . '_' . $sWidth . '.' . $aPathInfo['extension'];
             } else {
-                return $this->getFilename();
+                return Config::Get('path.root.web') . $this->getFilename();
             }
         } else {
             return null;
         }
-    }
-
-    public function getForbidComment()
-    {
-        return $this->_aData['image_forbid_comment'];
     }
 
     public function getAlbum()
@@ -184,11 +179,6 @@ class PluginLsgallery_ModuleImage_EntityImage extends Entity
     public function setCountFavourite($data)
     {
         $this->_aData['image_count_favourite'] = $data;
-    }
-
-    public function setForbidComment($data)
-    {
-        $this->_aData['image_forbid_comment'] = $data;
     }
 
 }

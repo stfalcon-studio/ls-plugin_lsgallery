@@ -40,10 +40,6 @@ if (jQuery.browser.flash) {
                                 <a href="javascript:ls.gallery.setPreview({$oImage->getId()})" class="mark-as-preview">{$aLang.lsgallery_album_set_image_cover}</a>
                             {/if}
                         </span>
-                            {*
-                            <br/>
-                            <a href="javascript:ls.gallery.toggleForbidComment({$oImage->getId()})" class="image-comment">{if $oImage->getForbidComment()}{$aLang.lsgallery_unset_forbid_comments}{else}{$aLang.lsgallery_set_forbid_comments}{/if}</a>
-                            *}
                             <br/>
                             <a href="#" class="image-move">{$aLang.lsgallery_image_move_album}</a>
                         </span>

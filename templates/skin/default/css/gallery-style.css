@@ -534,3 +534,13 @@ a.remove{display:inline-block; width:11px; height:11px; background:url(../images
 #album_to_id {
     margin-bottom: 15px;
 }
+
+.gallery-loader {
+    background:url(../images/loader.gif) 0 0 no-repeat;
+    padding-left: 15px;
+}
+
+.gallery-loader-success {
+    background:url(../images/saved.png) 0 0 no-repeat;
+    padding-left: 15px;
+}

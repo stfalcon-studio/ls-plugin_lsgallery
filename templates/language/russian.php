@@ -89,8 +89,6 @@ return array(
     'lsgallery_image_move_album' => 'Переместить в другой альбом',
     'lsgallery_image_move' => 'Переместить',
     'lsgallery_image_moved' => 'Изображение перемещено',
-    'lsgallery_set_forbid_comments' => 'Запретить комментировать',
-    'lsgallery_unset_forbid_comments' => 'Разрешить комментировать',
     'image_comment_notallow' => 'Автор изображения запретил добавлять комментарии ',
 
     'lsgallery_album_slideshow' => 'Показать слайдшоу',

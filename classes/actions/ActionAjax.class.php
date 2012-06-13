@@ -31,7 +31,6 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         $this->AddEvent('setimagedescription', 'EventSetImageDescription');
         $this->AddEvent('setimagetags', 'EventSetImageTags');
         $this->AddEvent('markascover', 'EventSetImageAsCover');
-        $this->AddEvent('toggleforbidcomment', 'EventToggleForbidComment');
 
         $this->AddEvent('markfriend', 'EventSetImageUser');
         $this->AddEvent('changemark', 'EventChangeMark');
@@ -207,7 +206,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             }
         }
         if (!count($aTagsNew)) {
-            return;
+            $sTags = '';
         } else {
             $sTags = join(',', $aTagsNew);
         }
@@ -660,38 +659,12 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         $oViewer->Assign('sTargetType', 'image');
         $oViewer->Assign('iCountComment', $oImage->getCountComment());
         $oViewer->Assign('sDateReadLast', $oImage->getDateRead());
-        $oViewer->Assign('bAllowNewComment', $oImage->getForbidComment());
+        $oViewer->Assign('bAllowNewComment', false);
         $oViewer->Assign('sNoticeNotAllow', $this->Lang_Get('topic_comment_notallow'));
         $oViewer->Assign('sNoticeCommentAdd', $this->Lang_Get('topic_comment_add'));
         $oViewer->Assign('aComments', $aComments);
         $oViewer->Assign('iMaxIdComment', $iMaxIdComment);
         $this->Viewer_AssignAjax('sCommentContent', $oViewer->Fetch("comment_tree.tpl"));
-    }
-
-    /**
-     * Запрещаем комментировать изображение
-     */
-    public function EventToggleForbidComment()
-    {
-        /* @var $oImage PluginLsgallery_ModuleImage_EntityImage */
-        $oImage = $this->PluginLsgallery_Image_GetImageById(getRequest('id'));
-        if ($oImage) {
-            /* @var $oAlbum PluginLsgallery_ModuleAlbum_EntityAlbum */
-            $oAlbum = $this->PluginLsgallery_Album_GetAlbumById($oImage->getAlbumId());
-            if (!$oAlbum || !$this->ACL_AllowAdminAlbumImages($this->oUserCurrent, $oAlbum)) {
-                $this->Message_AddError($this->Lang_Get('no_access'), $this->Lang_Get('error'));
-                return false;
-            }
-            if ($oImage->getForbidComment()) {
-                $oImage->setForbidComment(0);
-                $sText = $this->Lang_Get('lsgallery_set_forbid_comments');
-            } else {
-                $oImage->setForbidComment(1);
-                $sText = $this->Lang_Get('lsgallery_unset_forbid_comments');
-            }
-            $this->PluginLsgallery_Image_UpdateImage($oImage);
-            $this->Viewer_AssignAjax('sText', $sText);
-        }
     }
 
     /**
