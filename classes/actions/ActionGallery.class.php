@@ -139,6 +139,11 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
             return Router::Action('error');
         }
 
+        if (!$this->ACL_CanCreateAlbum($this->oUserCurrent)) {
+            $this->Message_AddErrorSingle($this->Lang_Get('lsgallery_albums_no_rating'), $this->Lang_Get('error'));
+            return Router::Action('error');
+        }
+
         $this->SetTemplateAction('create');
         $this->Viewer_Assign('aLocalizedTypes', PluginLsgallery_ModuleAlbum_EntityAlbum::getLocalizedTypes($this));
 
