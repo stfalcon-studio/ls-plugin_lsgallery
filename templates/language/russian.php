@@ -104,6 +104,7 @@ return array(
     'lsgallery_image_mark_friend' => 'Отметить человека',
     'lsgallery_image_mark_cancel' => 'Отменить отметку',
     'lsgallery_disallow_mark_friend' => 'Пользователь не является вашим другом',
+    'lsgallery_disallow_mark_personal' => 'Запрещенно отмечать людей в закрытых альбомах',
     'lsgallery_friend_marked' => 'Пользователь отмечен на картинке',
     'lsgallery_already_mark_friend' => 'Пользователь уже отмечен на картинке',
     'lsgallery_marked_subject' => 'Вас отметили на фото',

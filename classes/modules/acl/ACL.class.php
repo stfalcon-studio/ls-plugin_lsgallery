@@ -159,7 +159,6 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
      */
     public function AllowAddUserToImage($oUserCurrent, $oUserMarked)
     {
-        return true;
         if ($oUserCurrent->getId() == $oUserMarked->getId()) {
             return true;
         }

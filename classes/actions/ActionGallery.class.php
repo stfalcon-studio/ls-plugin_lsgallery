@@ -339,6 +339,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $oNextImage = $this->PluginLsgallery_Image_GetNextImage($oImage);
 
         $this->Viewer_Assign('oImage', $oImage);
+        $this->Viewer_Assign('oAlbum', $oAlbum);
         $this->Viewer_Assign('oPrevImage', $oPrevImage);
         $this->Viewer_Assign('oNextImage', $oNextImage);
 
