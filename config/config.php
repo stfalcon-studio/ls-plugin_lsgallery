@@ -50,6 +50,7 @@ Config::Set('block.rule_tags_gallery', array(
 ));
 
 return array(
+    'aldbum_create_rating' => false, // минимальный рейтинг для создания альбома, если false - не проверяется
     'images_new_time' => 60*60*24*1, // сколько времени картинка считается лучшей
     'images_best' => 1, // мин рейтинг для попадания картинки в топ
     'image_row' => 6, // кол-во изображений в блоке садйбара
