@@ -43,6 +43,7 @@ return array(
     'lsgallery_album_title_notice' => 'Заполнение обязательно',
     'lsgallery_album_description_notice' => 'Описание должно быть от 10 до 512 символов',
     'lsgallery_album_type_notice' => '«Открытый» - доступен для всех.<br/>«Для друзей» - для вас и ваших друзей.<br/>«Личный» - только для вас.',
+    'lsgallery_albums_no_rating' => 'Недостаточно рейтинга для создания альбома',
 
     'lsgallery_album_id_error' => 'Неправильный id альбома!',
     'lsgallery_album_title_error' => 'Название  должно быть от 2 до 64 символов!',
@@ -103,6 +104,7 @@ return array(
     'lsgallery_image_mark_friend' => 'Отметить человека',
     'lsgallery_image_mark_cancel' => 'Отменить отметку',
     'lsgallery_disallow_mark_friend' => 'Пользователь не является вашим другом',
+    'lsgallery_disallow_mark_personal' => 'Запрещенно отмечать людей в закрытых альбомах',
     'lsgallery_friend_marked' => 'Пользователь отмечен на картинке',
     'lsgallery_already_mark_friend' => 'Пользователь уже отмечен на картинке',
     'lsgallery_marked_subject' => 'Вас отметили на фото',

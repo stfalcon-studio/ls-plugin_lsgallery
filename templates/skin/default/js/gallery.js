@@ -405,7 +405,7 @@ jQuery('document').ready(function(){
             show: true
         });
 
-        jQuery('.mark-name input.autocomplete-friend').focus();
+        jQuery('.mark-name input.autocomplete-mark').focus();
         return false;
     }
     // imgAreaSelect for people mark
@@ -424,9 +424,15 @@ jQuery('document').ready(function(){
                 opacity: 1
             }, 200);
             var name = jQuery('div.mark-name').clone(),
-                acp = name.find('input.autocomplete-friend').first();
+                acp = name.find('input.autocomplete-mark').first();
             name.addClass('current').show();
-            ls.autocomplete.add(acp, aRouter.ajax + 'autocompleter/user/', false);
+
+            if (acp.hasClass('open')) {
+                ls.autocomplete.add(acp, aRouter.ajax + 'autocompleter/user/', false);
+            } else {
+                ls.autocomplete.add(acp, aRouter.galleryajax + 'autocompletefriend', false);
+            }
+
             jQuery('.imgareaselect-handle:last').parent('div').first().append(name);
             ias.setOptions({
                 enable: true
@@ -446,7 +452,7 @@ jQuery('document').ready(function(){
     jQuery('div.mark-name.current .submit-selected-friend').live('click', function (event) {
         event.preventDefault();
         var selection = ias.getSelection(),
-            login = jQuery('div.mark-name.current .autocomplete-friend').val(),
+            login = jQuery('div.mark-name.current .autocomplete-mark').val(),
             idImage = jQuery('#image img').attr('id');
         if (!selection.height || !login) {
             return;

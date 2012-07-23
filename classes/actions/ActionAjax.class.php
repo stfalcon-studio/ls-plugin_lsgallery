@@ -42,6 +42,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         $this->AddEvent('getbestimages', 'EventGetBestImages');
 
         $this->AddEvent('autocompleteimagetag', 'EventAutocompeleteImageTags');
+        $this->AddEvent('autocompletefriend', 'EventAutocompeleteFriend');
 
         $this->AddEvent('getimage', 'EventGetImage');
         $this->AddEvent('moveimage', 'EventMoveImage');
@@ -238,6 +239,25 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         $aTags = $this->PluginLsgallery_Image_GetImageTagsByLike($sValue, 10);
         foreach ($aTags as $oTag) {
             $aItems[] = $oTag->getText();
+        }
+        $this->Viewer_AssignAjax('aItems', $aItems);
+    }
+
+    /**
+     * Автокомплит друзей
+     */
+    public function EventAutocompeleteFriend()
+    {
+        if (!($sValue = getRequest('value', null, 'post'))) {
+            return;
+        }
+        if (!$this->oUserCurrent) {
+            return;
+        }
+        $aItems = array();
+        $aUsers = $this->User_GetFriendsByLoginLike($sValue, 10);
+        foreach ($aUsers as $oUser) {
+            $aItems[] = $oUser->getLogin();
         }
         $this->Viewer_AssignAjax('aItems', $aItems);
     }
@@ -451,6 +471,13 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             $this->Message_AddErrorSingle($this->Lang_Get('lsgallery_image_not_found'), $this->Lang_Get('error'));
             return;
         }
+
+        /* @var $oAlbum PluginLsgallery_ModuleAlbum_EntityAlbum */
+        if (!$oAlbum = $this->PluginLsgallery_Album_GetAlbumById($oImage->getAlbumId())) {
+            $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
+            return;
+        }
+
         /* @var $oUserMarked ModuleUser_EntityUser */
         if (!$oUserMarked = $this->User_GetUserByLogin(getRequest('login', null, 'post'))) {
             $this->Message_AddErrorSingle($this->Lang_Get('user_not_found', array('login' => getRequest('login', null, 'post'))), $this->Lang_Get('error'));
@@ -461,9 +488,15 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             $this->Message_AddErrorSingle($this->Lang_Get('lsgallery_already_mark_friend'), $this->Lang_Get('error'));
             return;
         }
-        if (!$this->ACL_AllowAddUserToImage($this->oUserCurrent, $oUserMarked)) {
-            $this->Message_AddErrorSingle($this->Lang_Get('lsgallery_disallow_mark_friend'), $this->Lang_Get('error'));
+
+        if ($oAlbum->getType() == PluginLsgallery_ModuleAlbum_EntityAlbum::TYPE_PERSONAL) {
+            $this->Message_AddErrorSingle($this->Lang_Get('lsgallery_already_mark_personal'), $this->Lang_Get('error'));
             return;
+        } else if ($oAlbum->getType() == PluginLsgallery_ModuleAlbum_EntityAlbum::TYPE_FRIEND) {
+            if (!$this->ACL_AllowAddUserToImage($this->oUserCurrent, $oUserMarked)) {
+                $this->Message_AddErrorSingle($this->Lang_Get('lsgallery_disallow_mark_friend'), $this->Lang_Get('error'));
+                return;
+            }
         }
 
         $aSelection = getRequest('selection');
@@ -485,8 +518,34 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         if ($this->PluginLsgallery_Image_AddImageUser($oImageUser)) {
 
             if ($oUserMarked->getId() != $this->oUserCurrent->getId()) {
-                $this->Notify_Send($oUserMarked, 'notify.marked.tpl', $this->Lang_Get('lsgallery_marked_subject'), array('oUser' => $this->oUserCurrent, 'oImage' => $oImage), __CLASS__);
+                $oViewerLocal = $this->Viewer_GetLocalViewer();
+                $oViewerLocal->Assign('oUser', $this->oUserCurrent);
+                $oViewerLocal->Assign('oImage', $oImage);
+
+                $sLangDir = Plugin::GetTemplatePath('lsgallery') . 'notify/' . $this->Lang_GetLang();
+                if (is_dir($sLangDir)) {
+                    $sPath = $sLangDir . '/notify.marked.tpl';
+                } else {
+                    $sPath = Plugin::GetTemplatePath('lsgallery') . 'notify/' . $this->Lang_GetLangDefault() . '/notify.marked.tpl';
+                }
+
+                $sText = $oViewerLocal->Fetch($sPath);
+
+                $sTitle = $this->Lang_Get('lsgallery_marked_subject');
+
+                $oTalk = $this->Talk_SendTalk($sTitle, $sText, $this->oUserCurrent, array($oUserMarked), false, false);
+                /**
+                 * Отправляем пользователю заявку
+                 */
+                $this->Notify_SendUserMarkImageNew(
+                        $oUserMarked, $this->oUserCurrent, $sText
+                );
+                /**
+                 * Удаляем отправляющего юзера из переписки
+                 */
+                $this->Talk_DeleteTalkUserByArray($oTalk->getId(), $this->oUserCurrent->getId());
             }
+
             $this->Viewer_AssignAjax('sPath', $oUserMarked->getUserWebPath());
             $this->Viewer_AssignAjax('idUser', $oUserMarked->getId());
             $this->Message_AddNoticeSingle($this->Lang_Get('lsgallery_friend_marked'), $this->Lang_Get('attention'));
@@ -588,12 +647,12 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         $sId = getRequest('id');
         /* @var $oImage PluginLsgallery_ModuleImage_EntityImage */
         if (!$oImage = $this->PluginLsgallery_Image_GetImageById($sId)) {
-            $this->Message_AddErrorSingle($this->Lang_Get('system_error_404'), '404');
+            $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
             return;
         }
         /* @var $oAlbum PluginLsgallery_ModuleAlbum_EntityAlbum */
         if (!$oAlbum = $this->PluginLsgallery_Album_GetAlbumById($oImage->getAlbumId())) {
-            $this->Message_AddErrorSingle($this->Lang_Get('system_error_404'), '404');
+            $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
             return;
         }
 

@@ -5,9 +5,9 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
 
     /**
      * Is allow to create album
-     * 
+     *
      * @param ModuleUser_EntityUser $oUser
-     * @return boolean 
+     * @return boolean
      */
     public function AllowCreateAlbum($oUser)
     {
@@ -17,13 +17,31 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
 
         return true;
     }
+    /**
+     *
+     * Can  create album
+     *
+     * @param ModuleUser_EntityUser $oUser
+     * @return boolean
+     */
+    public function CanCreateAlbum($oUser)
+    {
+        if (Config::Get('plugin.lsgallery.aldbum_create_rating') === false) {
+            return true;
+        }
+        if ($oUser->getRating() < Config::Get('plugin.lsgallery.aldbum_create_rating') && !$oUser->isAdministrator()) {
+			return false;
+		}
+
+        return true;
+    }
 
     /**
      * Is allow to update album
-     * 
+     *
      * @param ModuleUser_EntityUser $oUser
      * @param PluginLsgallery_ModuleAlbum_EntityAlbum $oAlbum
-     * @return boolean 
+     * @return boolean
      */
     public function AllowUpdateAlbum($oUser, $oAlbum)
     {
@@ -45,10 +63,10 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
 
     /**
      * Is allow delete album
-     * 
+     *
      * @param ModuleUser_EntityUser $oUser
      * @param PluginLsgallery_ModuleAlbum_EntityAlbum $oAlbum
-     * @return boolean 
+     * @return boolean
      */
     public function AllowDeleteAlbum($oUser, $oAlbum)
     {
@@ -70,10 +88,10 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
 
     /**
      * Is allow admin album images
-     * 
+     *
      * @param ModuleUser_EntityUser $oUser
      * @param PluginLsgallery_ModuleAlbum_EntityAlbum $oAlbum
-     * @return boolean 
+     * @return boolean
      */
     public function AllowAdminAlbumImages($oUser, $oAlbum)
     {
@@ -95,9 +113,9 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
 
     /**
      * Is allow view images from album
-     * 
+     *
      * @param ModuleUser_EntityUser $oUser
-     * @param PluginLsgallery_ModuleAlbum_EntityAlbum $oAlbum 
+     * @param PluginLsgallery_ModuleAlbum_EntityAlbum $oAlbum
      */
     public function AllowViewAlbumImages($oUser, $oAlbum)
     {
@@ -135,13 +153,12 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
 
     /**
      * Is allow mark user on picture
-     * 
+     *
      * @param ModuleUser_EntityUser $oUserCurrent
-     * @param ModuleUser_EntityUser $oUserMarked 
+     * @param ModuleUser_EntityUser $oUserMarked
      */
     public function AllowAddUserToImage($oUserCurrent, $oUserMarked)
     {
-        return true;
         if ($oUserCurrent->getId() == $oUserMarked->getId()) {
             return true;
         }

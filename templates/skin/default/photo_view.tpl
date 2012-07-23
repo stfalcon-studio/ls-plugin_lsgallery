@@ -96,7 +96,7 @@
             <div id="select-friends">
                 <a id="mark" href="#">{$aLang.lsgallery_image_mark_friend}</a>
                 <div class="mark-name" style="display:none;">
-                    <input type="text" class="autocomplete-friend" value=""/>
+                    <input type="text" class="autocomplete-mark {$oAlbum->getType()}" value=""/>
                     <a href="#" class="submit-selected-friend">{$aLang.lsgallery_image_mark}</a>
                     <a href="#" class="cancel-selected-friend">{$aLang.lsgallery_cancel}</a>
                 </div>
