@@ -20,6 +20,7 @@ class PluginLsgallery extends Plugin
     protected $aDelegates = array(
         'template' => array(
             'menu.album.tpl',
+            'menu.profile.tpl',
         )
     );
 

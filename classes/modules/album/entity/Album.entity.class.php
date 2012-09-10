@@ -61,9 +61,9 @@ class PluginLsgallery_ModuleAlbum_EntityAlbum extends Entity
     public static function getLocalizedTypes($engine)
     {
         return array(
-            self::TYPE_OPEN => $engine->Lang_Get('lsgallery_type_open'),
-            self::TYPE_FRIEND => $engine->Lang_Get('lsgallery_type_friend'),
-            self::TYPE_PERSONAL => $engine->Lang_Get('lsgallery_type_personal'),
+            self::TYPE_OPEN => $engine->Lang_Get('plugin.lsgallery.lsgallery_type_open'),
+            self::TYPE_FRIEND => $engine->Lang_Get('plugin.lsgallery.lsgallery_type_friend'),
+            self::TYPE_PERSONAL => $engine->Lang_Get('plugin.lsgallery.lsgallery_type_personal'),
         );
     }
 

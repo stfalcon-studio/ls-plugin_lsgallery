@@ -5,11 +5,13 @@ class PluginLsgallery_HookGallery extends Hook
 
     public function RegisterHook()
     {
-        $this->AddHook('template_main_menu', 'Menu');
-        $this->AddHook('template_profile_whois_item', 'Profile');
-        $this->AddHook('template_profile_whois_item', 'ProfileFoto');
-        $this->AddHook('template_menu_profile_profile_item', 'ProfileMenu');
-        $this->AddHook('template_menu_profile_my_item', 'MyMenu');
+        $this->AddHook('template_main_menu_item', 'Menu');
+
+        $this->AddHook('template_profile_whois_item', 'ProfileAlbums');
+        $this->AddHook('template_profile_whois_item', 'ProfilePhoto');
+
+        $this->AddHook('template_menu_profile_favourite_item', 'MenuProfileFavouritePhoto');
+        $this->AddHook('template_menu_profile_created_item', 'MenuProfileCreatedAlbum');
     }
 
     public function Menu()
@@ -17,7 +19,7 @@ class PluginLsgallery_HookGallery extends Hook
         return $this->Viewer_Fetch(Plugin::GetTemplatePath(__CLASS__) . 'main_menu.tpl');
     }
 
-    public function Profile($aData)
+    public function ProfileAlbums($aData)
     {
         $oUser = $aData['oUserProfile'];
         $aResult = $this->PluginLsgallery_Album_GetAlbumsPersonalByUser($oUser->getId(), 1, 4);
@@ -25,7 +27,7 @@ class PluginLsgallery_HookGallery extends Hook
         return $this->Viewer_Fetch(Plugin::GetTemplatePath(__CLASS__) . 'block.albums_list.tpl');
     }
 
-    public function ProfileFoto($aData)
+    public function ProfilePhoto($aData)
     {
         $oUser = $aData['oUserProfile'];
         $aResult = $this->PluginLsgallery_Image_GetImagesByUserMarked($oUser->getId(), 1, 4);
@@ -34,14 +36,14 @@ class PluginLsgallery_HookGallery extends Hook
         return $this->Viewer_Fetch(Plugin::GetTemplatePath(__CLASS__) . 'block.profile_images.tpl');
     }
 
-    public function ProfileMenu($aData)
+    public function MenuProfileFavouritePhoto($aData)
     {
-        return $this->Viewer_Fetch(Plugin::GetTemplatePath(__CLASS__) . 'menu.profile.tpl');
+        return $this->Viewer_Fetch(Plugin::GetTemplatePath(__CLASS__) . 'menu.profile_favourite_item.tpl');
     }
 
-    public function MyMenu($aData)
+    public function MenuProfileCreatedAlbum($aData)
     {
-        return $this->Viewer_Fetch(Plugin::GetTemplatePath(__CLASS__) . 'menu.my.tpl');
+        return $this->Viewer_Fetch(Plugin::GetTemplatePath(__CLASS__) . 'menu.profile_created_item.tpl');
     }
 
 }

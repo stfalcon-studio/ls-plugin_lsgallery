@@ -1,6 +1,6 @@
 {if (count($aRandomImages))}
 <div class="gallery-albums-preview">
-    <h2 class="title">{$aLang.lsgallery_iamge_rand}</h2>
+    <h2 class="title">{$aLang.plugin.lsgallery.lsgallery_iamge_rand}</h2>
     <ul id="block-random-images">
         {foreach from=$aRandomImages item=oImage}
             <li><a href="{$oImage->getUrlFull()}"><img class="image-100" src="{$oImage->getWebPath('100crop')}" alt="Image" /></a></li>

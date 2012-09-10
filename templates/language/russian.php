@@ -89,7 +89,7 @@ return array(
     'lsgallery_image_move_album' => 'Переместить в другой альбом',
     'lsgallery_image_move' => 'Переместить',
     'lsgallery_image_moved' => 'Изображение перемещено',
-    'image_comment_notallow' => 'Автор изображения запретил добавлять комментарии ',
+    'lsgallery_image_comment_notallow' => 'Автор изображения запретил добавлять комментарии ',
 
     'lsgallery_album_slideshow' => 'Показать слайдшоу',
 
@@ -97,7 +97,7 @@ return array(
     'lsgallery_cancel' => 'Отмена',
     'lsgallery_save' => 'Сохранить',
 
-    'user_menu_profile_favourites_images' => 'Избранные фото',
+    'lsgallery_user_menu_profile_favourites_images' => 'Избранные фото',
 
     'lsgallery_image_mark' => 'Добавить',
     'lsgallery_image_mark_friend' => 'Отметить человека',

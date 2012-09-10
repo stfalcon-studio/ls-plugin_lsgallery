@@ -1,6 +1,6 @@
 {include file='header.tpl' menu="album"}
 <div class="topic gallery-topic">
-    <h1 class="title">{$aLang.lsgallery_photo_day}</h1>
+    <h1 class="title">{$aLang.plugin.lsgallery.lsgallery_photo_day}</h1>
     {if $oImage}
         {include file="`$sTemplatePathLsgallery`photo_view.tpl" oImage=$oImage bSelectFriends=false bSliderImage=false}
     {/if}

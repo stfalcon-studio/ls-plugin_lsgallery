@@ -1,5 +1,5 @@
 <div class="topic gallery-topic">
-<h1 class="title">{$aLang.lsgallery_albums}</h1>
+<h1 class="title">{$aLang.plugin.lsgallery.lsgallery_albums}</h1>
     <div class="content">
         <div class="gallery-albums-list">
             <ul id="albums">

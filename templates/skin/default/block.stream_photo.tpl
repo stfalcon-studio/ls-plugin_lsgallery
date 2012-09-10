@@ -16,7 +16,7 @@
                         <a class="user" href="{$oUser->getUserWebPath()}">{$oUser->getLogin()}</a>
                         <span class="date">{date_format date=$oImage->getDateAdd()}</span>
                         <span class="rating">
-                            {$aLang.lsgallery_image_vote}:
+                            {$aLang.plugin.lsgallery.lsgallery_image_vote}:
                             <span class="{if $oVote || ($oUserCurrent && $oImage->getUserId()==$oUserCurrent->getId()) || 
                     strtotime($oImage->getDateAdd())<$smarty.now-$oConfig->GetValue('acl.vote.topic.limit_time')}{if $oImage->getRating()>0}
                     positive {elseif $oImage->getRating()<0}negative{/if}{/if}">{if $oVote || ($oUserCurrent && $oImage->getUserId()==$oUserCurrent->getId()) || 
@@ -32,9 +32,9 @@
 </ul>
 <div class="bottom">
     {if $sType == 'new'}
-        <a href="{router page='gallery'}photo/new">{$aLang.lsgallery_photo_all_new}</a>
+        <a href="{router page='gallery'}photo/new">{$aLang.plugin.lsgallery.lsgallery_photo_all_new}</a>
     {else}
-        <a href="{router page='gallery'}photo/best">{$aLang.lsgallery_photo_all_best}</a>
+        <a href="{router page='gallery'}photo/best">{$aLang.plugin.lsgallery.lsgallery_photo_all_best}</a>
     {/if}
 </div>
 <script>

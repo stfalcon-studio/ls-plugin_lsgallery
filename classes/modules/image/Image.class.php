@@ -691,8 +691,8 @@ class PluginLsgallery_ModuleImage extends Module
 
         if ($this->oUserCurrent) {
             $aFriends = $this->User_GetUsersFriend($this->oUserCurrent->getId());
-            if (count($aFriends)) {
-                $aFilter['album_type']['friend'] = array_keys($aFriends);
+            if ($aFriends['count']) {
+                $aFilter['album_type']['friend'] = array_keys($aFriends['collection']);
             }
         }
         return $this->GetImagesByFilter($aFilter, $iPage, $iPerPage);
@@ -720,8 +720,8 @@ class PluginLsgallery_ModuleImage extends Module
 
         if ($this->oUserCurrent) {
             $aFriends = $this->User_GetUsersFriend($this->oUserCurrent->getId());
-            if (count($aFriends)) {
-                $aFilter['album_type']['friend'] = array_keys($aFriends);
+            if ($aFriends['count']) {
+                $aFilter['album_type']['friend'] = array_keys($aFriends['collection']);
             }
         }
         return $this->GetImagesByFilter($aFilter, $iPage, $iPerPage);

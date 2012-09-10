@@ -7,6 +7,8 @@ class PluginLsgallery_ActionProfile extends PluginLsgallery_Inherit_ActionProfil
     {
         parent::RegisterEvent();
         $this->AddEventPreg('/^.+$/i', '/^favourites$/i', '/^images$/i', '/^(page(\d+))?$/i', 'EventFavouriteImages');
+
+        $this->AddEventPreg('/^.+$/i','/^created/i','/^albums$/i','/^(page([1-9]\d{0,5}))?$/i','EventCreatedAlbums');
     }
 
     protected function EventFavouriteImages()
@@ -40,23 +42,49 @@ class PluginLsgallery_ActionProfile extends PluginLsgallery_Inherit_ActionProfil
         $this->Viewer_Assign('aPaging', $aPaging);
         $this->Viewer_Assign('aImages', $aImages);
         $this->Viewer_AddHtmlTitle($this->Lang_Get('user_menu_profile') . ' ' . $this->oUserProfile->getLogin());
-        $this->Viewer_AddHtmlTitle($this->Lang_Get('user_menu_profile_favourites_images'));
+        $this->Viewer_AddHtmlTitle($this->Lang_Get('plugin.lsgallery.lsgallery_user_menu_profile_favourites_images'));
         /**
          * Устанавливаем шаблон вывода
          */
         $this->SetTemplateAction('images');
     }
 
+    protected function EventCreatedAlbums()
+    {
+        if (!$this->CheckUserProfile()) {
+            return parent::EventNotFound();
+        }
+
+        $this->sMenuSubItemSelect='albums';
+
+        $iPage = $this->GetParamEventMatch(1, 2) ? $this->GetParamEventMatch(1, 2) : 1;
+
+        $aResult = $this->PluginLsgallery_Album_GetAlbumsPersonalByUser($this->oUserProfile->getId(), $iPage, Config::Get('plugin.lsgallery.album_per_page'));
+        $aAlbums = $aResult['collection'];
+
+        $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, Config::Get('plugin.lsgallery.album_per_page'), 4, Router::GetPath('my') . $this->oUserProfile->getLogin() . '/album');
+
+        $this->Viewer_Assign('aAlbums', $aAlbums);
+        $this->Viewer_Assign('aPaging', $aPaging);
+
+        $this->SetTemplateAction('albums');
+    }
+
     public function EventShutdown()
     {
-        $this->Viewer_AppendStyle(Plugin::GetTemplateWebPath('lsgallery') . 'css/gallery-style.css');
         if (!$this->oUserProfile) {
             return;
         }
-        parent::EventShutdown();
-        
+
+        $this->Viewer_AppendStyle(Plugin::GetTemplateWebPath('lsgallery') . 'css/gallery-style.css');
+
         $iCountImageFavourite=$this->PluginLsgallery_Image_GetCountImagesFavouriteByUserId($this->oUserProfile->getId());
         $this->Viewer_Assign('iCountImageFavourite',$iCountImageFavourite);
+
+        $aResult = $this->PluginLsgallery_Album_GetCountAlbumsPersonalByUser($this->oUserProfile->getId());
+        $this->Viewer_Assign('iCountAlbumUser', $aResult);
+
+        parent::EventShutdown();
     }
 
 }

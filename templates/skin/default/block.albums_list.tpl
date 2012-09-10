@@ -1,6 +1,6 @@
 {if count($aAlbums)}
 <div class="gallery-albums-preview">
-    <h2 class="title">{$aLang.lsgallery_albums}</h2>
+    <h2 class="title">{$aLang.plugin.lsgallery.lsgallery_albums}</h2>
     <ul id="block-albums-list">
         {foreach from=$aAlbums item=oAlbum}
             {assign var="oImage" value=$oAlbum->getCover()}
@@ -18,9 +18,9 @@
         {/foreach}
         <div class="gallery-albums-right">
             {if $oUserProfile}
-                <a class="gallery-next" href="{router page='my'}{$oUserProfile->getLogin()}/album/">{$aLang.lsgallery_albums_user_all}</a>
+                <a class="gallery-next" href="{router page='my'}{$oUserProfile->getLogin()}/album/">{$aLang.plugin.lsgallery.lsgallery_albums_user_all}</a>
             {else}
-                <a class="gallery-next" href="{router page='gallery'}albums/">{$aLang.lsgallery_albums_show_all}</a>
+                <a class="gallery-next" href="{router page='gallery'}albums/">{$aLang.plugin.lsgallery.lsgallery_albums_show_all}</a>
             {/if}
         </div>
     </ul>
