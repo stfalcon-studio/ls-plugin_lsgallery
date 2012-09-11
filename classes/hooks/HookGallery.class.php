@@ -14,6 +14,7 @@ class PluginLsgallery_HookGallery extends Hook
     public function RegisterHook()
     {
         $this->AddHook('template_main_menu_item', 'Menu');
+        $this->AddHook('template_admin_action_item', 'MenuAdmin');
 
         $this->AddHook('template_profile_whois_item_after_privat', 'ProfilePhotoMarked');
         $this->AddHook('template_profile_whois_item_after_privat', 'ProfileAlbums');
@@ -30,6 +31,16 @@ class PluginLsgallery_HookGallery extends Hook
     public function Menu()
     {
         return $this->Viewer_Fetch(Plugin::GetTemplatePath(__CLASS__) . 'main_menu.tpl');
+    }
+
+    /**
+     * Add recalc link to admin
+     *
+     * @return string
+     */
+    public function MenuAdmin()
+    {
+        return $this->Viewer_Fetch(Plugin::GetTemplatePath(__CLASS__) . 'admin_menu.tpl');
     }
 
     /**

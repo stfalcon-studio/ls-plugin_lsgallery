@@ -1001,4 +1001,24 @@ class PluginLsgallery_ModuleImage extends Module
         $oAlbumTo->setImageCount($oAlbumTo->getImageCount() + 1);
         $this->PluginLsgallery_Album_UpdateAlbum($oAlbumTo);
     }
+
+    /**
+     * Пересчитывает счетчики голосований
+     *
+     * @return bool
+     */
+    public function RecalculateVote()
+    {
+        return $this->oMapper->RecalculateVote();
+    }
+
+    /**
+     * Пересчитывает счетчик избранных топиков
+     *
+     * @return bool
+     */
+    public function RecalculateFavourite()
+    {
+        return $this->oMapper->RecalculateFavourite();
+    }
 }

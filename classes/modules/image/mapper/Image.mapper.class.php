@@ -5,7 +5,12 @@
  */
 class PluginLsgallery_ModuleImage_MapperImage extends Mapper
 {
-
+    /**
+     * Объект подключения к базе данных
+     *
+     * @var DbSimple_Generic_Database
+     */
+    protected $oDb;
     /**
      * Add image
      *
@@ -833,6 +838,80 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
             return $aRow['image_id'];
         }
         return null;
+    }
+
+    /**
+     * Пересчитывает счетчик избранных
+     *
+     * @return bool
+     */
+    public function RecalculateFavourite() {
+        $sql = "
+                UPDATE ".Config::Get('db.table.lsgallery.image')." i
+                SET i.image_count_favourite = (
+                    SELECT count(f.user_id)
+                    FROM ".Config::Get('db.table.favourite')." f
+                    WHERE
+                        f.target_id = i.image_id
+                    AND
+                        f.target_publish = 1
+                    AND
+                        f.target_type = 'image'
+                )
+            ";
+        if ($this->oDb->query($sql)) {
+            return true;
+        }
+        return false;
+    }
+    /**
+     * Пересчитывает счетчики голосований
+     *
+     * @return bool
+     */
+    public function RecalculateVote() {
+        $sql = "
+                UPDATE ".Config::Get('db.table.lsgallery.image')." i
+                SET i.image_count_vote_up = (
+                    SELECT count(*)
+                    FROM ".Config::Get('db.table.vote')." v
+                    WHERE
+                        v.target_id = i.image_id
+                    AND
+                        v.vote_direction = 1
+                    AND
+                        v.target_type = 'image'
+                ), i.image_count_vote_down = (
+                    SELECT count(*)
+                    FROM ".Config::Get('db.table.vote')." v
+                    WHERE
+                        v.target_id = i.image_id
+                    AND
+                        v.vote_direction = -1
+                    AND
+                        v.target_type = 'image'
+                ), i.image_count_vote_abstain = (
+                    SELECT count(*)
+                    FROM ".Config::Get('db.table.vote')." v
+                    WHERE
+                        v.target_id = i.image_id
+                    AND
+                        v.vote_direction = 0
+                    AND
+                        v.target_type = 'image'
+                ), i.image_count_vote = (
+                    SELECT count(*)
+                    FROM ".Config::Get('db.table.vote')." v
+                    WHERE
+                        v.target_id = i.image_id
+                    AND
+                        v.target_type = 'image'
+                )
+            ";
+        if ($this->oDb->query($sql)) {
+            return true;
+        }
+        return false;
     }
 
 }

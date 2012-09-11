@@ -10,7 +10,8 @@ class PluginLsgallery extends Plugin
     public $aInherits = array(
         'action' => array(
             'ActionProfile' => '_ActionProfile',
-            'ActionMy' => '_ActionMy'
+            'ActionMy' => '_ActionMy',
+            'ActionAdmin' => '_ActionAdmin',
         ),
         'module' => array(
             'ModuleACL' => '_ModuleACL',
