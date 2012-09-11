@@ -28,10 +28,10 @@ if (ls.vote) {
 ls.blocks  = ls.blocks || {};
 
 if (ls.blocks) {
-    ls.blocks.options.type.block_gallery_item_new = {
+    ls.blocks.options.type.block_gallery_new_images = {
         url: aRouter.galleryajax + 'getnewimages/'
     };
-    ls.blocks.options.type.block_gallery_item_best = {
+    ls.blocks.options.type.block_gallery_best_images = {
         url: aRouter.galleryajax + 'getbestimages/'
     };
 }
@@ -247,6 +247,20 @@ ls.gallery = (function ($) {
 var ias = null;
 
 jQuery('document').ready(function(){
+    $('.js-infobox-vote-image').poshytip({
+        content: function() {
+            var id = $(this).attr('id').replace('vote_area_image_','vote-info-topic-');
+            return $('#'+id).html();
+        },
+        className: 'infobox-topic',
+        alignTo: 'target',
+        alignX: 'center',
+        alignY: 'top',
+        offsetX: 2,
+        offsetY: 5,
+        liveEvents: true,
+        showTimeout: 100
+    });
 
     // перемещаем изображение в другой альбом
     jQuery('#move_image_form').jqm();
@@ -263,6 +277,8 @@ jQuery('document').ready(function(){
 
     // autocomplete for image tags
     ls.autocomplete.add(jQuery(".autocomplete-image-tags"), aRouter.galleryajax + 'autocompleteimagetag/', true);
+    ls.autocomplete.add(jQuery(".autocomplete-image-tags-single"), aRouter.galleryajax + 'autocompleteimagetag/', false);
+
     // init fancybox for gallery
     if (jQuery('a.gal-expend').length) {
         jQuery('a.gal-expend').fancybox();
@@ -295,11 +311,7 @@ jQuery('document').ready(function(){
                 }
             });
     });
-    // change tab in block
-    jQuery('[id^="block_gallery_item"]').live('click', function () {
-        ls.blocks.load(this, 'block_gallery');
-        return false;
-    });
+    ls.blocks.init('block_gallery', {group_items: true});
     // add tooltip
     jQuery('#stream-images a.tooltiped').tooltip({
         position: "bottom center",

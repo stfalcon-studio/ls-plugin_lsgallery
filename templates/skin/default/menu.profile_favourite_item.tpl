@@ -1,1 +1,1 @@
-<li {if $aParams[1]=='images'}class="active"{/if}><a href="{router page='profile'}{$oUserProfile->getLogin()}/favourites/images/">{$aLang.plugin.lsgallery.lsgallery_user_menu_profile_favourites_images}</a>{if $iCountImageFavourite} ({$iCountImageFavourite}){/if}</li>
+<li {if $aParams[1]=='images'}class="active"{/if}><a href="{router page='profile'}{$oUserProfile->getLogin()}/favourites/images/">{$aLang.plugin.lsgallery.lsgallery_user_menu_profile_favourites_images}{if $iCountImageFavourite} ({$iCountImageFavourite}){/if}</a></li>

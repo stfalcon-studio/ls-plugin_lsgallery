@@ -284,9 +284,11 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
                         'target_publish' => true
                             )
             );
-            if ($this->Favourite_AddFavourite($oFavouriteImageNew)) {
+            $oImage->setCountFavourite($oImage->getCountFavourite() + 1);
+            if ($this->Favourite_AddFavourite($oFavouriteImageNew) && $this->PluginLsgallery_Image_UpdateImage($oImage)) {
                 $this->Message_AddNoticeSingle($this->Lang_Get('plugin.lsgallery.lsgallery_image_favourite_add_ok'), $this->Lang_Get('attention'));
                 $this->Viewer_AssignAjax('bState', true);
+                $this->Viewer_AssignAjax('iCount', $oImage->getCountFavourite());
             } else {
                 $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
                 return;
@@ -301,9 +303,11 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             return;
         }
         if ($oFavouriteImage && !$iType) {
-            if ($this->Favourite_DeleteFavourite($oFavouriteImage)) {
+            $oImage->setCountFavourite($oImage->getCountFavourite() - 1);
+            if ($this->Favourite_DeleteFavourite($oFavouriteImage) && $this->PluginLsgallery_Image_UpdateImage($oImage)) {
                 $this->Message_AddNoticeSingle($this->Lang_Get('plugin.lsgallery.lsgallery_image_favourite_del_ok'), $this->Lang_Get('attention'));
                 $this->Viewer_AssignAjax('bState', false);
+                $this->Viewer_AssignAjax('iCount', $oImage->getCountFavourite());
             } else {
                 $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
                 return;
@@ -375,6 +379,13 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         }
         $oImageVote->setValue($iVal);
         $oImage->setCountVote($oImage->getCountVote() + 1);
+        if ($iValue==1) {
+            $oImage->setCountVoteUp($oImage->getCountVoteUp()+1);
+        } elseif ($iValue==-1) {
+            $oImage->setCountVoteDown($oImage->getCountVoteDown()+1);
+        } elseif ($iValue==0) {
+            $oImage->setCountVoteAbstain($oImage->getCountVoteAbstain()+1);
+        }
         if ($this->Vote_AddVote($oImageVote) && $this->PluginLsgallery_Image_UpdateImage($oImage)) {
             if ($iValue) {
                 $this->Message_AddNoticeSingle($this->Lang_Get('plugin.lsgallery.lsgallery_image_vote_ok'), $this->Lang_Get('attention'));

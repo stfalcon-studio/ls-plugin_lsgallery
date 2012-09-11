@@ -18,18 +18,18 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
     {
         $this->oUserCurrent = $this->User_GetUserCurrent();
         $this->Lang_AddLangJs(array(
-            'lsgallery_images_upload_choose',
-            'lsgallery_album_image_delete',
-            'lsgallery_album_set_image_cover',
-            'lsgallery_album_image_cover',
-            'lsgallery_album_image_delete_confirm',
-            'lsgallery_image_mark_cancel',
-            'lsgallery_image_tags',
-            'lsgallery_image_tags_updated',
-            'lsgallery_image_description',
-            'lsgallery_image_description_updated',
-            'lsgallery_save',
-            'lsgallery_image_move_album'
+            'plugin.lsgallery.lsgallery_images_upload_choose',
+            'plugin.lsgallery.lsgallery_album_image_delete',
+            'plugin.lsgallery.lsgallery_album_set_image_cover',
+            'plugin.lsgallery.lsgallery_album_image_cover',
+            'plugin.lsgallery.lsgallery_album_image_delete_confirm',
+            'plugin.lsgallery.lsgallery_image_mark_cancel',
+            'plugin.lsgallery.lsgallery_image_tags',
+            'plugin.lsgallery.lsgallery_image_tags_updated',
+            'plugin.lsgallery.lsgallery_image_description',
+            'plugin.lsgallery.lsgallery_image_description_updated',
+            'plugin.lsgallery.lsgallery_save',
+            'plugin.lsgallery.lsgallery_image_move_album'
         ));
         $this->SetDefaultEvent('photo');
     }
@@ -332,7 +332,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
         $oPrevImage = $this->PluginLsgallery_Image_GetPrevImage($oImage);
         $oNextImage = $this->PluginLsgallery_Image_GetNextImage($oImage);
-
+//        var_dump($oImage); exit;
         $this->Viewer_Assign('oImage', $oImage);
         $this->Viewer_Assign('oPrevImage', $oPrevImage);
         $this->Viewer_Assign('oNextImage', $oNextImage);

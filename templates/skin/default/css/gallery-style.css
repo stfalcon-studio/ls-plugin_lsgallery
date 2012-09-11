@@ -121,10 +121,10 @@
 			background:url(../images/pixel.png);
 			margin:0 0 10px 0;
 			}
-.gallery-topic .title{
+.gallery-topic .page-header{
 	overflow:hidden;
 	}
-	.gallery-topic .title #gallery-slideshow{
+	.gallery-topic .page-header #gallery-slideshow{
 		float:right;
 		font-size:11px;
 		margin:3px 0 0 0;

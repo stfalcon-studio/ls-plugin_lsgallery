@@ -1,14 +1,20 @@
-<div class="block gallery-block" id="block_album">
-	<h2>{$aLang.plugin.lsgallery.lsgallery_albums_about}</h2>
+<section class="block gallery-block" id="block_album">
+    <header class="block-header sep">
+        <h3>
+            {$aLang.plugin.lsgallery.lsgallery_albums_about}
+        </h3>
+    </header>
     {if $oUserCurrent && ($oUserCurrent->isAdministrator() || $oUserCurrent->getId() == $oAlbum->getUserId())}
     <div class="info-top">
         <ul class="actions">
-                <li>
-                    <a href="{$oAlbum->getUrlFull('edit')}" title="{$aLang.blog_edit}" class="edit">{$aLang.plugin.lsgallery.lsgallery_update_album_title}</a>
-                </li>
-                <li>
-                    <a class="delete" href="{$oAlbum->getUrlFull('delete')}/?security_ls_key={$LIVESTREET_SECURITY_KEY}" title="{$aLang.blog_delete}" onclick="return confirm('{$aLang.plugin.lsgallery.lsgallery_album_delete_confirm}');" >{$aLang.plugin.lsgallery.lsgallery_delete_album_title}</a>
-                </li>
+            <li class="edit">
+                <i class="icon-synio-actions-edit"></i>
+                <a href="{$oAlbum->getUrlFull('edit')}" title="{$aLang.blog_edit}" class="edit">{$aLang.plugin.lsgallery.lsgallery_update_album_title}</a>
+            </li>
+            <li class="delete">
+                <i class="icon-synio-actions-delete"></i>
+                <a class="delete" href="{$oAlbum->getUrlFull('delete')}/?security_ls_key={$LIVESTREET_SECURITY_KEY}" title="{$aLang.blog_delete}" onclick="return confirm('{$aLang.plugin.lsgallery.lsgallery_album_delete_confirm}');" >{$aLang.plugin.lsgallery.lsgallery_delete_album_title}</a>
+            </li>
         </ul>
     </div>
     {/if}
@@ -31,4 +37,4 @@
 	<div class="bottom">
 		<a href="{router page='my'}{$oUser->getLogin()}/album">{$aLang.plugin.lsgallery.lsgallery_albums_user_all}</a>
 	</div>
-</div>
+</section>

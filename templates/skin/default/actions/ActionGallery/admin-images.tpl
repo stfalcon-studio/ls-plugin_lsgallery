@@ -1,6 +1,6 @@
-{include file='header.tpl' menu="album"}
+{include file='header.tpl' menu="album" menu_content="album_edit"}
 
-{include file="`$sTemplatePathLsgallery`menu.album_edit.tpl"}
+<h2 class="page-header">{$aLang.plugin.lsgallery.lsgallery_admin_album_title}: <a href="{$oAlbumEdit->getUrlFull()}">{$oAlbumEdit->getTitle()}</a></h2>
 
 {assign var=oImages value=$oAlbumEdit->getImages()}
 
