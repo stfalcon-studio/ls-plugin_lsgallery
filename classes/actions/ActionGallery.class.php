@@ -18,18 +18,18 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
     {
         $this->oUserCurrent = $this->User_GetUserCurrent();
         $this->Lang_AddLangJs(array(
-            'lsgallery_images_upload_choose',
-            'lsgallery_album_image_delete',
-            'lsgallery_album_set_image_cover',
-            'lsgallery_album_image_cover',
-            'lsgallery_album_image_delete_confirm',
-            'lsgallery_image_mark_cancel',
-            'lsgallery_image_tags',
-            'lsgallery_image_tags_updated',
-            'lsgallery_image_description',
-            'lsgallery_image_description_updated',
-            'lsgallery_save',
-            'lsgallery_image_move_album'
+            'plugin.lsgallery.lsgallery_images_upload_choose',
+            'plugin.lsgallery.lsgallery_album_image_delete',
+            'plugin.lsgallery.lsgallery_album_set_image_cover',
+            'plugin.lsgallery.lsgallery_album_image_cover',
+            'plugin.lsgallery.lsgallery_album_image_delete_confirm',
+            'plugin.lsgallery.lsgallery_image_mark_cancel',
+            'plugin.lsgallery.lsgallery_image_tags',
+            'plugin.lsgallery.lsgallery_image_tags_updated',
+            'plugin.lsgallery.lsgallery_image_description',
+            'plugin.lsgallery.lsgallery_image_description_updated',
+            'plugin.lsgallery.lsgallery_save',
+            'plugin.lsgallery.lsgallery_image_move_album'
         ));
         $this->SetDefaultEvent('photo');
     }
@@ -86,7 +86,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->sMenuItemSelect = 'image';
         $this->sMenuSubItemSelect = 'main';
 
-        $this->Viewer_AddHtmlTitle($this->Lang_Get('lsgallery_photo_day'));
+        $this->Viewer_AddHtmlTitle($this->Lang_Get('plugin.lsgallery.lsgallery_photo_day'));
         $this->SetTemplateAction('photo');
 
         $oImage = $this->PluginLsgallery_Image_GetImageOfDay();
@@ -106,7 +106,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->sMenuItemSelect = 'image';
         $this->sMenuSubItemSelect = $sType;
 
-        $this->Viewer_AddHtmlTitle($this->Lang_Get('lsgallery_photo_' . $sType));
+        $this->Viewer_AddHtmlTitle($this->Lang_Get('plugin.lsgallery.lsgallery_photo_' . $sType));
         $this->SetTemplateAction('photos');
 
         $iPage = $this->_getPage();
@@ -132,7 +132,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
     {
         $this->sMenuItemSelect = 'create';
 
-        $this->Viewer_AddHtmlTitle($this->Lang_Get('lsgallery_create_album_title'));
+        $this->Viewer_AddHtmlTitle($this->Lang_Get('plugin.lsgallery.lsgallery_create_album_title'));
 
         if (!$this->ACL_AllowCreateAlbum($this->oUserCurrent)) {
             $this->Message_AddErrorSingle($this->Lang_Get('not_access'), $this->Lang_Get('error'));
@@ -186,7 +186,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         }
 
         if ($this->PluginLsgallery_Album_DeleteAlbum($oAlbum)) {
-            $this->Message_AddNoticeSingle($this->Lang_Get('lsgallery_delete_album_success'), $this->Lang_Get('attention'), true);
+            $this->Message_AddNoticeSingle($this->Lang_Get('plugin.lsgallery.lsgallery_delete_album_success'), $this->Lang_Get('attention'), true);
             Router::Location(Router::GetPath('gallery'));
         } else {
             $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
@@ -202,7 +202,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->sMenuItemSelect = 'album';
         $this->sMenuSubItemSelect = 'update';
 
-        $this->Viewer_AddHtmlTitle($this->Lang_Get('lsgallery_update_album_title'));
+        $this->Viewer_AddHtmlTitle($this->Lang_Get('plugin.lsgallery.lsgallery_update_album_title'));
 
         $sId = $this->GetParam(0);
 
@@ -337,7 +337,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
         $oPrevImage = $this->PluginLsgallery_Image_GetPrevImage($oImage);
         $oNextImage = $this->PluginLsgallery_Image_GetNextImage($oImage);
-
+//        var_dump($oImage); exit;
         $this->Viewer_Assign('oImage', $oImage);
         $this->Viewer_Assign('oAlbum', $oAlbum);
         $this->Viewer_Assign('oPrevImage', $oPrevImage);
@@ -702,26 +702,26 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
         if (!is_null($oAlbum)) {
             if ($oAlbum->getId() != getRequest('album_id')) {
-                $this->Message_AddError($this->Lang_Get('lsgallery_album_id_error'), $this->Lang_Get('error'));
+                $this->Message_AddError($this->Lang_Get('plugin.lsgallery.lsgallery_album_id_error'), $this->Lang_Get('error'));
                 $bOk = false;
             }
         }
 
         if (!func_check(getRequest('album_title'), 'text', 2, 64)) {
-            $this->Message_AddError($this->Lang_Get('lsgallery_album_title_error'), $this->Lang_Get('error'));
+            $this->Message_AddError($this->Lang_Get('plugin.lsgallery.lsgallery_album_title_error'), $this->Lang_Get('error'));
             $bOk = false;
         }
 
         $sDescription = getRequest('album_description');
         if ($sDescription && !func_check($sDescription, 'text', 10, 512)) {
-            $this->Message_AddError($this->Lang_Get('lsgallery_album_description_error'), $this->Lang_Get('error'));
+            $this->Message_AddError($this->Lang_Get('plugin.lsgallery.lsgallery_album_description_error'), $this->Lang_Get('error'));
             $bOk = false;
         }
 
         $aTypes = PluginLsgallery_ModuleAlbum_EntityAlbum::getLocalizedTypes($this);
 
         if (!in_array(getRequest('album_type'), array_keys($aTypes))) {
-            $this->Message_AddError($this->Lang_Get('lsgallery_album_type_error'), $this->Lang_Get('error'));
+            $this->Message_AddError($this->Lang_Get('plugin.lsgallery.lsgallery_album_type_error'), $this->Lang_Get('error'));
             $bOk = false;
         }
 

@@ -10,7 +10,8 @@ class PluginLsgallery extends Plugin
     public $aInherits = array(
         'action' => array(
             'ActionProfile' => '_ActionProfile',
-            'ActionMy' => '_ActionMy'
+            'ActionMy' => '_ActionMy',
+            'ActionAdmin' => '_ActionAdmin',
         ),
         'module' => array(
             'ModuleACL' => '_ModuleACL',
@@ -25,6 +26,9 @@ class PluginLsgallery extends Plugin
     protected $aDelegates = array(
         'template' => array(
             'menu.album.tpl',
+            'menu.album.content.tpl',
+            'menu.album_edit.content.tpl',
+            'menu.profile.tpl',
         )
     );
 

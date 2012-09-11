@@ -1,4 +1,4 @@
-{include file='header.tpl' menu="album"}
+{include file='header.tpl' menu="album" menu_content='album'}
 
 {include file="`$sTemplatePathLsgallery`album_list.tpl"}
 

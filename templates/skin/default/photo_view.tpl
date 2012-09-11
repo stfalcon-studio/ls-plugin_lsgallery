@@ -5,7 +5,7 @@
     {if $bSelectFriends}
     <div id="wrapper-notice">
         <div id="select-people-notice" class="hidden">
-            <span>{$aLang.lsgallery_image_mark_notice}</span> <a href="#" id="image-mark-ready">{$aLang.lsgallery_ready}</a>
+            <span>{$aLang.plugin.lsgallery.lsgallery_image_mark_notice}</span> <a href="#" id="image-mark-ready">{$aLang.plugin.lsgallery.lsgallery_ready}</a>
         </div>
     </div>
     {/if}
@@ -40,7 +40,7 @@
                 </a>
             {/if}
 
-            <a class="gal-expend" href="{$oImage->getWebPath()}">{$aLang.lsgallery_image_zoom}</a>
+            <a class="gal-expend" href="{$oImage->getWebPath()}">{$aLang.plugin.lsgallery.lsgallery_image_zoom}</a>
 
             {if $oNextImage}
                 <a class="gal-left ajaxy" href="{$oNextImage->getUrlFull()}">
@@ -54,11 +54,11 @@
         {assign var="oTargetUser" value=$oCurrentImageUser->getTargetUser()}
         <div id="current-image-user">
 			<div class="inside">
-             {$aLang.lsgallery_uwere_marked}
+             {$aLang.plugin.lsgallery.lsgallery_uwere_marked}
 				<div class="current-image-options">
-				 <a href="#" class="confirmed" onclick="ls.gallery.changeMark({$oImage->getId()}, {$oCurrentImageUser->getTargetUserId()}, 'confirmed', this); return false;"><span class="ico"></span><span class="txt">{$aLang.lsgallery_mark_confirm}</span></a>
-				 <a href="#" class="declined" onclick="ls.gallery.changeMark({$oImage->getId()}, {$oCurrentImageUser->getTargetUserId()}, 'declined', this); return false;"><span class="ico"></span><span class="txt">{$aLang.lsgallery_mark_decline}</span></a>
-				 <a href="#" class="remove-own" onclick="ls.gallery.removeMark({$oImage->getId()}, {$oCurrentImageUser->getTargetUserId()}, this); return false;"><span class="ico"></span><span class="txt">{$aLang.lsgallery_mark_remove}</span></a>
+				 <a href="#" class="confirmed" onclick="ls.gallery.changeMark({$oImage->getId()}, {$oCurrentImageUser->getTargetUserId()}, 'confirmed', this); return false;"><span class="ico"></span><span class="txt">{$aLang.plugin.lsgallery.lsgallery_mark_confirm}</span></a>
+				 <a href="#" class="declined" onclick="ls.gallery.changeMark({$oImage->getId()}, {$oCurrentImageUser->getTargetUserId()}, 'declined', this); return false;"><span class="ico"></span><span class="txt">{$aLang.plugin.lsgallery.lsgallery_mark_decline}</span></a>
+				 <a href="#" class="remove-own" onclick="ls.gallery.removeMark({$oImage->getId()}, {$oCurrentImageUser->getTargetUserId()}, this); return false;"><span class="ico"></span><span class="txt">{$aLang.plugin.lsgallery.lsgallery_mark_remove}</span></a>
 				</div>
 			</div>
 		</div>
@@ -76,14 +76,14 @@
                             {/if}
                         {/if}
                     </li>
-                {else if $oImageUser->getStatus() == 'confirmed'}
+                {elseif $oImageUser->getStatus() == 'confirmed'}
                     <li id="target-{$oImageUser->getTargetUserId()}" class="selected-confimed">
                         <a class="user" href="{$oTargetUser->getUserWebPath()}">{$oTargetUser->getLogin()}</a>
                         {if $oUserCurrent && ($oTargetUser->getId() == $oUserCurrent->getId() || $oUserCurrent->getId() == $oImage->getUserId())}
                             <a href="#" class="remove" onclick="ls.gallery.removeMark({$oImage->getId()}, {$oImageUser->getTargetUserId()}, this); return false;"></a>
                         {/if}
                     </li>
-                {else if $oImageUser->getStatus() == 'declined' && $oUserCurrent &&
+                {elseif $oImageUser->getStatus() == 'declined' && $oUserCurrent &&
                     ($oTargetUser->getId() == $oUserCurrent->getId() || $oImage->getUserId() == $oUserCurrent->getId() || $oUserCurrent->isAdministrator())}
                     <li id="target-{$oImageUser->getTargetUserId()}" class="selected-declined">
                         <a class="user" href="{$oTargetUser->getUserWebPath()}">{$oTargetUser->getLogin()}</a>
@@ -94,7 +94,7 @@
         </ul>
         {if $oUserCurrent}
             <div id="select-friends">
-                <a id="mark" href="#">{$aLang.lsgallery_image_mark_friend}</a>
+                <a id="mark" href="#">{$aLang.plugin.lsgallery.lsgallery_image_mark_friend}</a>
                 <div class="mark-name" style="display:none;">
                     <input type="text" class="autocomplete-mark {$oAlbum->getType()}" value=""/>
                     <a href="#" class="submit-selected-friend">{$aLang.lsgallery_image_mark}</a>
@@ -107,30 +107,95 @@
 		{$oImage->getDescription()|strip_tags}
 	</div>
 
-    <ul class="tags">
-		{foreach from=$oImage->getTagsArray() item=sTag name=tags_list}
-			<li><a href="{router page='gallery'}tag/{$sTag|escape:'url'}/">{$sTag|escape:'html'}</a>{if !$smarty.foreach.tags_list.last}, {/if}</li>
-		{/foreach}
-	</ul>
+    <footer class="topic-footer">
+        <ul class="topic-tags">
+            <li>
+                <i class="icon-synio-tags"></i>
+            </li>
+            {foreach from=$oImage->getTagsArray() item=sTag name=tags_list}
+                <li><a href="{router page='gallery'}tag/{$sTag|escape:'url'}/">{$sTag|escape:'html'}</a>{if !$smarty.foreach.tags_list.last}, {/if}</li>
+            {/foreach}
+        </ul>
 
-    <ul class="info">
-		<li id="vote_area_image_{$oImage->getId()}" class="voting
-            {if $oVote || ($oUserCurrent && $oImage->getUserId()==$oUserCurrent->getId()) ||
-        strtotime($oImage->getDateAdd())<$smarty.now-$oConfig->GetValue('acl.vote.topic.limit_time')}{if $oImage->getRating()>0}
-        positive {elseif $oImage->getRating()<0}negative{/if}{/if} {if !$oUserCurrent || $oImage->getUserId()==$oUserCurrent->getId() || strtotime($oImage->getDateAdd())<$smarty.now-$oConfig->GetValue('acl.vote.topic.limit_time')}guest{/if}{if $oVote} voted {if $oVote->getDirection()>0}plus{elseif $oVote->getDirection()<0}minus{/if}{/if}">
-			<a href="#" class="plus" onclick="return ls.vote.vote({$oImage->getId()},this,1,'image');"></a>
-			<span id="vote_total_image_{$oImage->getId()}" class="total" title="{$aLang.topic_vote_count}: {$oImage->getCountVote()}">
-        {if $oVote || ($oUserCurrent && $oImage->getUserId()==$oUserCurrent->getId()) ||
-strtotime($oImage->getDateAdd())<$smarty.now-$oConfig->GetValue('acl.vote.topic.limit_time')}
-{$oImage->getRating()} {else} <a href="#" onclick="return ls.vote.vote({$oImage->getId()},this,0,'image');">?</a> {/if}</span>
-			<a href="#" class="minus" onclick="return ls.vote.vote({$oImage->getId()},this,-1,'image');"></a>
-		</li>
-		<li class="date">{date_format date=$oImage->getDateAdd()}</li>
-		<li class="username"><a href="{$oUser->getUserWebPath()}">{$oUser->getLogin()}</a></li>
-        <li>
-            <a href="#" onclick="return ls.favourite.toggle({$oImage->getId()},this,'image');" class="favourite gallery-favourite {if $oUserCurrent && $oImage->getIsFavourite()}active{/if}">
-                <span class="icon"></span><span class="favourite-count" id="fav_count_image_{$oImage->getId()}">{if $oImage->getCountFavourite()>0}{$oImage->getCountFavourite()}{else}&nbsp;{/if}</span>
-            </a>
-        </li>
-	</ul>
+        <ul class="topic-info">
+            <li class="topic-info-author">
+                <a href="{$oUser->getUserWebPath()}"><img src="{$oUser->getProfileAvatarPath(24)}" alt="avatar" class="avatar" /></a>
+                <a rel="author" href="{$oUser->getUserWebPath()}">{$oUser->getLogin()}</a>
+            </li>
+            <li class="topic-info-date">
+                <time datetime="{date_format date=$oImage->getDateAdd() format='c'}" title="{date_format date=$oImage->getDateAdd() format='j F Y, H:i'}">
+                {date_format date=$oImage->getDateAdd() hours_back="12" minutes_back="60" now="60" day="day H:i" format="j F Y, H:i"}
+                </time>
+            </li>
+            <li class="topic-info-favourite" onclick="return ls.favourite.toggle({$oImage->getId()},$('#fav_image_{$oImage->getId()}'),'image');">
+                <i id="fav_image_{$oImage->getId()}" class="favourite {if $oUserCurrent && $oImage->getIsFavourite()}active{/if}"></i>
+                <span class="favourite-count" id="fav_count_image_{$oImage->getId()}">{if $oImage->getCountFavourite()>0}{$oImage->getCountFavourite()}{/if}</span>
+            </li>
+            {if $oVote || ($oUserCurrent && $oImage->getUserId() == $oUserCurrent->getId()) || strtotime($oImage->getDateAdd()) < $smarty.now-$oConfig->GetValue('acl.vote.image.limit_time')}
+                {assign var="bVoteInfoShow" value=true}
+            {/if}
+            <li class="topic-info-vote">
+                <div id="vote_area_image_{$oImage->getId()}" class="vote-topic
+																	{if $oVote || ($oUserCurrent && $oImage->getUserId() == $oUserCurrent->getId()) || strtotime($oImage->getDateAdd()) < $smarty.now-$oConfig->GetValue('acl.vote.image.limit_time')}
+																		{if $oImage->getRating() > 0}
+																			vote-count-positive
+																		{elseif $oImage->getRating() < 0}
+																			vote-count-negative
+																		{elseif $oImage->getRating() == 0}
+																			vote-count-zero
+																		{/if}
+																	{/if}
+
+																	{if !$oUserCurrent or ($oUserCurrent && $oImage->getUserId() != $oUserCurrent->getId())}
+																		vote-not-self
+																	{/if}
+
+																	{if $oVote}
+																		voted
+
+																		{if $oVote->getDirection() > 0}
+																			voted-up
+																		{elseif $oVote->getDirection() < 0}
+																			voted-down
+																		{elseif $oVote->getDirection() == 0}
+																			voted-zero
+																		{/if}
+																	{else}
+																		not-voted
+																	{/if}
+
+																	{if (strtotime($oImage->getDateAdd()) < $smarty.now-$oConfig->GetValue('acl.vote.image.limit_time') && !$oVote) || ($oUserCurrent && $oImage->getUserId() == $oUserCurrent->getId())}
+																		vote-nobuttons
+																	{/if}
+
+																	{if strtotime($oImage->getDateAdd()) > $smarty.now-$oConfig->GetValue('acl.vote.iamge.limit_time')}
+																		vote-not-expired
+																	{/if}
+
+																	{if $bVoteInfoShow}js-infobox-vote-image{/if}">
+                    <div class="vote-item vote-down" onclick="return ls.vote.vote({$oImage->getId()},this,-1,'image');"><span><i></i></span></div>
+                    <div class="vote-item vote-count" title="{$aLang.topic_vote_count}: {$oImage->getCountVote()}">
+						<span id="vote_total_image_{$oImage->getId()}">
+                        {if $bVoteInfoShow}
+                            {if $oImage->getRating() > 0}+{/if}{$oImage->getRating()}
+                        {else}
+                            <i onclick="return ls.vote.vote({$oImage->getId()},this,0,'image');"></i>
+                        {/if}
+                        </span>
+                    </div>
+                    <div class="vote-item vote-up" onclick="return ls.vote.vote({$oImage->getId()},this,1,'image');"><span><i></i></span></div>
+                {if $bVoteInfoShow}
+                    <div id="vote-info-topic-{$oImage->getId()}" style="display: none;">
+                        <ul class="vote-image-info">
+                            <li><i class="icon-synio-vote-info-up"></i> {$oImage->getCountVoteUp()}</li>
+                            <li><i class="icon-synio-vote-info-down"></i> {$oImage->getCountVoteDown()}</li>
+                            <li><i class="icon-synio-vote-info-zero"></i> {$oImage->getCountVoteAbstain()}</li>
+                        </ul>
+                    </div>
+                {/if}
+                </div>
+            </li>
+        </ul>
+    </footer>
+
 </div>
