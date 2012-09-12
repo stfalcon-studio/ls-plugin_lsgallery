@@ -310,7 +310,6 @@ class PluginLsgallery_ModuleImage extends Module
     /**
      * Get images additional data
      *
-     * @todo Подтягивание голосов, избранного, комментов
      * @param array $aImagesId
      * @param array $aAllowData
      * @return array
@@ -1020,5 +1019,45 @@ class PluginLsgallery_ModuleImage extends Module
     public function RecalculateFavourite()
     {
         return $this->oMapper->RecalculateFavourite();
+    }
+
+    /**
+     * Check if resize exist
+     *
+     * @param $sOriginalPath
+     * @param $sWidth
+     *
+     * @return void
+     */
+    public function checkImageExist($sOriginalPath, $sWidth)
+    {
+        $aPathInfo = pathinfo($sOriginalPath);
+        $sFilePath = $aPathInfo['dirname'] . '/' . $aPathInfo['filename'] . '_' . $sWidth . '.' . $aPathInfo['extension'];
+        if (file_exists(Config::Get('path.root.server') . $sFilePath)) {
+            return;
+        }
+
+        $sPath = $aPathInfo['dirname'] . '/';
+        $sFileName = $aPathInfo['filename'];
+        $sFile = Config::Get('path.root.server') . $sOriginalPath;
+        $aSizes = Config::Get('plugin.lsgallery.size');
+        $aParams = $this->Image_BuildParams('lsgallery');
+
+        preg_match('/([0-9]+)(crop)?/', $sWidth, $aCurSize);
+
+        foreach ($aSizes as $aSize) {
+            if ($aSize['w'] == $aCurSize[1] && $aSize['crop'] == isset($aCurSize[2])) {
+                // Для каждого указанного в конфиге размера генерируем картинку
+                $sNewFileName = $sFileName . '_' . $aSize['w'];
+                $oImage = new LiveImage($sFile);
+                if ($aSize['crop']) {
+                    $this->Image_CropProportion($oImage, $aSize['w'], $aSize['h'], true);
+                    $sNewFileName .= 'crop';
+                }
+                $this->Image_Resize($sFile, $sPath, $sNewFileName, Config::Get('view.img_max_width'), Config::Get('view.img_max_height'), $aSize['w'], $aSize['h'], true, $aParams, $oImage);
+            }
+        }
+
+        return;
     }
 }

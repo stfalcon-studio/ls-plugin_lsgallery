@@ -13,12 +13,14 @@ class PluginLsgallery_HookGallery extends Hook
      */
     public function RegisterHook()
     {
-        $this->AddHook('template_main_menu_item', 'Menu');
         $this->AddHook('template_admin_action_item', 'MenuAdmin');
+
+        $this->AddHook('template_write_item', 'MenuWriteItem');
 
         $this->AddHook('template_profile_whois_item_after_privat', 'ProfilePhotoMarked');
         $this->AddHook('template_profile_whois_item_after_privat', 'ProfileAlbums');
 
+        $this->AddHook('template_main_menu_item', 'Menu');
         $this->AddHook('template_menu_profile_favourite_item', 'MenuProfileFavouritePhoto');
         $this->AddHook('template_menu_profile_created_item', 'MenuProfileCreatedAlbum');
     }
@@ -96,6 +98,11 @@ class PluginLsgallery_HookGallery extends Hook
     public function MenuProfileCreatedAlbum($aData)
     {
         return $this->Viewer_Fetch(Plugin::GetTemplatePath(__CLASS__) . 'menu.profile_created_item.tpl');
+    }
+
+    public function MenuWriteItem($aData)
+    {
+        return $this->Viewer_Fetch(Plugin::GetTemplatePath(__CLASS__) . 'write_item.tpl');
     }
 
 }
