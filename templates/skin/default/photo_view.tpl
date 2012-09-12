@@ -12,10 +12,10 @@
     <div id="image" class="content">
         {if !$bSelectFriends}
         <a href="{$oImage->getUrlFull()}" >
-            <img class="gallery-big-photo" id="{$oImage->getId()}" src="{$oImage->getWebPath('600')}" alt="image" />
+            <img class="gallery-big-photo" id="{$oImage->getId()}" src="{$oImage->getWebPath('638')}" alt="image" />
         </a>
         {else}
-            <img class="gallery-big-photo" id="{$oImage->getId()}" src="{$oImage->getWebPath('600')}" alt="image" />
+            <img class="gallery-big-photo" id="{$oImage->getId()}" src="{$oImage->getWebPath('638')}" alt="image" />
         {/if}
         {foreach from=$aImageUser item=oImageUser}
                 {assign var="oTargetUser" value=$oImageUser->getTargetUser()}
@@ -94,9 +94,9 @@
         </ul>
         {if $oUserCurrent}
             <div id="select-friends">
-                <a id="mark" href="#">{$aLang.plugin.lsgallery.lsgallery_image_mark_friend}</a>
+                <a id="mark" class="link-dotted" href="#">{$aLang.plugin.lsgallery.lsgallery_image_mark_friend}</a>
                 <div class="mark-name" style="display:none;">
-                    <input type="text" class="autocomplete-mark {$oAlbum->getType()}" value=""/>
+                    <input type="text" class="input-text autocomplete-mark {$oAlbum->getType()}" value=""/>
                     <a href="#" class="submit-selected-friend">{$aLang.lsgallery_image_mark}</a>
                     <a href="#" class="cancel-selected-friend">{$aLang.lsgallery_cancel}</a>
                 </div>

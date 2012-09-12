@@ -1,11 +1,11 @@
-<section class="block gallery-block" id="block_album">
-    <header class="block-header sep">
+<section class="block gallery-block block-type-blog" id="block_album">
+    <header class="block-header">
         <h3>
             {$aLang.plugin.lsgallery.lsgallery_albums_about}
         </h3>
     </header>
     {if $oUserCurrent && ($oUserCurrent->isAdministrator() || $oUserCurrent->getId() == $oAlbum->getUserId())}
-    <div class="info-top">
+    <div class="info-top block-content">
         <ul class="actions">
             <li class="edit">
                 <i class="icon-synio-actions-edit"></i>
@@ -21,20 +21,20 @@
 	<div class="block-content" id="block_album_content">
 		{assign var="oImage" value=$oAlbum->getCover()}
         {assign var="oUser" value=$oAlbum->getUser()}
-            <a class="gallery-item" href="{$oAlbum->getUrlFull()}">
+            <a class="gallery-item album-cover" href="{$oAlbum->getUrlFull()}">
                 {if $oImage}
-                    <img class="image-100" src="{$oImage->getWebPath('100crop')}" alt="{$oAlbum->getTitle()|escape:'html'}" />
+                    <img class="image-48" src="{$oImage->getWebPath('100crop')}" alt="{$oAlbum->getTitle()|escape:'html'}" />
                 {else}
                     <div class="empty-album"></div>
                 {/if}
             </a>
             {$oAlbum->getDescription()|strip_tags}
 	</div>
-    <div class="gallery-user">
-        <a class="user" href="{$oUser->getUserWebPath()}">{$oUser->getLogin()}</a>
+    <div class="gallery-user block-content">
+        <a class="author" href="{$oUser->getUserWebPath()}">{$oUser->getLogin()}</a>
         {date_format date=$oAlbum->getDateAdd()}
     </div>
-	<div class="bottom">
+	<footer>
 		<a href="{router page='my'}{$oUser->getLogin()}/album">{$aLang.plugin.lsgallery.lsgallery_albums_user_all}</a>
-	</div>
+	</footer>
 </section>
