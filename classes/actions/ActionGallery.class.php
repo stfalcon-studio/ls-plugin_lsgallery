@@ -299,7 +299,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         }
 
         if (!Config::Get('module.comment.nested_page_reverse') and Config::Get('module.comment.use_nested') and Config::Get('module.comment.nested_per_page')) {
-            $iPageDef = ceil($this->Comment_GetCountCommentsRootByTargetId($oTopic->getId(), 'topic') / Config::Get('module.comment.nested_per_page'));
+            $iPageDef = ceil($this->Comment_GetCountCommentsRootByTargetId($oImage->getId(), 'image') / Config::Get('module.comment.nested_per_page'));
         } else {
             $iPageDef = 1;
         }
@@ -337,7 +337,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
         $oPrevImage = $this->PluginLsgallery_Image_GetPrevImage($oImage);
         $oNextImage = $this->PluginLsgallery_Image_GetNextImage($oImage);
-//        var_dump($oImage); exit;
+
         $this->Viewer_Assign('oImage', $oImage);
         $this->Viewer_Assign('oAlbum', $oAlbum);
         $this->Viewer_Assign('oPrevImage', $oPrevImage);

@@ -157,7 +157,7 @@
 	font-size: 12px;
 	}*/
 .gallery-big-photo {
-	max-width: 635px;
+	max-width: 638px;
 	width: 100%;
 	height: auto;
 	}
@@ -562,3 +562,6 @@ a.remove{display:inline-block; width:11px; height:11px; background:url(../images
 	width: 48px;
 	height: 48px;
 }
+
+.modal.modal-write .write-list li.write-item-type-album .write-item-image { background-position: -460px 0; }
+.modal.modal-write .write-list li.write-item-type-album:hover  .write-item-image { background-position: -460px -115px; }

@@ -111,7 +111,10 @@ class PluginLsgallery_ModuleImage_EntityImage extends Entity
         if ($this->getFilename()) {
             if ($sWidth) {
                 $aPathInfo = pathinfo($this->getFilename());
-                return Config::Get('path.root.web') . $aPathInfo['dirname'] . '/' . $aPathInfo['filename'] . '_' . $sWidth . '.' . $aPathInfo['extension'];
+                $sFilePath = $aPathInfo['dirname'] . '/' . $aPathInfo['filename'] . '_' . $sWidth . '.' . $aPathInfo['extension'];
+                $this->PluginLsgallery_Image_CheckImageExist($this->getFilename(), $sWidth);
+
+                return Config::Get('path.root.web') . $sFilePath;
             } else {
                 return Config::Get('path.root.web') . $this->getFilename();
             }
