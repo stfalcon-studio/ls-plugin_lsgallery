@@ -11,7 +11,7 @@ class PluginLsgallery_ActionMy extends PluginLsgallery_Inherit_ActionMy
     protected function RegisterEvent()
     {
         parent::RegisterEvent();
-        $this->AddEventPreg('/^.+$/i', '/^album$/i', '/^(page(\d+))?$/i', 'EventAlbums');
+        $this->AddEventPreg('/^.+$/i', '/^album$/i', '/^(page([1-9]\d{0,5}))?$/i', 'EventAlbums');
     }
 
     protected function EventAlbums()

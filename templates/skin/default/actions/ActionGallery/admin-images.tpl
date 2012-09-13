@@ -53,19 +53,27 @@ if (jQuery.browser.flash) {
     </ul>
 </div>
 {if count($aAlbums)}
-    <div class="move-image-form jqmWindow" id="move_image_form">
-        <form action="" method="POST">
+    <div class="move-image-form modal" id="move_image_form">
+        <header class="modal-header">
             <h3>{$aLang.plugin.lsgallery.lsgallery_image_select_album}</h3>
-            <select id="album_to_id" name="album_to_id" class="input-wide">
-                {foreach from=$aAlbums item=oAlbum}
-                    <option value="{$oAlbum->getId()}">{$oAlbum->getTitle()}</option>
-                {/foreach}
-            </select>
+            <a href="#" class="close jqmClose"></a>
+        </header>
+	    <div class="modal-content">
+            <form action="" method="POST">
+	            <p>
+	                <select id="album_to_id" name="album_to_id" class="input-width-full">
+		            {foreach from=$aAlbums item=oAlbum}
+	                    <option value="{$oAlbum->getId()}">{$oAlbum->getTitle()}</option>
+		            {/foreach}
+	                </select>
+	            </p>
 
-            <input type="hidden" value="" name="image_move_id" id="image_move_id"/>
-            <input type="button" value="{$aLang.plugin.lsgallery.lsgallery_image_move}" class="button" onclick="ls.gallery.moveImage();" />
-            <input type="button" value="{$aLang.plugin.lsgallery.lsgallery_cancel}" class="button jqmClose" />
-        </form>
+                <input type="hidden" value="" name="image_move_id" id="image_move_id"/>
+                <input type="button" value="{$aLang.plugin.lsgallery.lsgallery_image_move}" class="button button-primary" onclick="ls.gallery.moveImage();" />
+                <input type="button" value="{$aLang.plugin.lsgallery.lsgallery_cancel}" class="button jqmClose" />
+            </form>
+	    </div>
+
     </div>
 {/if}
 {include file='paging.tpl' aPaging="$aPaging"}
