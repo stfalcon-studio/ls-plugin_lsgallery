@@ -31,17 +31,13 @@
 }
 
 #current-image-user{
-	border-top:1px solid #dddddd;
 	margin:0 0 10px 0;
 	}
 	#current-image-user .current-image-options{
 		margin:7px 0 0 0;
 		}
 	#current-image-user .inside{
-		border-top:2px solid #fff;
-		background:#f7f8fa;
 		text-align:center;
-		padding:8px 0;
 		}
 		#current-image-user  .confirmed, #current-image-user  .declined, #current-image-user  .remove-own{
 			text-decoration:none;
@@ -420,7 +416,7 @@
 		.block-content .gallery-photos li .gallery-item{
 			margin:0 0 5px 0;
 			}
-a.remove{display:inline-block; width:11px; height:11px; background:url(../images/close.png) 0 0 no-repeat; vertical-align:middle; text-indent:-99999px; position:relative; top:-2px;}
+a.remove{display:inline-block; width:11px; height:11px; background:url(../images/close.png) 0 0 no-repeat; vertical-align:middle; text-indent:-99999px; position:relative; top:-1px;}
 *+ html a.remove, *html a.remove{display:inline; zoom:1;}
 
 .gallery-big-photo{display:block; margin:0 auto;}
@@ -526,7 +522,8 @@ a.remove{display:inline-block; width:11px; height:11px; background:url(../images
 }
 
 .submit-selected-friend {
-    font-weight: bold;margin-right: 10px;
+    /*font-weight: bold;*/
+    margin-right: 10px;
 }
 
 .autocomplete-mark {width: 165px;}

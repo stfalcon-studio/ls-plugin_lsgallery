@@ -53,12 +53,12 @@
     {if $oCurrentImageUser && $oCurrentImageUser->getStatus() =='new'}
         {assign var="oTargetUser" value=$oCurrentImageUser->getTargetUser()}
         <div id="current-image-user">
-			<div class="inside">
+			<div class="inside wrapper-content">
              {$aLang.plugin.lsgallery.lsgallery_uwere_marked}
 				<div class="current-image-options">
 				 <a href="#" class="confirmed" onclick="ls.gallery.changeMark({$oImage->getId()}, {$oCurrentImageUser->getTargetUserId()}, 'confirmed', this); return false;"><span class="ico"></span><span class="txt">{$aLang.plugin.lsgallery.lsgallery_mark_confirm}</span></a>
-				 <a href="#" class="declined" onclick="ls.gallery.changeMark({$oImage->getId()}, {$oCurrentImageUser->getTargetUserId()}, 'declined', this); return false;"><span class="ico"></span><span class="txt">{$aLang.plugin.lsgallery.lsgallery_mark_decline}</span></a>
-				 <a href="#" class="remove-own" onclick="ls.gallery.removeMark({$oImage->getId()}, {$oCurrentImageUser->getTargetUserId()}, this); return false;"><span class="ico"></span><span class="txt">{$aLang.plugin.lsgallery.lsgallery_mark_remove}</span></a>
+                 <a href="#" class="remove-own" onclick="ls.gallery.removeMark({$oImage->getId()}, {$oCurrentImageUser->getTargetUserId()}, this); return false;"><span class="ico"></span><span class="txt">{$aLang.plugin.lsgallery.lsgallery_mark_remove}</span></a>
+				 <a href="#" class="declined" onclick="ls.gallery.changeMark({$oImage->getId()}, {$oCurrentImageUser->getTargetUserId()}, 'declined', this); return false;"><span class="ico"></span><span class="txt">{$aLang.plugin.lsgallery.lsgallery_mark_decline}</span></a>				 
 				</div>
 			</div>
 		</div>
@@ -97,13 +97,13 @@
                 <a id="mark" class="link-dotted" href="#">{$aLang.plugin.lsgallery.lsgallery_image_mark_friend}</a>
                 <div class="mark-name" style="display:none;">
                     <input type="text" class="input-text autocomplete-mark {$oAlbum->getType()}" value=""/>
-                    <a href="#" class="submit-selected-friend">{$aLang.plugin.lsgallery.lsgallery_image_mark}</a>
-                    <a href="#" class="cancel-selected-friend">{$aLang.plugin.lsgallery.lsgallery_cancel}</a>
+                    <a href="#" class="submit-selected-friend link-dotted">{$aLang.plugin.lsgallery.lsgallery_image_mark}</a>
+                    <a href="#" class="cancel-selected-friend link-dotted">{$aLang.plugin.lsgallery.lsgallery_cancel}</a>
                 </div>
             </div>
         {/if}
     {/if}
-    <div class="content">
+    <div class="topic-content">
 		{$oImage->getDescription()|strip_tags}
 	</div>
 
