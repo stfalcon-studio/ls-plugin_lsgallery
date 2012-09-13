@@ -97,8 +97,8 @@
                 <a id="mark" class="link-dotted" href="#">{$aLang.plugin.lsgallery.lsgallery_image_mark_friend}</a>
                 <div class="mark-name" style="display:none;">
                     <input type="text" class="input-text autocomplete-mark {$oAlbum->getType()}" value=""/>
-                    <a href="#" class="submit-selected-friend">{$aLang.lsgallery_image_mark}</a>
-                    <a href="#" class="cancel-selected-friend">{$aLang.lsgallery_cancel}</a>
+                    <a href="#" class="submit-selected-friend">{$aLang.plugin.lsgallery.lsgallery_image_mark}</a>
+                    <a href="#" class="cancel-selected-friend">{$aLang.plugin.lsgallery.lsgallery_cancel}</a>
                 </div>
             </div>
         {/if}
