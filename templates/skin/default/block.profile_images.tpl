@@ -7,7 +7,7 @@
         {/foreach}
     </ul>
     <div class="gallery-albums-right">
-        <a class="gallery-next" href="{router page='gallery'}usermarked/{$oUserProfile->getLogin()}">{$aLang.plugin.lsgallery.lsgallery_albums_show_all}</a>
+        <a class="gallery-next" href="{$oUserProfile->getUserWebPath()}usermarked/">{$aLang.plugin.lsgallery.lsgallery_albums_show_all}</a>
     </div>
 </div>
 {/if}

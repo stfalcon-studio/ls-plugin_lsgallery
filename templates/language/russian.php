@@ -3,6 +3,7 @@
 return array(
     'lsgallery_title' => 'Галерея',
     'lsgallery_albums' => 'Альбомы',
+    'lsgallery_album' => 'Альбом',
     'lsgallery_all' => 'Все',
     'lsgallery_my' => 'Мои',
     'lsgallery_photo' => 'Фотографии',
@@ -121,6 +122,7 @@ return array(
     'lsgallery_ready' => 'Готово',
     'lsgallery_admin_images_recalculated' => 'Пересчитаны данные для фото',
     'lsgallery_admin_data_recalcimage' => 'Пересчитать данные для фото (избраннои и голоса)',
+    'lsgallery_profile_marked' => 'Я на фото',
 );
 
 

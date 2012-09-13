@@ -541,7 +541,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
 
                 $sText = $oViewerLocal->Fetch($sPath);
 
-                $sTitle = $this->Lang_Get('lsgallery_marked_subject');
+                $sTitle = $this->Lang_Get('plugin.lsgallery.lsgallery_marked_subject');
 
                 $oTalk = $this->Talk_SendTalk($sTitle, $sText, $this->oUserCurrent, array($oUserMarked), false, false);
                 /**
