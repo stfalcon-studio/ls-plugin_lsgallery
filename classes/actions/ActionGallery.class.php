@@ -429,15 +429,17 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         }
 
         $iPage = $this->_getPage();
-        $aResult = $this->PluginLsgallery_Image_GetImagesByUserMarked($oUser->getId(), $iPage, Config::Get('plugin.lsgallery.album_per_page'));
-        $aImages = $aResult['collection'];
 
-        $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, Config::Get('plugin.lsgallery.image_per_page'), 4, Router::GetPath('gallery') . 'usermarked/' . $oUser->getLogin());
+	    $iPage = $this->GetParamEventMatch(1, 2) ? $this->GetParamEventMatch(1, 2) : 1;
 
-        $this->SetTemplateAction('photos');
-        $this->Viewer_Assign("iPhotoCount", $aResult['count']);
-        $this->Viewer_Assign('aImages', $aImages);
-        $this->Viewer_Assign('aPaging', $aPaging);
+	    /**
+	     * Выполняем редирект на новый URL
+	     */
+	    $sPage = $iPage == 1 ? '' : "page{$iPage}/";
+
+	    Router::Location($oUser->getUserWebPath().'usermarked/'.$sPage);
+
+
     }
 
     public function EventTag()
@@ -734,7 +736,6 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->Viewer_Assign('sMenuItemSelect', $this->sMenuItemSelect);
         $this->Viewer_Assign('sMenuSubItemSelect', $this->sMenuSubItemSelect);
 
-        $this->Viewer_AppendStyle(Plugin::GetTemplateWebPath('lsgallery') . 'css/gallery-style.css');
         $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'js/gallery.js');
         $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/jquery.tools.min.js');
     }

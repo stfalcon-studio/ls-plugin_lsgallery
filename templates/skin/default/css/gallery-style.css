@@ -533,14 +533,6 @@ a.remove{display:inline-block; width:11px; height:11px; background:url(../images
     background: none;
 }
 
-#move_image_form {
-    left: 35%
-}
-
-#album_to_id {
-    margin-bottom: 15px;
-}
-
 .gallery-loader {
     background:url(../images/loader.gif) 0 3px no-repeat;
     padding-left: 15px;
