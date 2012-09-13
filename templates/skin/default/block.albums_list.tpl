@@ -1,6 +1,6 @@
 {if count($aAlbums)}
 <div class="gallery-albums-preview">
-    <h2 class="page-header">{$aLang.plugin.lsgallery.lsgallery_albums}</h2>
+    <h2 class="header-table">{$aLang.plugin.lsgallery.lsgallery_albums}</h2>
     <ul id="block-albums-list">
         {foreach from=$aAlbums item=oAlbum}
             {assign var="oImage" value=$oAlbum->getCover()}
