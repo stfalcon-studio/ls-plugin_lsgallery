@@ -654,6 +654,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
      */
     public function EventGetImage()
     {
+	    $this->Viewer_SetResponseAjax('json');
         $sId = getRequest('id');
         /* @var $oImage PluginLsgallery_ModuleImage_EntityImage */
         if (!$oImage = $this->PluginLsgallery_Image_GetImageById($sId)) {
@@ -717,6 +718,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
 
         $oViewer->Assign('oUserCurrent', $this->oUserCurrent);
         $oViewer->Assign('oImage', $oImage);
+        $oViewer->Assign('oAlbum', $oAlbum);
         $oViewer->Assign('oPrevImage', $oPrevImage);
         $oViewer->Assign('oNextImage', $oNextImage);
         $oViewer->Assign('bSliderImage', true);
