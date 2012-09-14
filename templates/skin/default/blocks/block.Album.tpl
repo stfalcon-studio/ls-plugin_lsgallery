@@ -32,7 +32,9 @@
 	</div>
     <div class="gallery-user block-content">
         <a class="author" href="{$oUser->getUserWebPath()}">{$oUser->getLogin()}</a>
-        {date_format date=$oAlbum->getDateAdd()}
+        <time datetime="{date_format date=$oAlbum->getDateAdd() format='c'}" title="{date_format date=$oAlbum->getDateAdd() format='j F Y, H:i'}">
+	    {date_format date=$oAlbum->getDateAdd() hours_back="12" minutes_back="60" now="60" day="day H:i" format="j F Y, H:i"}
+        </time>
     </div>
 	<footer>
 		<a href="{router page='my'}{$oUser->getLogin()}/album">{$aLang.plugin.lsgallery.lsgallery_albums_user_all}</a>
