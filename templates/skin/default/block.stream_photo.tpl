@@ -14,7 +14,9 @@
                     <a class="gallery-album-name" href="{$oAlbum->getUrlFull()}">{$oAlbum->getTitle()|escape:'html'}</a>
                     <div class="gallery-album-about">
                         <a class="author" href="{$oUser->getUserWebPath()}">{$oUser->getLogin()}</a>
-                        <span class="date">{date_format date=$oImage->getDateAdd()}</span>
+                        <span class="date"><time datetime="{date_format date=$oImage->getDateAdd() format='c'}" title="{date_format date=$oImage->getDateAdd() format='j F Y, H:i'}">
+	                        {date_format date=$oImage->getDateAdd() hours_back="12" minutes_back="60" now="60" day="day H:i" format="j F Y, H:i"}
+                        </time></span>
                         <span class="rating">
                             {$aLang.plugin.lsgallery.lsgallery_image_vote}:
                             <span class="{if $oVote || ($oUserCurrent && $oImage->getUserId()==$oUserCurrent->getId()) || 

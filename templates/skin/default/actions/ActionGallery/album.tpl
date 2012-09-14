@@ -1,4 +1,4 @@
-{include file='header.tpl' menu="album" menu_content='album'}
+{include file='header.tpl' menu="album"}
 <div class="topic gallery-topic">
     <h2 class="page-header">
         {if count($aImages)}
@@ -18,7 +18,7 @@
     <div class="content">
         {if count($aImages)}
             {include file="`$sTemplatePathLsgallery`photo_list.tpl" aImages=$aImages bSlideshow=true}
-        {else if $oUserCurrent && ($oUserCurrent->isAdministrator() || $oUserCurrent->getId() == $oAlbum->getUserId())}
+        {elseif $oUserCurrent && ($oUserCurrent->isAdministrator() || $oUserCurrent->getId() == $oAlbum->getUserId())}
             <div class="centered">
                 <a id="album-add-images" class="add-images" href="{$oAlbum->getUrlFull('images')}">{$aLang.plugin.lsgallery.lsgallery_album_add_image}</a>
             </div>
