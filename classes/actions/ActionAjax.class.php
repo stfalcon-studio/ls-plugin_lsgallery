@@ -86,14 +86,14 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
          * Максимальное количество фото в album
          */
         if ($oAlbum->getImageCount() >= Config::Get('plugin.lsgallery.count_image_max')) {
-            $this->Message_AddError($this->Lang_Get('lsgallery_images_too_much_images', array('MAX' => Config::Get('plugin.lsgallery.count_image_max'))), $this->Lang_Get('error'));
+            $this->Message_AddError($this->Lang_Get('plugin.lsgallery.lsgallery_images_too_much_images', array('MAX' => Config::Get('plugin.lsgallery.count_image_max'))), $this->Lang_Get('error'));
             return false;
         }
         /**
          * Максимальный размер фото
          */
         if (filesize($_FILES['Filedata']['tmp_name']) > Config::Get('plugin.lsgallery.image_max_size') * 1024) {
-            $this->Message_AddError($this->Lang_Get('lsgallery_images_error_bad_filesize', array('MAX' => Config::Get('module.topic.photoset.photo_max_size'))), $this->Lang_Get('error'));
+            $this->Message_AddError($this->Lang_Get('plugin.lsgallery.lsgallery_images_error_bad_filesize', array('MAX' => Config::Get('module.topic.photoset.photo_max_size'))), $this->Lang_Get('error'));
             return false;
         }
         /**
@@ -109,7 +109,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             if ($oImage = $this->PluginLsgallery_Image_AddImage($oImage)) {
                 $this->Viewer_AssignAjax('file', $oImage->getWebPath('100crop'));
                 $this->Viewer_AssignAjax('id', $oImage->getId());
-                $this->Message_AddNotice($this->Lang_Get('lsgallery_image_added'), $this->Lang_Get('attention'));
+                $this->Message_AddNotice($this->Lang_Get('plugin.lsgallery.lsgallery_image_added'), $this->Lang_Get('attention'));
             } else {
                 $this->Message_AddError($this->Lang_Get('system_error'), $this->Lang_Get('error'));
             }
@@ -143,7 +143,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             }
             $this->PluginLsgallery_Image_DeleteImage($oImage);
 
-            $this->Message_AddNotice($this->Lang_Get('lsgallery_image_deleted'), $this->Lang_Get('attention'));
+            $this->Message_AddNotice($this->Lang_Get('plugin.lsgallery.lsgallery_image_deleted'), $this->Lang_Get('attention'));
             return;
         }
         $this->Message_AddError($this->Lang_Get('system_error'), $this->Lang_Get('error'));
@@ -304,26 +304,30 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
                         'target_publish' => true
                             )
             );
-            if ($this->Favourite_AddFavourite($oFavouriteImageNew)) {
-                $this->Message_AddNoticeSingle($this->Lang_Get('lsgallery_image_favourite_add_ok'), $this->Lang_Get('attention'));
+            $oImage->setCountFavourite($oImage->getCountFavourite() + 1);
+            if ($this->Favourite_AddFavourite($oFavouriteImageNew) && $this->PluginLsgallery_Image_UpdateImage($oImage)) {
+                $this->Message_AddNoticeSingle($this->Lang_Get('plugin.lsgallery.lsgallery_image_favourite_add_ok'), $this->Lang_Get('attention'));
                 $this->Viewer_AssignAjax('bState', true);
+                $this->Viewer_AssignAjax('iCount', $oImage->getCountFavourite());
             } else {
                 $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
                 return;
             }
         }
         if (!$oFavouriteImage && !$iType) {
-            $this->Message_AddErrorSingle($this->Lang_Get('lsgallery_image_favourite_add_no'), $this->Lang_Get('error'));
+            $this->Message_AddErrorSingle($this->Lang_Get('plugin.lsgallery.lsgallery_image_favourite_add_no'), $this->Lang_Get('error'));
             return;
         }
         if ($oFavouriteImage && $iType) {
-            $this->Message_AddErrorSingle($this->Lang_Get('lsgallery_image_favourite_add_already'), $this->Lang_Get('error'));
+            $this->Message_AddErrorSingle($this->Lang_Get('plugin.lsgallery.lsgallery_image_favourite_add_already'), $this->Lang_Get('error'));
             return;
         }
         if ($oFavouriteImage && !$iType) {
-            if ($this->Favourite_DeleteFavourite($oFavouriteImage)) {
-                $this->Message_AddNoticeSingle($this->Lang_Get('lsgallery_image_favourite_del_ok'), $this->Lang_Get('attention'));
+            $oImage->setCountFavourite($oImage->getCountFavourite() - 1);
+            if ($this->Favourite_DeleteFavourite($oFavouriteImage) && $this->PluginLsgallery_Image_UpdateImage($oImage)) {
+                $this->Message_AddNoticeSingle($this->Lang_Get('plugin.lsgallery.lsgallery_image_favourite_del_ok'), $this->Lang_Get('attention'));
                 $this->Viewer_AssignAjax('bState', false);
+                $this->Viewer_AssignAjax('iCount', $oImage->getCountFavourite());
             } else {
                 $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
                 return;
@@ -358,17 +362,17 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         }
 
         if ($oImage->getUserId() == $this->oUserCurrent->getId()) {
-            $this->Message_AddErrorSingle($this->Lang_Get('lsgallery_image_vote_error_self'), $this->Lang_Get('attention'));
+            $this->Message_AddErrorSingle($this->Lang_Get('plugin.lsgallery.lsgallery_image_vote_error_self'), $this->Lang_Get('attention'));
             return;
         }
 
         if ($oImageVote = $this->Vote_GetVote($oImage->getId(), 'image', $this->oUserCurrent->getId())) {
-            $this->Message_AddErrorSingle($this->Lang_Get('lsgallery_image_vote_error_already'), $this->Lang_Get('attention'));
+            $this->Message_AddErrorSingle($this->Lang_Get('plugin.lsgallery.lsgallery_image_vote_error_already'), $this->Lang_Get('attention'));
             return;
         }
 
         if (strtotime($oImage->getDateAdd()) <= time() - Config::Get('acl.vote.image.limit_time')) {
-            $this->Message_AddErrorSingle($this->Lang_Get('lsgallery_image_vote_error_time'), $this->Lang_Get('attention'));
+            $this->Message_AddErrorSingle($this->Lang_Get('plugin.lsgallery.lsgallery_image_vote_error_time'), $this->Lang_Get('attention'));
             return;
         }
 
@@ -379,7 +383,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         }
 
         if (!$this->oUserCurrent->getRating() >= Config::Get('acl.vote.image.rating') && $iValue) {
-            $this->Message_AddErrorSingle($this->Lang_Get('lsgallery_image_vote_error_acl'), $this->Lang_Get('attention'));
+            $this->Message_AddErrorSingle($this->Lang_Get('plugin.lsgallery.lsgallery_image_vote_error_acl'), $this->Lang_Get('attention'));
             return;
         }
 
@@ -395,11 +399,18 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         }
         $oImageVote->setValue($iVal);
         $oImage->setCountVote($oImage->getCountVote() + 1);
+        if ($iValue==1) {
+            $oImage->setCountVoteUp($oImage->getCountVoteUp()+1);
+        } elseif ($iValue==-1) {
+            $oImage->setCountVoteDown($oImage->getCountVoteDown()+1);
+        } elseif ($iValue==0) {
+            $oImage->setCountVoteAbstain($oImage->getCountVoteAbstain()+1);
+        }
         if ($this->Vote_AddVote($oImageVote) && $this->PluginLsgallery_Image_UpdateImage($oImage)) {
             if ($iValue) {
-                $this->Message_AddNoticeSingle($this->Lang_Get('lsgallery_image_vote_ok'), $this->Lang_Get('attention'));
+                $this->Message_AddNoticeSingle($this->Lang_Get('plugin.lsgallery.lsgallery_image_vote_ok'), $this->Lang_Get('attention'));
             } else {
-                $this->Message_AddNoticeSingle($this->Lang_Get('lsgallery_image_vote_ok_abstain'), $this->Lang_Get('attention'));
+                $this->Message_AddNoticeSingle($this->Lang_Get('plugin.lsgallery.lsgallery_image_vote_ok_abstain'), $this->Lang_Get('attention'));
             }
             $this->Viewer_AssignAjax('iRating', $oImage->getRating());
         } else {
@@ -468,7 +479,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
 
         /* @var $oImage PluginLsgallery_ModuleImage_EntityImage */
         if (!$oImage = $this->PluginLsgallery_Image_GetImageById(getRequest('idImage', null, 'post'))) {
-            $this->Message_AddErrorSingle($this->Lang_Get('lsgallery_image_not_found'), $this->Lang_Get('error'));
+            $this->Message_AddErrorSingle($this->Lang_Get('plugin.lsgallery.lsgallery_image_not_found'), $this->Lang_Get('error'));
             return;
         }
 
@@ -485,16 +496,15 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         }
 
         if ($oImageUser = $this->PluginLsgallery_Image_GetImageUser($oUserMarked->getId(), $oImage->getId())) {
-            $this->Message_AddErrorSingle($this->Lang_Get('lsgallery_already_mark_friend'), $this->Lang_Get('error'));
+            $this->Message_AddErrorSingle($this->Lang_Get('plugin.lsgallery.lsgallery_already_mark_friend'), $this->Lang_Get('error'));
             return;
         }
 
         if ($oAlbum->getType() == PluginLsgallery_ModuleAlbum_EntityAlbum::TYPE_PERSONAL) {
-            $this->Message_AddErrorSingle($this->Lang_Get('lsgallery_already_mark_personal'), $this->Lang_Get('error'));
-            return;
+            $this->Message_AddErrorSingle($this->Lang_Get('plugin.lsgallery.lsgallery_disallow_mark_personal'), $this->Lang_Get('error'));
         } else if ($oAlbum->getType() == PluginLsgallery_ModuleAlbum_EntityAlbum::TYPE_FRIEND) {
             if (!$this->ACL_AllowAddUserToImage($this->oUserCurrent, $oUserMarked)) {
-                $this->Message_AddErrorSingle($this->Lang_Get('lsgallery_disallow_mark_friend'), $this->Lang_Get('error'));
+                $this->Message_AddErrorSingle($this->Lang_Get('plugin.lsgallery.lsgallery_disallow_mark_friend'), $this->Lang_Get('error'));
                 return;
             }
         }
@@ -531,7 +541,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
 
                 $sText = $oViewerLocal->Fetch($sPath);
 
-                $sTitle = $this->Lang_Get('lsgallery_marked_subject');
+                $sTitle = $this->Lang_Get('plugin.lsgallery.lsgallery_marked_subject');
 
                 $oTalk = $this->Talk_SendTalk($sTitle, $sText, $this->oUserCurrent, array($oUserMarked), false, false);
                 /**
@@ -548,7 +558,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
 
             $this->Viewer_AssignAjax('sPath', $oUserMarked->getUserWebPath());
             $this->Viewer_AssignAjax('idUser', $oUserMarked->getId());
-            $this->Message_AddNoticeSingle($this->Lang_Get('lsgallery_friend_marked'), $this->Lang_Get('attention'));
+            $this->Message_AddNoticeSingle($this->Lang_Get('plugin.lsgallery.lsgallery_friend_marked'), $this->Lang_Get('attention'));
         } else {
             $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
         }
@@ -566,7 +576,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
 
         /* @var $oImage PluginLsgallery_ModuleImage_EntityImage */
         if (!$oImage = $this->PluginLsgallery_Image_GetImageById(getRequest('idImage', null, 'post'))) {
-            $this->Message_AddErrorSingle($this->Lang_Get('lsgallery_image_not_found'), $this->Lang_Get('error'));
+            $this->Message_AddErrorSingle($this->Lang_Get('plugin.lsgallery.lsgallery_image_not_found'), $this->Lang_Get('error'));
             return;
         }
         /* @var $oUserMarked ModuleUser_EntityUser */
@@ -595,7 +605,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         }
 
         if ($this->PluginLsgallery_Image_ChangeStatusImageUser($oImageUser)) {
-            $this->Message_AddNoticeSingle($this->Lang_Get('lsgallery_marked_changed_' . $sStatus), $this->Lang_Get('attention'));
+            $this->Message_AddNoticeSingle($this->Lang_Get('plugin.lsgallery.lsgallery_marked_changed_' . $sStatus), $this->Lang_Get('attention'));
         } else {
             $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
         }
@@ -613,7 +623,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
 
         /* @var $oImage PluginLsgallery_ModuleImage_EntityImage */
         if (!$oImage = $this->PluginLsgallery_Image_GetImageById(getRequest('idImage', null, 'post'))) {
-            $this->Message_AddErrorSingle($this->Lang_Get('lsgallery_image_not_found'), $this->Lang_Get('error'));
+            $this->Message_AddErrorSingle($this->Lang_Get('plugin.lsgallery.lsgallery_image_not_found'), $this->Lang_Get('error'));
             return;
         }
         /* @var $oUserMarked ModuleUser_EntityUser */
@@ -633,7 +643,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
 
 
         if ($this->PluginLsgallery_Image_DeleteImageUser($oImageUser)) {
-            $this->Message_AddNoticeSingle($this->Lang_Get('lsgallery_mark_removed'), $this->Lang_Get('attention'));
+            $this->Message_AddNoticeSingle($this->Lang_Get('plugin.lsgallery.lsgallery_mark_removed'), $this->Lang_Get('attention'));
         } else {
             $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
         }
@@ -741,7 +751,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
 
         /* @var $oImage PluginLsgallery_ModuleImage_EntityImage */
         if (!$oImage = $this->PluginLsgallery_Image_GetImageById($sImageId)) {
-            $this->Message_AddErrorSingle($this->Lang_Get('lsgallery_image_not_found'), $this->Lang_Get('error'));
+            $this->Message_AddErrorSingle($this->Lang_Get('plugin.lsgallery.lsgallery_image_not_found'), $this->Lang_Get('error'));
             return;
         }
 
@@ -750,7 +760,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
 
         /* @var $oAlbumTo PluginLsgallery_ModuleAlbum_EntityAlbum */
         if (!$oAlbumTo = $this->PluginLsgallery_Album_GetAlbumById($sAlbumId)){
-            $this->Message_AddErrorSingle($this->Lang_Get('lsgallery_image_not_found'), $this->Lang_Get('error'));
+            $this->Message_AddErrorSingle($this->Lang_Get('plugin.lsgallery.lsgallery_image_not_found'), $this->Lang_Get('error'));
             return;
         }
         if (!$this->ACL_AllowAdminAlbumImages($this->oUserCurrent, $oAlbumFrom) || !$this->ACL_AllowAdminAlbumImages($this->oUserCurrent, $oAlbumTo)) {
@@ -759,7 +769,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         }
 
         $this->PluginLsgallery_Image_MoveImage($oImage, $oAlbumFrom, $oAlbumTo);
-        $this->Message_AddNoticeSingle($this->Lang_Get('lsgallery_image_moved'), $this->Lang_Get('attention'));
+        $this->Message_AddNoticeSingle($this->Lang_Get('plugin.lsgallery.lsgallery_image_moved'), $this->Lang_Get('attention'));
     }
 
 }

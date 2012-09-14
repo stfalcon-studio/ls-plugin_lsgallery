@@ -2,8 +2,9 @@
 {include file='header.tpl' menu='people'}
 
 {include file='actions/ActionProfile/profile_top.tpl'}
-{include file='menu.profile_favourite.tpl'}
+{include file='menu.profile_created.tpl'}
 
-{include file="`$sTemplatePathLsgallery`photo_list.tpl"}
-{include file='paging.tpl' aPaging="$aPaging"}
+
+{include file="`$sTemplatePathLsgallery`album_list.tpl"}
+
 {include file='footer.tpl'}

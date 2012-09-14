@@ -17,7 +17,7 @@
         iCountComment=$oImage->getCountComment()
         sDateReadLast=$oImage->getDateRead()
         bAllowNewComment=false
-        sNoticeNotAllow=$aLang.image_comment_notallow
+        sNoticeNotAllow=$aLang.plugin.lsgallery.plugin.lsgallery.lsgallery_image_comment_notallow
         sNoticeCommentAdd=$aLang.topic_comment_add
 	aPagingCmt=$aPagingCmt}
 </div>

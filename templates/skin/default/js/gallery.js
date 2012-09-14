@@ -28,10 +28,10 @@ if (ls.vote) {
 ls.blocks  = ls.blocks || {};
 
 if (ls.blocks) {
-    ls.blocks.options.type.block_gallery_item_new = {
+    ls.blocks.options.type.block_gallery_new_images = {
         url: aRouter.galleryajax + 'getnewimages/'
     };
-    ls.blocks.options.type.block_gallery_item_best = {
+    ls.blocks.options.type.block_gallery_best_images = {
         url: aRouter.galleryajax + 'getbestimages/'
     };
 }
@@ -96,14 +96,14 @@ ls.gallery = (function ($) {
         jQuery('#gallery_image_empty').remove();
         if (!response.bStateError) {
             var template = '<li id="image_' + response.id + '"><img class="image-100" src="' + response.file + '" alt="image" />'
-                + '<label class="description">' + ls.lang.get('lsgallery_image_description') + '</label><br/>'
+                + '<label class="description">' + ls.lang.get('plugin.lsgallery.lsgallery_image_description') + '</label><br/>'
                 + '<textarea onBlur="ls.gallery.setImageDescription(' + response.id + ', this.value)"></textarea><br />'
-                + '<label class="tags">' + ls.lang.get('lsgallery_image_tags') + '</label><br/>'
+                + '<label class="tags">' + ls.lang.get('plugin.lsgallery.lsgallery_image_tags') + '</label><br/>'
                 + '<input type="text" class="autocomplete-image-tags" onBlur="ls.gallery.setImageTags(' + response.id + ', this.value)"/><br/>'
                 + '<div class="options-line"><span class="photo-preview-state"><span id="image_preview_state_' + response.id + '">'
-                + '<a href="javascript:ls.gallery.setPreview(' + response.id + ')" class="mark-as-preview">' + ls.lang.get('lsgallery_album_set_image_cover') + '</a></span><br/>'
-                + '<a href="#" class="image-move">' + ls.lang.get('lsgallery_image_move_album') + '</a></span>'
-                + '<a href="javascript:ls.gallery.deleteImage(' + response.id + ')" class="image-delete">' + ls.lang.get('lsgallery_album_image_delete') + '</a>'
+                + '<a href="javascript:ls.gallery.setPreview(' + response.id + ')" class="mark-as-preview">' + ls.lang.get('plugin.lsgallery.lsgallery_album_set_image_cover') + '</a></span><br/>'
+                + '<a href="#" class="image-move">' + ls.lang.get('plugin.lsgallery.lsgallery_image_move_album') + '</a></span>'
+                + '<a href="javascript:ls.gallery.deleteImage(' + response.id + ')" class="image-delete">' + ls.lang.get('plugin.lsgallery.lsgallery_album_image_delete') + '</a>'
                 + '</div></li>';
             jQuery('#swfu_images').prepend(template);
             ls.autocomplete.add($(".autocomplete-image-tags"), aRouter['galleryajax'] + 'autocompleteimagetag/', true);
@@ -114,7 +114,7 @@ ls.gallery = (function ($) {
     };
     // process delete image
     this.deleteImage = function (id) {
-        if (!confirm(ls.lang.get('lsgallery_album_image_delete_confirm'))) {
+        if (!confirm(ls.lang.get('plugin.lsgallery.lsgallery_album_image_delete_confirm'))) {
             return;
         }
         ls.ajax(aRouter.galleryajax + 'deleteimage', {
@@ -137,10 +137,10 @@ ls.gallery = (function ($) {
                 $('.marked-as-preview').each(function (index, el) {
                     jQuery(el).removeClass('marked-as-preview');
                     var tmpId = $(el).attr('id').slice($(el).attr('id').lastIndexOf('_') + 1);
-                    $('#image_preview_state_' + tmpId).html('<a href="javascript:ls.gallery.setPreview(' + tmpId + ')" class="mark-as-preview">' + ls.lang.get('lsgallery_album_set_image_cover') + '</a>');
+                    $('#image_preview_state_' + tmpId).html('<a href="javascript:ls.gallery.setPreview(' + tmpId + ')" class="mark-as-preview">' + ls.lang.get('plugin.lsgallery.lsgallery_album_set_image_cover') + '</a>');
                 });
                 $('#image_' + id).addClass('marked-as-preview');
-                $('#image_preview_state_' + id).html(ls.lang.get('lsgallery_album_image_cover'));
+                $('#image_preview_state_' + id).html(ls.lang.get('plugin.lsgallery.lsgallery_album_image_cover'));
             } else {
                 ls.msg.error(response.sMsgTitle, response.sMsg);
             }
@@ -150,7 +150,7 @@ ls.gallery = (function ($) {
 
     // set image descr
     this.setImageDescription = function (id, text) {
-        jQuery('#image_' + id + ' label.description').html(ls.lang.get('lsgallery_image_description')).removeClass('gallery-loader-success').addClass('gallery-loader');;
+        jQuery('#image_' + id + ' label.description').html(ls.lang.get('plugin.lsgallery.lsgallery_image_description')).removeClass('gallery-loader-success').addClass('gallery-loader');;
         ls.ajax(aRouter.galleryajax + 'setimagedescription', {
             'id': id,
             'text': text
@@ -159,7 +159,7 @@ ls.gallery = (function ($) {
                 ls.msg.error('Error', 'Please try again later');
                 jQuery('#image_' + id + 'label.description').removeClass('gallery-loader');
             } else {
-                jQuery('#image_' + id + ' label.description').html(ls.lang.get('lsgallery_image_description_updated')).removeClass('gallery-loader').addClass('gallery-loader-success');
+                jQuery('#image_' + id + ' label.description').html(ls.lang.get('plugin.lsgallery.lsgallery_image_description_updated')).removeClass('gallery-loader').addClass('gallery-loader-success');
             }
         }, {
             error : function () {
@@ -173,7 +173,7 @@ ls.gallery = (function ($) {
             return;
         }
 
-        jQuery('#image_' + id + ' label.tags').html(ls.lang.get('lsgallery_image_tags')).removeClass('gallery-loader-success').addClass('gallery-loader');
+        jQuery('#image_' + id + ' label.tags').html(ls.lang.get('plugin.lsgallery.lsgallery_image_tags')).removeClass('gallery-loader-success').addClass('gallery-loader');
         ls.ajax(aRouter.galleryajax + 'setimagetags', {
             'id': id,
             'tags': text
@@ -182,7 +182,7 @@ ls.gallery = (function ($) {
                     ls.msg.error('Error', 'Please try again later');
                     jQuery('#image_' + id + 'label.tags').removeClass('gallery-loader');
                 } else {
-                    jQuery('#image_' + id + ' label.tags').html(ls.lang.get('lsgallery_image_tags_updated')).removeClass('gallery-loader').addClass('gallery-loader-success');
+                    jQuery('#image_' + id + ' label.tags').html(ls.lang.get('plugin.lsgallery.lsgallery_image_tags_updated')).removeClass('gallery-loader').addClass('gallery-loader-success');
                 }
             }, {
                 error : function () {
@@ -247,6 +247,20 @@ ls.gallery = (function ($) {
 var ias = null;
 
 jQuery('document').ready(function(){
+    $('.js-infobox-vote-image').poshytip({
+        content: function() {
+            var id = $(this).attr('id').replace('vote_area_image_','vote-info-topic-');
+            return $('#'+id).html();
+        },
+        className: 'infobox-topic',
+        alignTo: 'target',
+        alignX: 'center',
+        alignY: 'top',
+        offsetX: 2,
+        offsetY: 5,
+        liveEvents: true,
+        showTimeout: 100
+    });
 
     // перемещаем изображение в другой альбом
     jQuery('#move_image_form').jqm();
@@ -263,6 +277,8 @@ jQuery('document').ready(function(){
 
     // autocomplete for image tags
     ls.autocomplete.add(jQuery(".autocomplete-image-tags"), aRouter.galleryajax + 'autocompleteimagetag/', true);
+    ls.autocomplete.add(jQuery(".autocomplete-image-tags-single"), aRouter.galleryajax + 'autocompleteimagetag/', false);
+
     // init fancybox for gallery
     if (jQuery('a.gal-expend').length) {
         jQuery('a.gal-expend').fancybox();
@@ -295,11 +311,7 @@ jQuery('document').ready(function(){
                 }
             });
     });
-    // change tab in block
-    jQuery('[id^="block_gallery_item"]').live('click', function () {
-        ls.blocks.load(this, 'block_gallery');
-        return false;
-    });
+    ls.blocks.init('block_gallery', {group_items: true});
     // add tooltip
     jQuery('#stream-images a.tooltiped').tooltip({
         position: "bottom center",
