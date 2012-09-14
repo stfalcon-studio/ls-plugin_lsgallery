@@ -17,7 +17,7 @@ class PluginLsgallery_HookGallery extends Hook
 
         $this->AddHook('template_write_item', 'MenuWriteItem');
 
-        $this->AddHook('template_profile_sidebar_menu_item_last', 'ProfileUserMarked');
+        $this->AddHook('template_profile_sidebar_menu_item_first', 'ProfileUserMarked');
 
         $this->AddHook('template_profile_whois_item_after_privat', 'ProfilePhotoMarked');
         $this->AddHook('template_profile_whois_item_after_privat', 'ProfileAlbums');
