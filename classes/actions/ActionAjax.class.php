@@ -714,7 +714,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         $oPrevImage = $this->PluginLsgallery_Image_GetPrevImage($oImage);
         $oNextImage = $this->PluginLsgallery_Image_GetNextImage($oImage);
 
-        $this->Viewer_AssignAjax('sImageUrl', $oImage->getWebPath('600'));
+        $this->Viewer_AssignAjax('sImageUrl', $oImage->getWebPath('638'));
 
         $oViewer->Assign('oUserCurrent', $this->oUserCurrent);
         $oViewer->Assign('oImage', $oImage);
