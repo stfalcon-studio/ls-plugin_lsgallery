@@ -13,7 +13,7 @@
 ТРЕБОВНИЯ:
 LS 1.0, jQuery, адаптированно под Sinyo
 
-Версия для LS 0.5 находиться в ветке ls-0.5.1
+Версия для LS 0.5 находиться в ветке ls-0.5.1.  <a href="https://github.com/stfalcon-studio/ls-plugin_lsgallery/zipball/ls-0.5.1">Скачать</a>
 
 Для апдейта читайте UPDATE.md
 
