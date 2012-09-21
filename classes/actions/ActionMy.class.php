@@ -1,12 +1,17 @@
 <?php
 
+/**
+ * PluginLsgallery_ActionMy
+ *
+ * @deprecated In future LS version will be rm
+ */
 class PluginLsgallery_ActionMy extends PluginLsgallery_Inherit_ActionMy
 {
 
     protected function RegisterEvent()
     {
         parent::RegisterEvent();
-        $this->AddEventPreg('/^.+$/i', '/^album$/i', '/^(page(\d+))?$/i', 'EventAlbums');
+        $this->AddEventPreg('/^.+$/i', '/^album$/i', '/^(page([1-9]\d{0,5}))?$/i', 'EventAlbums');
     }
 
     protected function EventAlbums()
@@ -19,26 +24,12 @@ class PluginLsgallery_ActionMy extends PluginLsgallery_Inherit_ActionMy
 
         $iPage = $this->GetParamEventMatch(1, 2) ? $this->GetParamEventMatch(1, 2) : 1;
 
-        $aResult = $this->PluginLsgallery_Album_GetAlbumsPersonalByUser($this->oUserProfile->getId(), $iPage, Config::Get('plugin.lsgallery.album_per_page'));
-        $aAlbums = $aResult['collection'];
+        /**
+         * Выполняем редирект на новый URL, в новых версиях LS экшен "my" будет удален
+         */
+        $sPage=$iPage==1 ? '' : "page{$iPage}/";
+		Router::Location($this->oUserProfile->getUserWebPath().'created/albums/'.$sPage);
 
-        $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, Config::Get('plugin.lsgallery.album_per_page'), 4, Router::GetPath('my') . $this->oUserProfile->getLogin() . '/album');
-
-        $this->Viewer_Assign('aAlbums', $aAlbums);
-        $this->Viewer_Assign('aPaging', $aPaging);
-
-        $this->SetTemplateAction('albums');
-    }
-
-    public function EventShutdown()
-    {
-        if (!$this->oUserProfile) {
-            return;
-        }
-        $this->Viewer_AppendStyle(Plugin::GetTemplateWebPath('lsgallery') . 'css/gallery-style.css');
-        $aResult = $this->PluginLsgallery_Album_GetCountAlbumsPersonalByUser($this->oUserProfile->getId());
-        $this->Viewer_Assign('iCountAlbumUser', $aResult);
-        parent::EventShutdown();
     }
 
 }

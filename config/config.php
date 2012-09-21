@@ -62,7 +62,7 @@ return array(
     'count_image_max' => 100, // макс колво картинок пользователя
     'priority_album_block' => 110,
     'size' => array(array(  // параметры ресайза изображения
-            'w' => 600,
+            'w' => 638,
             'h' => null,
             'crop' => false,
         ),

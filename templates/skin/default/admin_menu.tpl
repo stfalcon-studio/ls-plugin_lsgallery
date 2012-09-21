@@ -1,0 +1,1 @@
+<li><a href="{router page="admin"}recalcimagedata/?security_ls_key={$LIVESTREET_SECURITY_KEY}">{$aLang.plugin.lsgallery.lsgallery_admin_data_recalcimage}</a></li>

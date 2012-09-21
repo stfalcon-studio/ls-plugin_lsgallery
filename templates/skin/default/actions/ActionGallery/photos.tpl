@@ -1,11 +1,9 @@
-{include file='header.tpl' menu="album"}
+{include file='header.tpl' menu="album" menu_content='album'}
 <div class="topic gallery-topic">
     {if $sMenuSubItemSelect=='new'}
-        <h1 class="title">{$aLang.lsgallery_photo_new_title}</h1>
-    {else if $sMenuSubItemSelect=='best'}
-        <h1 class="title">{$aLang.lsgallery_photo_best_title}</h1>
-    {else}
-        <h1 class="title">{$aLang.lsgallery_image_user_marked}{$iPhotoCount} {$iPhotoCount|declension:$aLang.lsgallery_declension_images}</h1>
+        <h2 class="page-header">{$aLang.plugin.lsgallery.lsgallery_photo_new_title}</h2>
+    {elseif $sMenuSubItemSelect=='best'}
+        <h2 class="page-header">{$aLang.plugin.lsgallery.lsgallery_photo_best_title}</h2>
     {/if}
     <div class="content">
         {include file="`$sTemplatePathLsgallery`photo_list.tpl" aImage=$aImage bSlideshow=false}

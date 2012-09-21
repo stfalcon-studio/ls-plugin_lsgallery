@@ -3,6 +3,7 @@
 return array(
     'lsgallery_title' => 'Галерея',
     'lsgallery_albums' => 'Альбомы',
+    'lsgallery_album' => 'Альбом',
     'lsgallery_all' => 'Все',
     'lsgallery_my' => 'Мои',
     'lsgallery_photo' => 'Фотографии',
@@ -90,7 +91,7 @@ return array(
     'lsgallery_image_move_album' => 'Переместить в другой альбом',
     'lsgallery_image_move' => 'Переместить',
     'lsgallery_image_moved' => 'Изображение перемещено',
-    'image_comment_notallow' => 'Автор изображения запретил добавлять комментарии ',
+    'lsgallery_image_comment_notallow' => 'Автор изображения запретил добавлять комментарии ',
 
     'lsgallery_album_slideshow' => 'Показать слайдшоу',
 
@@ -98,7 +99,7 @@ return array(
     'lsgallery_cancel' => 'Отмена',
     'lsgallery_save' => 'Сохранить',
 
-    'user_menu_profile_favourites_images' => 'Избранные фото',
+    'lsgallery_user_menu_profile_favourites_images' => 'Избранные фото',
 
     'lsgallery_image_mark' => 'Добавить',
     'lsgallery_image_mark_friend' => 'Отметить человека',
@@ -108,17 +109,20 @@ return array(
     'lsgallery_friend_marked' => 'Пользователь отмечен на картинке',
     'lsgallery_already_mark_friend' => 'Пользователь уже отмечен на картинке',
     'lsgallery_marked_subject' => 'Вас отметили на фото',
-    'lsgallery_marked_changed_declined' => 'Вы отклонили омтетку на фото',
+    'lsgallery_marked_changed_declined' => 'Вы отклонили отметку на фото',
     'lsgallery_marked_changed_confirmed' => 'Вы одобрили отметку на фото',
     'lsgallery_uwere_marked' => 'Вас отметили на этой фотографии',
     'lsgallery_mark_confirm' => 'Подтвердить',
-    'lsgallery_mark_decline' => 'Отклонить',
-    'lsgallery_mark_remove' => 'Удалить',
+    'lsgallery_mark_decline' => 'Больше не отмечать меня на этом фото',
+    'lsgallery_mark_remove' => 'Удалить отметку',
     'lsgallery_mark_removed' => 'Отметка удалена',
     'lsgallery_declension_images' => 'фотографии;фотографиях;фотографиях',
     'lsgallery_image_user_marked' => 'Пользователь отмечен на ',
     'lsgallery_image_mark_notice' => 'Выделите область, где изображен человек, и он будет подписан на фотографии',
-    'lsgallery_ready' => 'Готово'
+    'lsgallery_ready' => 'Готово',
+    'lsgallery_admin_images_recalculated' => 'Пересчитаны данные для фото',
+    'lsgallery_admin_data_recalcimage' => 'Пересчитать данные для фото (избраннои и голоса)',
+    'lsgallery_profile_marked' => 'Я на фото',
 );
 
 
