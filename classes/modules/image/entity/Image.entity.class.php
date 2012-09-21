@@ -68,9 +68,37 @@ class PluginLsgallery_ModuleImage_EntityImage extends Entity
         return number_format(round($this->_aData['image_rating'], 2), 0, '.', '');
     }
 
-    public function getCountVote()
-    {
-        return $this->_aData['image_count_vote'];
+    /**
+     * Возвращает число проголосовавших за топик
+     *
+     * @return int|null
+     */
+    public function getCountVote() {
+        return $this->_getDataOne('image_count_vote');
+    }
+    /**
+     * Возвращает число проголосовавших за топик положительно
+     *
+     * @return int|null
+     */
+    public function getCountVoteUp() {
+        return $this->_getDataOne('image_count_vote_up');
+    }
+    /**
+     * Возвращает число проголосовавших за топик отрицательно
+     *
+     * @return int|null
+     */
+    public function getCountVoteDown() {
+        return $this->_getDataOne('image_count_vote_down');
+    }
+    /**
+     * Возвращает число воздержавшихся при голосовании за топик
+     *
+     * @return int|null
+     */
+    public function getCountVoteAbstain() {
+        return $this->_getDataOne('image_count_vote_abstain');
     }
 
     public function getCountFavourite()
@@ -83,7 +111,10 @@ class PluginLsgallery_ModuleImage_EntityImage extends Entity
         if ($this->getFilename()) {
             if ($sWidth) {
                 $aPathInfo = pathinfo($this->getFilename());
-                return Config::Get('path.root.web') . $aPathInfo['dirname'] . '/' . $aPathInfo['filename'] . '_' . $sWidth . '.' . $aPathInfo['extension'];
+                $sFilePath = $aPathInfo['dirname'] . '/' . $aPathInfo['filename'] . '_' . $sWidth . '.' . $aPathInfo['extension'];
+                $this->PluginLsgallery_Image_CheckImageExist($this->getFilename(), $sWidth);
+
+                return Config::Get('path.root.web') . $sFilePath;
             } else {
                 return Config::Get('path.root.web') . $this->getFilename();
             }
@@ -113,6 +144,17 @@ class PluginLsgallery_ModuleImage_EntityImage extends Entity
         }
 
         return $sPath;
+    }
+
+    /**
+     * @param string $sKey
+     * @return mixed|null
+     */
+    public function _getDataOne($sKey) {
+        if(array_key_exists($sKey,$this->_aData)) {
+            return $this->_aData[$sKey];
+        }
+        return null;
     }
 
     public function setId($data)
@@ -179,6 +221,36 @@ class PluginLsgallery_ModuleImage_EntityImage extends Entity
     public function setCountFavourite($data)
     {
         $this->_aData['image_count_favourite'] = $data;
+    }
+
+    /**
+     * Устанавливает количество проголосовавших в плюс
+     *
+     * @param int $data
+     */
+    public function setCountVoteUp($data)
+    {
+        $this->_aData['image_count_vote_up'] = $data;
+    }
+
+    /**
+     * Устанавливает количество проголосовавших в минус
+     *
+     * @param int $data
+     */
+    public function setCountVoteDown($data)
+    {
+        $this->_aData['image_count_vote_down'] = $data;
+    }
+
+    /**
+     * Устанавливает число воздержавшихся
+     *
+     * @param int $data
+     */
+    public function setCountVoteAbstain($data)
+    {
+        $this->_aData['image_count_vote_abstain'] = $data;
     }
 
 }

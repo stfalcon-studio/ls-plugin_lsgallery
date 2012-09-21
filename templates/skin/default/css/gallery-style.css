@@ -31,17 +31,13 @@
 }
 
 #current-image-user{
-	border-top:1px solid #dddddd;
 	margin:0 0 10px 0;
 	}
 	#current-image-user .current-image-options{
 		margin:7px 0 0 0;
 		}
 	#current-image-user .inside{
-		border-top:2px solid #fff;
-		background:#f7f8fa;
 		text-align:center;
-		padding:8px 0;
 		}
 		#current-image-user  .confirmed, #current-image-user  .declined, #current-image-user  .remove-own{
 			text-decoration:none;
@@ -121,10 +117,10 @@
 			background:url(../images/pixel.png);
 			margin:0 0 10px 0;
 			}
-.gallery-topic .title{
+.gallery-topic .page-header{
 	overflow:hidden;
 	}
-	.gallery-topic .title #gallery-slideshow{
+	.gallery-topic .page-header #gallery-slideshow{
 		float:right;
 		font-size:11px;
 		margin:3px 0 0 0;
@@ -132,7 +128,7 @@
 	.block-content .gallery-item{
 		float:left;
 		padding:5px;
-		border:1px solid #cdcdcd;
+		border:1px solid #dce1e3;
 		-webkit-border-radius:3px;
 		-moz-border-radius:3px;
 		border-radius:3px;
@@ -141,27 +137,31 @@
 		.block-content .gallery-item img{
 			display:block;
 			}
-.gallery-block a.user{
-	font-weight: bold;
-	color: #999;
-	text-decoration: none;
+.gallery-block a.author{
+    color: #4C4C4C;
+    text-decoration: underline;
+    font-weight: normal;
+    font-size: 11px;
 	}
-.gallery-user a.user, .gallery-albums-list a.user, .gallery-album-about a.user, #selected-people li a.user{
+.user:before, .ls-user:before {
+	z-index: 1;
+}
+/*.gallery-user a.user, .gallery-albums-list a.user, .gallery-album-about a.user, #selected-people li a.user{
 	font-weight: bold;
 	color: #70AAE0;
 	text-decoration: none;
 	font-size: 12px;
-	}
+	}*/
 .gallery-big-photo {
-	max-width: 608px;
+	max-width: 638px;
 	width: 100%;
 	height: auto;
 	}
 .topic.gallery-topic{
 	padding-left:0px;
 	}
-.gallery-user{
-	padding:15px 0;
+.block.block-type-blog .gallery-user{
+	padding-top: 10px;
 	font-size:11px;
 	color:#999999;
 	clear:both;
@@ -173,7 +173,7 @@
 	position:relative;
 	}
 	.gal-prev .gallery-bubble{
-
+		
 		}
 		.gal-prev .gallery-bubble .gallery-bubble-content{
 			width:140px;
@@ -194,6 +194,9 @@
 		top:10px;
 		padding-top:10px;*/
 		}
+.gallery-bubble.tooltip {
+	z-index: 100;
+}
 .gallery-navigation{
 	padding:10px 0 15px;
 	overflow:hidden;
@@ -259,7 +262,7 @@
 			}
 		.gallery-albums-preview li .bk{
 			float:left;
-			border:1px solid #cdcdcd;
+			border:1px solid #dce1e3;
 			-webkit-border-radius:3px;
 			-moz-border-radius:3px;
 			border-radius:3px;
@@ -271,7 +274,7 @@
 			.gallery-albums-preview li  a{
 				float:left;
 				padding:5px;
-				border:1px solid #cdcdcd;
+				border:1px solid #dce1e3;
 				-webkit-border-radius:3px;
 				-moz-border-radius:3px;
 				border-radius:3px;
@@ -289,6 +292,7 @@
 	}
 	.gallery-albums-list ul{
 		margin-left:0px !important;
+		margin-right: -13px;
 		}
 		.gallery-albums-list ul#albums li{
 			display:inline-block;
@@ -298,19 +302,19 @@
 			}
 			.gallery-albums-list ul li .bk{
 				float:left;
-				border:1px solid #cdcdcd;
+				border:1px solid #dce1e3;
 				-webkit-border-radius:3px;
 				-moz-border-radius:3px;
 				border-radius:3px;
 				width:110px;
 				height:110px;
 				clear:both;
-				margin:0 0 20px -12px;
+				margin:0 0 15px -12px;
 				}
 				.gallery-albums-list ul li .bk a{
 					float:left;
 					padding:5px;
-					border:1px solid #cdcdcd;
+					border:1px solid #dce1e3;
 					-webkit-border-radius:3px;
 					-moz-border-radius:3px;
 					border-radius:3px;
@@ -328,16 +332,17 @@
 	}
 	.gallery-photos-list ul{
 		margin-left:0px !important;
+		margin-right: -28px;
 		}
 		.gallery-photos-list #album-images li{
 			display:inline-block;
-			margin:0 2px 2px 0;
+			margin:0 16px 16px 0;
             padding:0;
 			}
 			.gallery-photos-list li a{
 				float:left;
 				padding:5px;
-				border:1px solid #cdcdcd;
+				border:1px solid #dce1e3;
 				-webkit-border-radius:3px;
 				-moz-border-radius:3px;
 				border-radius:3px;
@@ -391,8 +396,7 @@
 					color:#999999;
 					}
 			.gallery-bubble .gallery-bubble-content .gallery-album-name{
-				color:#aaaaaa;
-				font-size:11px;
+				font-size:12px;
 				}
 			.gallery-bubble .gallery-bubble-content h3{
 				font-size:16px;
@@ -403,17 +407,17 @@
 
 			}
 	.block-content .gallery-photos li{
-		width:110px;
+		width:106px;
 		display:inline-block;
-		margin:0 10px 10px 0;
+		margin:0 10px 20px 0;
 		}
 /*		.block-content .gallery-photos li:hover .gallery-bubble{
 			display:block;
 			}*/
 		.block-content .gallery-photos li .gallery-item{
-			margin:0;
+			margin:0 0 5px 0;
 			}
-a.remove{display:inline-block; width:11px; height:11px; background:url(../images/close.png) 0 0 no-repeat; vertical-align:middle; text-indent:-99999px; position:relative; top:-2px;}
+a.remove{display:inline-block; width:11px; height:11px; background:url(../images/close.png) 0 0 no-repeat; vertical-align:middle; text-indent:-99999px; position:relative; top:-1px;}
 *+ html a.remove, *html a.remove{display:inline; zoom:1;}
 
 .gallery-big-photo{display:block; margin:0 auto;}
@@ -437,19 +441,17 @@ a.remove{display:inline-block; width:11px; height:11px; background:url(../images
     padding-left: 16px;
 }
 
-#swfu_images label {
-    color: black;
-}
-
-#album-images-admin {background: transparent;}
+/*#album-images-admin {background: transparent;}*/
 #album-images-admin .topic-photo-upload-rules p {margin-top: -8px;}
-#album-images-admin ul {margin-left: 10%;}
+#album-images-admin ul {margin-top: 40px;}
 #album-images-admin ul li {margin-bottom: 30px; padding-left: 120px;}
-#album-images-admin ul li textarea {width: 80%; }
+#album-images-admin ul li textarea {width: 480px; }
 #album-images-admin ul li .options-line{width:81%; padding:3px 0; overflow:hidden;}
 #album-images-admin ul li .options-line .image-delete{margin:0px; float:right; text-decoration: underline;}
 #album-images-admin ul li a.mark-as-preview {display: inline; text-decoration: underline;}
-.autocomplete-image-tags {width: 80%; border: 1px solid #DDD; padding:3px; }
+.topic-photo-upload ul li img {top: 18px;}
+.topic-photo-upload ul li label {color: #000;}
+.autocomplete-image-tags {width: 472px; border: 1px solid #DDD; padding:3px; }
 
 .mark-name.current{
     position:absolute;
@@ -501,7 +503,7 @@ a.remove{display:inline-block; width:11px; height:11px; background:url(../images
 }
 
 #select-people-notice {
-    background: #F7F8F9;
+    background: #F8FBFE;
     padding: 10px 0;
     min-height: 18px;
 }
@@ -515,9 +517,14 @@ a.remove{display:inline-block; width:11px; height:11px; background:url(../images
     float: right;
     padding-right: 15px;
 }
+#select-friends {
+	/*padding: 5px;*/
+	margin-bottom: 10px;
+}
 
 .submit-selected-friend {
-    font-weight: bold;margin-right: 10px;
+    /*font-weight: bold;*/
+    margin-right: 10px;
 }
 
 .autocomplete-mark {width: 165px;}
@@ -527,20 +534,24 @@ a.remove{display:inline-block; width:11px; height:11px; background:url(../images
     background: none;
 }
 
-#move_image_form {
-    left: 35%
-}
-
-#album_to_id {
-    margin-bottom: 15px;
-}
-
 .gallery-loader {
-    background:url(../images/loader.gif) 0 0 no-repeat;
+    background:url(../images/loader.gif) 0 3px no-repeat;
     padding-left: 15px;
 }
 
 .gallery-loader-success {
-    background:url(../images/saved.png) 0 0 no-repeat;
+    background:url(../images/saved.png) 0 3px no-repeat;
     padding-left: 15px;
 }
+.block-content .gallery-item.album-cover {
+    border-radius: 2px;
+    margin: 0 13px 13px 0;
+    padding: 3px;
+}
+.block-content .gallery-item.album-cover .image-48 {
+	width: 48px;
+	height: 48px;
+}
+
+.modal.modal-write .write-list li.write-item-type-album .write-item-image { background-position: -460px 0; }
+.modal.modal-write .write-list li.write-item-type-album:hover  .write-item-image { background-position: -460px -115px; }

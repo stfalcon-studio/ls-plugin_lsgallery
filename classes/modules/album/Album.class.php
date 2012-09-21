@@ -273,8 +273,9 @@ class PluginLsgallery_ModuleAlbum extends Module
 
         if ($this->oUserCurrent) {
             $aFriends = $this->User_GetUsersFriend($this->oUserCurrent->getId());
-            if (count($aFriends)) {
-                $aFilter['album_type']['friend'] = array_keys($aFriends);
+
+            if ($aFriends['count']) {
+                $aFilter['album_type']['friend'] = array_keys($aFriends['collection']);
             }
         }
         return $this->GetAlbumsByFilter($aFilter, $iPage, $iPerPage);
@@ -347,8 +348,8 @@ class PluginLsgallery_ModuleAlbum extends Module
                 unset($aFilter['album_type']);
             } else {
                 $aFriends = $this->User_GetUsersFriend($this->oUserCurrent->getId());
-                if (count($aFriends)) {
-                    $aFilter['album_type']['friend'] = array_keys($aFriends);
+                if ($aFriends['count']) {
+                    $aFilter['album_type']['friend'] = array_keys($aFriends['collection']);
                 }
             }
         }
@@ -369,8 +370,8 @@ class PluginLsgallery_ModuleAlbum extends Module
                 unset($aFilter['album_type']);
             } else {
                 $aFriends = $this->User_GetUsersFriend($this->oUserCurrent->getId());
-                if (count($aFriends)) {
-                    $aFilter['album_type']['friend'] = array_keys($aFriends);
+                if ($aFriends['count']) {
+                    $aFilter['album_type']['friend'] = array_keys($aFriends['collection']);
                 }
             }
         }
