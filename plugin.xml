@@ -9,7 +9,7 @@
 	<homepage>http://stfalcon.com</homepage>
 	<version>0.3.0</version>
 	<requires>
-		<livestreet>1.0.0</livestreet>
+		<livestreet>1.0</livestreet>
 		<plugins>
 		</plugins>
 	</requires>
