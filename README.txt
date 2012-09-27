@@ -15,7 +15,7 @@
 --------------
 
 v0.3.0
-- Плагин адаптирован для работы с LiveStreet v1.0.1 и темы synio
+- Плагин адаптирован для работы с LiveStreet v1.0 и темы synio
 
 v0.2.2
 - Это последняя версия, которая работает с LiveStreet v0.5.1. Скачать её можно по ссылке https://github.com/stfalcon-studio/ls-plugin_lsgallery/zipball/ls-0.5.1
