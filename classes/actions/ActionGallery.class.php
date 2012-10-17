@@ -140,7 +140,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         }
 
         if (!$this->ACL_CanCreateAlbum($this->oUserCurrent)) {
-            $this->Message_AddErrorSingle($this->Lang_Get('lsgallery_albums_no_rating'), $this->Lang_Get('error'));
+            $this->Message_AddErrorSingle($this->Lang_Get('plugin.lsgallery.lsgallery_albums_no_rating'), $this->Lang_Get('error'));
             return Router::Action('error');
         }
 
