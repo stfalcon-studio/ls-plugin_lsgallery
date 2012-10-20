@@ -23,7 +23,7 @@ class PluginLsgallery_ModuleNotify extends PluginLsgallery_Inherit_ModuleNotify
                         'user_mail' => $oUserTo->getMail(),
                         'user_login' => $oUserTo->getLogin(),
                         'notify_text' => $sText,
-                        'notify_subject' => $this->Lang_Get('lsgallery_marked_subject'),
+                        'notify_subject' => $this->Lang_Get('plugin.lsgallery.lsgallery_marked_subject'),
                         'date_created' => date("Y-m-d H:i:s"),
                         'notify_task_status' => self::NOTIFY_TASK_STATUS_NULL,
                             )
@@ -38,7 +38,7 @@ class PluginLsgallery_ModuleNotify extends PluginLsgallery_Inherit_ModuleNotify
              * Отправляем мыло
              */
             $this->Mail_SetAdress($oUserTo->getMail(), $oUserTo->getLogin());
-            $this->Mail_SetSubject($this->Lang_Get('lsgallery_marked_subject'));
+            $this->Mail_SetSubject($this->Lang_Get('plugin.lsgallery.lsgallery_marked_subject'));
             $this->Mail_SetBody($sText);
             $this->Mail_setHTML();
             $this->Mail_Send();
