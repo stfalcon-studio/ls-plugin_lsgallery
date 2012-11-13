@@ -100,7 +100,7 @@ class PluginLsgallery_ModuleAlbum_MapperAlbum extends Mapper
         $aAlbums = array();
         if ($aRows = $this->oDb->select($sql, $aArrayId, $aArrayId)) {
             foreach ($aRows as $aRow) {
-                $aAlbums[] = new PluginLsgallery_ModuleAlbum_EntityAlbum($aRow);
+                $aAlbums[] = Engine::GetEntity('PluginLsgallery_ModuleAlbum_EntityAlbum',$aRow);
             }
         }
         return $aAlbums;
