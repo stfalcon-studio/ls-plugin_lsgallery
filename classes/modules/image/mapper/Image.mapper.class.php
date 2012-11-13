@@ -134,7 +134,7 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
         $aReturn = array();
         if ($aRows = $this->oDb->select($sql, $sTag . '%', $iLimit)) {
             foreach ($aRows as $aRow) {
-                $aReturn[] = new PluginLsgallery_ModuleImage_EntityImageTag($aRow);
+                $aReturn[] = Engine::GetEntity('PluginLsgallery_ModuleImage_EntityImageTag', $aRow);
             }
         }
         return $aReturn;
@@ -179,7 +179,7 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
         $aImages = array();
         if ($aRows = $this->oDb->select($sql, $aArrayId, $aArrayId)) {
             foreach ($aRows as $aRow) {
-                $aImages[] = new PluginLsgallery_ModuleImage_EntityImage($aRow);
+                $aImages[] = Engine::GetEntity('PluginLsgallery_ModuleImage_EntityImage', $aRow);
             }
         }
         return $aImages;
@@ -436,7 +436,7 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
         $aReads = array();
         if ($aRows = $this->oDb->select($sql, $aArrayId, $sUserId)) {
             foreach ($aRows as $aRow) {
-                $aReads[] = new PluginLsgallery_ModuleImage_EntityImageRead($aRow);
+                $aReads[] = Engine::GetEntity('PluginLsgallery_ModuleImage_EntityImageRead',$aRow);
             }
         }
         return $aReads;
@@ -525,7 +525,7 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
             }
             ksort($aReturn);
             foreach ($aReturn as $aRow) {
-                $aReturnSort[] = new PluginLsgallery_ModuleImage_EntityImageTag($aRow);
+                $aReturnSort[] = Engine::GetEntity('PluginLsgallery_ModuleImage_EntityImageTag',$aRow);
             }
         }
         return $aReturnSort;
@@ -687,7 +687,7 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
             ";
 
         if ($aRow = $this->oDb->selectRow($sql, $sUserId, $sImageId)) {
-            return new PluginLsgallery_ModuleImage_EntityImageUser($aRow);
+            return Engine::GetEntity('PluginLsgallery_ModuleImage_EntityImageUser',$aRow);
         }
         return null;
     }
@@ -712,7 +712,7 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
         $aResult = array();
         if ($aRows = $this->oDb->select($sql, $sImageId)) {
             foreach ($aRows as $aRow) {
-                $aResult[] = new PluginLsgallery_ModuleImage_EntityImageUser($aRow);
+                $aResult[] = Engine::GetEntity('PluginLsgallery_ModuleImage_EntityImageUser',$aRow);
             }
         }
         return $aResult;
