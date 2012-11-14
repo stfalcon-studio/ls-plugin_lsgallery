@@ -152,7 +152,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
                 return;
             }
 
-            $oAlbum = new PluginLsgallery_ModuleAlbum_EntityAlbum();
+            $oAlbum = Engine::GetEntity('PluginLsgallery_ModuleAlbum_EntityAlbum');
             $oAlbum->setUserId($this->oUserCurrent->getId());
             $oAlbum->setTitle(getRequest('album_title'));
             $oAlbum->setDescription(getRequest('album_description'));
@@ -319,7 +319,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         }
 
         if ($this->oUserCurrent) {
-            $oImageRead = new PluginLsgallery_ModuleImage_EntityImageRead();
+            $oImageRead = Engine::GetEntity('PluginLsgallery_ModuleImage_EntityImageRead');
             $oImageRead->setImageId($oImage->getId());
             $oImageRead->setUserId($this->oUserCurrent->getId());
             $oImageRead->setCommentCountLast($oImage->getCountComment());
@@ -668,7 +668,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         }
         $iMaxIdComment = $aReturn['iMaxIdComment'];
 
-        $oImageRead = new PluginLsgallery_ModuleImage_EntityImageRead();
+        $oImageRead = Engine::GetEntity('PluginLsgallery_ModuleImage_EntityImageRead');
         $oImageRead->setImageId($oImage->getId());
         $oImageRead->setUserId($this->oUserCurrent->getId());
         $oImageRead->setCommentCountLast($oImage->getCountComment());

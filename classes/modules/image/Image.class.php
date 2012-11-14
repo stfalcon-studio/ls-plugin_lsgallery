@@ -71,7 +71,7 @@ class PluginLsgallery_ModuleImage extends Module
 
             if ($oAlbum->getType() == PluginLsgallery_ModuleAlbum_EntityAlbum::TYPE_OPEN) {
                 foreach ($aTags as $sTag) {
-                    $oTag = new PluginLsgallery_ModuleImage_EntityImageTag();
+                    $oTag = Engine::GetEntity('PluginLsgallery_ModuleImage_EntityImageTag');
                     $oTag->setImageId($oImage->getId());
                     $oTag->setAlbumId($oImage->getAlbumId());
                     $oTag->setText(trim($sTag));
