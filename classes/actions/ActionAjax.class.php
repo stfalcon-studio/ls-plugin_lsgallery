@@ -101,7 +101,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
          */
         $sFile = $this->PluginLsgallery_Image_UploadImage($_FILES['Filedata']);
         if ($sFile) {
-            $oImage = new PluginLsgallery_ModuleImage_EntityImage();
+            $oImage = Engine::GetEntity('PluginLsgallery_ModuleImage_EntityImage');
             $oImage->setUserId($this->oUserCurrent->getId());
             $oImage->setAlbumId($oAlbum->getId());
             $oImage->setFilename($sFile);
@@ -511,7 +511,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
 
         $aSelection = getRequest('selection');
 
-        $oImageUser = new PluginLsgallery_ModuleImage_EntityImageUser();
+        $oImageUser = Engine::GetEntity('PluginLsgallery_ModuleImage_EntityImageUser');
         $oImageUser->setImageId($oImage->getId());
         $oImageUser->setUserId($this->oUserCurrent->getId());
         $oImageUser->setTargertUserId($oUserMarked->getId());
@@ -696,7 +696,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         }
 
         if ($this->oUserCurrent) {
-            $oImageRead = new PluginLsgallery_ModuleImage_EntityImageRead();
+            $oImageRead = Engine::GetEntity('PluginLsgallery_ModuleImage_EntityImageRead');
             $oImageRead->setImageId($oImage->getId());
             $oImageRead->setUserId($this->oUserCurrent->getId());
             $oImageRead->setCommentCountLast($oImage->getCountComment());
