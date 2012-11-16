@@ -36,10 +36,17 @@ Config::Set('block.rule_stream_gallery', array(
 
 // Settings for plugin Sitemap
 
-Config::Set('sitemap', array(
-    'cache_lifetime' => 60 * 60 * 24, // 24 hours
-    'sitemap_priority' => '0.8',
-    'sitemap_changefreq' => 'monthly'
+Config::Set('plugin.sitemap.lsgallery', array(
+    'images' => array(
+        'cache_lifetime' => 60 * 60 * 24, // 24 hours
+        'sitemap_priority' => '0.8',
+        'sitemap_changefreq' => 'weekly'
+    ),
+    'albums' => array(
+        'cache_lifetime' => 60 * 60 * 24, // 24 hours
+        'sitemap_priority' => '0.8',
+        'sitemap_changefreq' => 'weekly'
+    )
 ));
 
 Config::Set('block.rule_tags_gallery', array(
