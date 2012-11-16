@@ -58,6 +58,13 @@ class PluginLsgallery_ModuleImage_EntityImage extends Entity
         return $this->_aData['image_date_edit'];
     }
 
+    public function getDateModified(){
+        if($this->getDateEdit() != null){
+            return $this->getDateEdit();
+        } else {
+            return $this->getDateAdd();
+        }
+    }
     public function getCountComment()
     {
         return $this->_aData['image_count_comment'];
