@@ -17,6 +17,7 @@ class PluginLsgallery extends Plugin
             'ModuleRating' => '_ModuleRating',
             'ModuleUser' => '_ModuleUser',
             'ModuleNotify' => '_ModuleNotify',
+            'PluginSitemap_ModuleSitemap' => 'PluginLsgallery_ModuleSitemap',
         ),
         'mapper' => array(
             'ModuleUser_MapperUser' => '_ModuleUser_MapperUser'
