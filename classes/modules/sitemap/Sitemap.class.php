@@ -46,7 +46,7 @@ class PluginLsgallery_ModuleSitemap extends PluginLsgallery_Inherit_PluginSitema
 			foreach ($aAlbums['collection'] as $oAlbum) {
 				$aData[] = $this->PluginSitemap_Sitemap_GetDataForSitemapRow(
 					$oAlbum->getUrlFull(),
-					$oAlbum->getDateEdit(),
+					$oAlbum->getDateModified(),
 					Config::Get('sitemap.sitemap_priority'),
 					Config::Get('sitemap.sitemap_changefreq')
 				);
@@ -76,12 +76,12 @@ class PluginLsgallery_ModuleSitemap extends PluginLsgallery_Inherit_PluginSitema
                 'not_empty' => true
             );
 
-			$aPages = $this->PluginLsgallery_Image_GetImagesByFilter($aFilter, $iCurrPage, $iPerPage);
+			$aImages = $this->PluginLsgallery_Image_GetImagesByFilter($aFilter, $iCurrPage, $iPerPage);
 			$aData = array();
-			foreach ($aPages['collection'] as $oPage) {
+			foreach ($aImages['collection'] as $oImage) {
 				$aData[] = $this->PluginSitemap_Sitemap_GetDataForSitemapRow(
-					$oPage->getUrlFull(),
-					$oPage->getDateEdit(),
+					$oImage->getUrlFull(),
+					$oImage->getDateModified(),
 					Config::Get('sitemap.sitemap_priority'),
 					Config::Get('sitemap.sitemap_changefreq')
 				);
