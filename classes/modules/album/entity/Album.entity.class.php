@@ -2,9 +2,9 @@
 
 /**
  * Album entity
- * 
- * @method ModuleUser_EntityUser getUser 
- * @method PluginLsgallery_ModuleImage_EntityImage getCover 
+ *
+ * @method ModuleUser_EntityUser getUser
+ * @method PluginLsgallery_ModuleImage_EntityImage getCover
  */
 class PluginLsgallery_ModuleAlbum_EntityAlbum extends Entity
 {
@@ -46,6 +46,14 @@ class PluginLsgallery_ModuleAlbum_EntityAlbum extends Entity
     public function getDateEdit()
     {
         return $this->_aData['album_date_edit'];
+    }
+
+    public function getDateModified() {
+        if ($this->getDateEdit() != null) {
+            return $this->getDateEdit();
+        } else {
+            return $this->getDateAdd();
+        }
     }
 
     public function getCoverId()
