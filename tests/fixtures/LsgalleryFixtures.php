@@ -1,9 +1,9 @@
 <?php
 
-$sDirRoot = dirname(realpath((dirname(__DIR__)) . "/../../../"));
+$sDirRoot = dirname(realpath((dirname(__DIR__)) . "/../../"));
 set_include_path(get_include_path().PATH_SEPARATOR.$sDirRoot);
 
-require_once($sDirRoot."/tests/AbstractFixtures.php");
+require_once($sDirRoot . "/tests/AbstractFixtures.php");
 
 
 class LsgalleryFixtures extends AbstractFixtures
@@ -17,10 +17,7 @@ class LsgalleryFixtures extends AbstractFixtures
 
     public function load()
     {
-        $sDateBefore = date("Y-m-d", time()-86400);
-        $sDateAfter = date("Y-m-d", time()+86400);
-
-        $this->createAlbum('album opened', 'test album opened description text', 'open');           // id 1
+        $this->createAlbum('album opened', 'test album opened description text', 'open');
         $this->createAlbum('album personal', 'test album personal description text', 'personal');   // id 2
         $this->createAlbum('album friend', 'test album friend description text', 'friend');         // id 3
 
@@ -38,18 +35,23 @@ class LsgalleryFixtures extends AbstractFixtures
 
     private function createImagetoGalery($albumId, $imageName)
     {
-        $sDirImg = dirname(realpath((dirname(__DIR__)) . "/../../../"));
-        $sFileUploadBanneroid = Config::Get('path.uploads.lsgallery_images') . '/';
-        $sFile = $sDirImg . "/plugins/lsgallery/tests/behat/fixtures/image/";
+
+        $oUserFirst = $this->getReference('user-first');
+
+        $sDirImg = dirname(realpath((dirname(__DIR__)) . "/../../"));
+        $sFileUploadLsgallery = Config::Get('path.uploads.lsgallery_images') . '/';
+
+        $sFile = $sDirImg . "/plugins/lsgallery/tests/fixtures/image/";
 
         $oImage = Engine::GetEntity('PluginLsgallery_ModuleImage_EntityImage');
-        $oImage->setUserId($this->userId);
+
+        $oImage->setUserId($oUserFirst->getId());
         $oImage->setAlbumId($albumId);
 
         $sOldFileImg = $sFile . $imageName;
-        $sNewFileImg = $sDirImg . $sFileUploadBanneroid . $imageName;
+        $sNewFileImg = $sDirImg . $sFileUploadLsgallery . $imageName;
 
-        $saveFilePathName = $sFileUploadBanneroid . $imageName;
+        $saveFilePathName = $sFileUploadLsgallery . $imageName;
 
         if (copy($sOldFileImg, $sNewFileImg)) {
             $oImage->setFilename($saveFilePathName);
@@ -60,6 +62,9 @@ class LsgalleryFixtures extends AbstractFixtures
         if (!$this->oEngine->PluginLsgallery_Image_AddImage($oImage)) {
             throw new Exception("File \" $imageName \" non saves to base ");
         }
+        $this->addReference("image-{$imageName}", $oImage);
+
+        return true;
     }
 
     /**
@@ -71,19 +76,21 @@ class LsgalleryFixtures extends AbstractFixtures
      *
      * @return bool Success
      */
-    private function createAlbum($title, $description, $type ){
-
+    private function createAlbum($title, $description, $type )
+    {
+        $oUserFirst = $this->getReference('user-first');
 
         $oAlbum = Engine::GetEntity('PluginLsgallery_Album');
-        $oAlbum->setUserId($this->userId);
+        $oAlbum->setUserId($oUserFirst->getId());
         $oAlbum->setTitle($title);
         $oAlbum->setDescription($description);
         $oAlbum->setType($type);
 
-        if ($this->oEngine->PluginLsgallery_Album_CreateAlbum($oAlbum)) {
-            return true;
+        if (!$this->oEngine->PluginLsgallery_Album_CreateAlbum($oAlbum)) {
+            throw new Exception("Album \" $title \" is not created.");
         }
+        $this->addReference("album-{$title}", $oAlbum);
 
-        return false;
+        return true;
     }
 }
