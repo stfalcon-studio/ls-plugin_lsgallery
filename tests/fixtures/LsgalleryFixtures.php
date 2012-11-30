@@ -36,7 +36,7 @@ class LsgalleryFixtures extends AbstractFixtures
     private function createImagetoGalery($albumId, $imageName)
     {
 
-        $oUserFirst = $this->getReference('user-first');
+        $oUserFirst = $this->getReference('user-golfer');
 
         $sDirImg = dirname(realpath((dirname(__DIR__)) . "/../../"));
         $sFileUploadLsgallery = Config::Get('path.uploads.lsgallery_images') . '/';
@@ -78,7 +78,7 @@ class LsgalleryFixtures extends AbstractFixtures
      */
     private function createAlbum($title, $description, $type )
     {
-        $oUserFirst = $this->getReference('user-first');
+        $oUserFirst = $this->getReference('user-golfer');
 
         $oAlbum = Engine::GetEntity('PluginLsgallery_Album');
         $oAlbum->setUserId($oUserFirst->getId());

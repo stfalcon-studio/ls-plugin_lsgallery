@@ -6,7 +6,7 @@ Feature: Lsgallery plugin standart features BDD
 
     Scenario: Album Create
       Given I load fixtures for plugin "lsgallery"
-      Then I want to login as "user_first"
+      Then I want to login as "user-golfer"
       Given I am on "/gallery/create/"
 
       When I fill in "album_title" with "created_by_tests"
@@ -30,13 +30,13 @@ Feature: Lsgallery plugin standart features BDD
         | value |
         | gallery/image/2 |
         | lsgallery/test2 |
-        | profile/user_first/">user_first</a> |
+        | profile/user-golfer/">user-golfer</a> |
         | gallery/album/1">album opened</a> |
 
     Scenario: Check for created albums in profile
       Given I load fixtures for plugin "lsgallery"
-      Then I want to login as "user_first"
-      Given I am on "/profile/user_first/created/albums/"
+      Then I want to login as "user-golfer"
+      Given I am on "/profile/user-golfer/created/albums/"
       Then the response status code should be 200
       Then the response have sets:
         | value |
@@ -46,8 +46,8 @@ Feature: Lsgallery plugin standart features BDD
 
     Scenario: Check for user albums
       Given I load fixtures for plugin "lsgallery"
-      Then I want to login as "user_first"
-      Given I am on "/profile/user_first"
+      Then I want to login as "user-golfer"
+      Given I am on "/profile/user-golfer"
       Then the response status code should be 200
       Then the response have sets:
         | value |
