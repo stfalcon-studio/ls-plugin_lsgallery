@@ -44,4 +44,31 @@ class FeatureContext extends MinkContext
             throw new ExpectationException('Button not found', $this->getSession());
         }
     }
+
+    /**
+     * @Then /^I fill the element "([^"]*)" value "([^"]*)"$/
+     */
+    public function IFillElement($path, $value) {
+        $element = $this->getSession()->getPage()->find('css', $path);
+        if ($element) {
+            $element->SetValue($value);
+        }
+        else {
+            throw new ExpectationException('Element not found', $this->getSession());
+        }
+    }
+
+    /**
+     * @Given /^I press button css "([^"]*)"$/
+     */
+    public function IPressButtonCss($path)
+    {
+        $element = $this->getSession()->getPage()->find('css', $path );
+        if ($element) {
+            $element->click();
+        }
+        else {
+            throw new ExpectationException('Button not found', $this->getSession());
+        }
+    }
 }
