@@ -482,12 +482,12 @@ class PluginLsgallery_ModuleImage extends Module
         $aImagesId = array_unique($aImagesId);
         $aImages = array();
         $s = join(',', $aImagesId);
-        if (false === ($data = $this->Cache_Get("image_id_{$s}"))) {
+        if (false === ($data = $this->Cache_Get("image_solid_id_{$s}"))) {
             $data = $this->oMapper->GetImagesByArrayId($aImagesId);
             foreach ($data as $oImage) {
                 $aImages[$oImage->getId()] = $oImage;
             }
-            $this->Cache_Set($aImages, "image_id_{$s}", array("image_update"), 60 * 60 * 24 * 1);
+            $this->Cache_Set($aImages, "image_solid_id_{$s}", array("image_update"), 60 * 60 * 24 * 1);
             return $aImages;
         }
         return $data;
