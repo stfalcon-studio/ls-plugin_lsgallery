@@ -382,7 +382,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             return;
         }
 
-        if (!$this->oUserCurrent->getRating() >= Config::Get('acl.vote.image.rating') && $iValue) {
+        if ( $this->oUserCurrent->getRating() < Config::Get('acl.vote.image.rating')  ) {
             $this->Message_AddErrorSingle($this->Lang_Get('plugin.lsgallery.lsgallery_image_vote_error_acl'), $this->Lang_Get('attention'));
             return;
         }

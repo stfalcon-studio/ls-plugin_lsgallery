@@ -82,7 +82,7 @@ return array(
     'lsgallery_image_vote_error_already' => 'You have already voted for this picture!',
     'lsgallery_image_vote_error_time' => 'Expired vote for this picture!',
     'lsgallery_image_vote_error_acl' => 'Not enough karma to vote!',
-    'lsgallery_image_vote_ok' => 'Cheater',
+    'lsgallery_image_vote_ok' => 'Your vote is added',
     'lsgallery_image_vote_ok_abstain' => 'You have refrained to view the rating for the image',
     'lsgallery_image_select_album' => 'Move to album',
     'lsgallery_image_move_album' => 'Move to another album',
