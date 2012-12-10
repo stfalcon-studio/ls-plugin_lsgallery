@@ -71,4 +71,18 @@ class FeatureContext extends MinkContext
             throw new ExpectationException('Button not found', $this->getSession());
         }
     }
+
+    /**
+     * @Then /^I set carma "([^"]*)" to user "([^"]*)"$/
+     */
+    public function iSetCarmaToUser($carmaPoints, $userName)
+    {
+        $oUser = $this->getEngine()->User_GetUserByLogin($userName);
+        if (!$oUser) {
+            throw new ExpectationException('User non exists', $this->getSession());
+        }
+
+        $oUser->setRating((int)$carmaPoints);
+        $this->getEngine()->User_Update($oUser);
+    }
 }
