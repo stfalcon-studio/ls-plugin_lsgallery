@@ -12,8 +12,7 @@ Feature: Lsgallery plugin standart features BDD
       When I fill in "album_title" with "created_by_tests"
       And I fill in "album_description" with "created_description_by_tests"
       And I press button "submit_create_album"
-
-      Then I should see "Album management: created_by_tests"
+      Then I should see "created_by_tests"
 
     Scenario: Check for public albums
       Given I load fixtures for plugin "lsgallery"
@@ -25,6 +24,7 @@ Feature: Lsgallery plugin standart features BDD
         | /gallery/album/1">album opened</a> |
         | /uploads/images/lsgallery/test2 |
       Then I should not see "/gallery/album/2\">album personal</a>"
+      Then I should not see "/gallery/album/3\">album friend</a>"
 
       Then I should see in element "block_gallery" values:
         | value |
@@ -32,6 +32,14 @@ Feature: Lsgallery plugin standart features BDD
         | lsgallery/test2 |
         | profile/user-golfer/">user-golfer</a> |
         | gallery/album/1">album opened</a> |
+
+      Given I am on "/gallery/album/2"
+      Then the response status code should be 200
+      And I should not see "<p>No access</p>"
+
+      Given I am on "/gallery/album/3"
+      Then the response status code should be 200
+      And I should not see "<p>No access</p>"
 
     Scenario: Check for created albums in profile
       Given I load fixtures for plugin "lsgallery"
@@ -85,11 +93,3 @@ Feature: Lsgallery plugin standart features BDD
         | value  |
         | /uploads/images/lsgallery/test4 |
         | /uploads/images/lsgallery/test5 |
-
-    Scenario: Check is album in sitemap
-      Given I load fixtures for plugin "lsgallery"
-      Then check is plugin active "sitemap"
-      Given I am on "/sitemap_albums_1.xml"
-      Then content type is "application/xml"
-      Then the response status code should be 200
-      Then the response should contain "/gallery/album/1"
