@@ -8,19 +8,19 @@ Feature: Lsgallery plugin standart features BDD
     Then I want to login as "user-friend"
 
   #Check albums in public list
-    Then I am going to page "/gallery/albums"
+    Then I am on "/gallery/albums"
 
-    Then I should see in element "content" values:
+    Then I should see in element by css "content" values:
       | value |
       | /gallery/album/1">album opened</a> |
       | /gallery/album/3">album friend</a> |
 
-    Then I should not see in element "content" values:
+    Then I should not see in element by css "content" values:
       | value |
       | /gallery/album/2">album personal</a> |
 
   #check images in sidebar
-    Then I should see in element "sidebar" values:
+    Then I should see in element by css "sidebar" values:
       | value |
       | http://livestreet.test/uploads/images/lsgallery/test2 |
       | http://livestreet.test/uploads/images/lsgallery/test3 |
@@ -29,57 +29,57 @@ Feature: Lsgallery plugin standart features BDD
       | http://livestreet.test/uploads/images/lsgallery/test9 |
 
   #Check user's albums on userpage
-    Then I am going to page "/profile/user-golfer/"
-    Then I should see in element "content" values:
+    Then I am on "/profile/user-golfer/"
+    Then I should see in element by css "content" values:
       | value |
       | /gallery/album/1"> |
       | /gallery/album/3"> |
 
-    Then I should not see in element "content" values:
+    Then I should not see in element by css "content" values:
       | value |
       | /gallery/album/2"> |
 
 
   #Check user's created albums
-    Then I am going to page "/profile/user-golfer/created/albums/"
+    Then I am on "/profile/user-golfer/created/albums/"
 
-    Then I should see in element "content" values:
+    Then I should see in element by css "content" values:
       | value |
       | /gallery/album/1">album opened</a> |
       | /gallery/album/3">album friend</a> |
 
-    Then I should not see in element "content" values:
+    Then I should not see in element by css "content" values:
       | value |
       | gallery/album/2">album personal</a> |
 
   #Check for protected albums permissions
-    Then I am going to page "/gallery/album/2"
-    Then I should see in element "content" values:
+    Then I am on "/gallery/album/2"
+    Then I should see in element by css "content" values:
       | value |
       | <p>No access</p> |
 
   #Check for friend albums permissions
-    Then I am going to page "/gallery/album/3"
-    Then I should see in element "content" values:
+    Then I am on "/gallery/album/3"
+    Then I should see in element by css "content" values:
       | value |
       | http://livestreet.test/uploads/images/lsgallery/test6 |
       | http://livestreet.test/uploads/images/lsgallery/test8 |
       | http://livestreet.test/uploads/images/lsgallery/test9 |
 
-    Then I should see in element "block_album" values:
+    Then I should see in element by css "block_album" values:
       | value |
       | http://livestreet.test/uploads/images/lsgallery/test6 |
       | test album friend description text |
 
 
   #Check for image from public album
-    Then I am going to page "/gallery/image/1"
-    Then I should see in element "content" values:
+    Then I am on "/gallery/image/1"
+    Then I should see in element by css "content" values:
       | value |
       | http://livestreet.test/uploads/images/lsgallery/test2 |
       | http://livestreet.test/uploads/images/lsgallery/test3 |
 
-    Then I should see in element "stream-images" values:
+    Then I should see in element by css "stream-images" values:
       | value |
       | http://livestreet.test/uploads/images/lsgallery/test2 |
       | http://livestreet.test/uploads/images/lsgallery/test3 |
@@ -87,24 +87,24 @@ Feature: Lsgallery plugin standart features BDD
       | http://livestreet.test/uploads/images/lsgallery/test8 |
       | http://livestreet.test/uploads/images/lsgallery/test9 |
 
-    Then I should see in element "block_album" values:
+    Then I should see in element by css "block_album" values:
       | value |
       | http://livestreet.test/uploads/images/lsgallery/test2 |
       | test album opened description text |
 
 
   #Check for image from friend album
-    Then I am going to page "/gallery/image/6"
-    Then I should see in element "content" values:
+    Then I am on "/gallery/image/6"
+    Then I should see in element by css "content" values:
       | value |
       | http://livestreet.test/uploads/images/lsgallery/test6 |
       | http://livestreet.test/uploads/images/lsgallery/test9 |
 
 
   #Check images on 'new' page
-    Then I am going to page "/gallery/photo/new/"
+    Then I am on "/gallery/photo/new/"
 
-    Then I should see in element "content" values:
+    Then I should see in element by css "content" values:
       | value |
       | /gallery/image/1"> |
       | /gallery/image/2"> |
@@ -112,12 +112,12 @@ Feature: Lsgallery plugin standart features BDD
       | /gallery/image/6"> |
       | /gallery/image/7"> |
 
-    Then I should not see in element "content" values:
+    Then I should not see in element by css "content" values:
       | value |
       | /gallery/image/3"> |
 
 
-    Then I should see in element "stream-images" values:
+    Then I should see in element by css "stream-images" values:
       | value |
       | http://livestreet.test/uploads/images/lsgallery/test2 |
       | http://livestreet.test/uploads/images/lsgallery/test3 |

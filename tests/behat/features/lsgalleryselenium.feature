@@ -15,15 +15,15 @@ Feature: Lsgallery plugin standart features BDD
 
       Given I am on "/gallery/image/2"
       Then I wait "500"
-      Then I should see in element "content" values:
+      Then I should see in element by css "content" values:
       | value |
       | <div class="vote-item vote-down" onclick="return ls.vote.vote(2,this,-1,'image');"><span><i></i></span></div> |
       | <i onclick="return ls.vote.vote(2,this,0,'image');"></i> |
       | <div class="vote-item vote-up" onclick="return ls.vote.vote(2,this,1,'image');"><span><i></i></span></div> |
-      Then I press element css ".vote-item.vote-up"
+      Then I press element by css ".vote-item.vote-up"
       Then I wait "500"
 
-      Then I should see in element "content" values:
+      Then I should see in element by css "content" values:
       | value |
       | <div class="vote-item vote-down" onclick="return ls.vote.vote(2,this,-1,'image');"><span><i></i></span></div> |
       | <i onclick="return ls.vote.vote(2,this,0,'image');"></i> |
@@ -40,14 +40,14 @@ Feature: Lsgallery plugin standart features BDD
       Then I wait "1000"
       Given I am on "/gallery/image/2"
       Then I wait "500"
-      Then I should see in element "vote_total_image_2" values:
+      Then I should see in element by css "vote_total_image_2" values:
         | value |
         | <i onclick="return ls.vote.vote(2,this,0,'image');"></i> |
 
-      Then I press element css ".vote-item.vote-up"
+      Then I press element by css ".vote-item.vote-up"
       Then I wait "500"
 
-      Then I should see in element "vote_total_image_2" values:
+      Then I should see in element by css "vote_total_image_2" values:
         | value |
         | +1 |
 
@@ -60,19 +60,19 @@ Feature: Lsgallery plugin standart features BDD
 
       Given I am on "/gallery/image/3"
       Then I wait "1000"
-      Then I should see in element "content" values:
+      Then I should see in element by css "content" values:
         | value  |
         | <i id="fav_image_3" class="favourite "></i> |
         | <span class="favourite-count" id="fav_count_image_3"></span> |
 
-      Then I press element css ".topic-info .topic-info-favourite"
+      Then I press element by css ".topic-info .topic-info-favourite"
       Then I wait "1000"
-      Then I should see in element "content" values:
+      Then I should see in element by css "content" values:
         | value  |
         | <i id="fav_image_3" class="favourite active"></i> |
         | <span class="favourite-count" id="fav_count_image_3">1</span> |
 
       Given I am on "/profile/admin/favourites/images/"
-      Then I should see in element "content" values:
+      Then I should see in element by css "content" values:
         | value  |
         | gallery/image/3"><img |
