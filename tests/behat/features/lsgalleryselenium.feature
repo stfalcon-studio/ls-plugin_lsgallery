@@ -75,4 +75,4 @@ Feature: Lsgallery plugin standart features BDD
       Given I am on "/profile/admin/favourites/images/"
       Then I should see in element by css "content" values:
         | value  |
-        | gallery/image/3"><img |
+        | gallery/image/3 |
