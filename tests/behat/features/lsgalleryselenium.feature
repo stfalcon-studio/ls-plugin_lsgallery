@@ -74,8 +74,6 @@ Feature: Lsgallery plugin standart features BDD
 
       Given I am on "/profile/admin/favourites/images/"
 
-    Then print last response
-
       Then I should see in element by css "album-images" values:
         | value  |
         | gallery/image/3 |
