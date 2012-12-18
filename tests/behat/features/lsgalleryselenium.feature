@@ -73,6 +73,6 @@ Feature: Lsgallery plugin standart features BDD
         | <span class="favourite-count" id="fav_count_image_3">1</span> |
 
       Given I am on "/profile/admin/favourites/images/"
-      Then I should see in element by css "content" values:
+      Then I should see in element by css "album-images" values:
         | value  |
         | gallery/image/3 |
