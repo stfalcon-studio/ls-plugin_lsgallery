@@ -4,6 +4,7 @@ php:
   - 5.3
 
 before_script:
+  - export DISPLAY=:99
   - mkdir -p /tmp/plugins/lsgallery
   - mv * /tmp/plugins/lsgallery
   - mkdir /tmp/ls && git clone git://github.com/stfalcon-studio/livestreet.git /tmp/ls
@@ -48,4 +49,4 @@ before_script:
   - sleep 5
 
 
-script: HTTP_APP_ENV=test cd tests/behat/ && php behat.phar --config='../../plugins/lsgallery/tests/behat/behat.yml' ../../plugins/lsgallery/tests/behat/features/lsgalleryselenium.feature:55 --strict
+script: HTTP_APP_ENV=test cd tests/behat/ && php behat.phar --config='../../plugins/lsgallery/tests/behat/behat.yml'
