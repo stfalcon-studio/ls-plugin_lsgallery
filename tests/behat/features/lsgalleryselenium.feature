@@ -34,7 +34,7 @@ Feature: Lsgallery plugin standart features BDD
       Given I load fixtures for plugin "lsgallery"
 
       Then I set carma "10" to user "admin"
-      Given I am on homepage
+      Given I am on "/login"
       Then I want to login as "admin"
 
       Then I wait "1000"
@@ -55,7 +55,7 @@ Feature: Lsgallery plugin standart features BDD
     Scenario: Set Like to image
       Given I load fixtures for plugin "lsgallery"
 
-      Given I am on homepage
+      Given I am on "/login"
       Then I want to login as "admin"
 
       Given I am on "/gallery/image/3"
