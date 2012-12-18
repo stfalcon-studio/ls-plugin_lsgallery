@@ -4,7 +4,7 @@ Feature: Lsgallery plugin standart features BDD
   Scenario: Check album as guest Friend
     Then check is plugin active "lsgallery"
     Given I load fixtures for plugin "lsgallery"
-    Then I am on homepage
+    Given I am on "/login"
     Then I want to login as "user-friend"
 
   #Check albums in public list

@@ -10,7 +10,7 @@ Feature: Lsgallery plugin standart features BDD
 
       Then I set carma "-10" to user "admin"
 
-      Given I am on homepage
+      Given I am on "/login"
       Then I want to login as "admin"
 
       Given I am on "/gallery/image/2"
