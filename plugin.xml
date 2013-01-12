@@ -1,24 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin>
-	<name>
-		<lang name="default">LsGallery</lang>
-	</name>
-	<author>
-		<lang name="default">Web studio stfalcon.com</lang>
-	</author>
-	<homepage>http://stfalcon.com</homepage>
-	<version>0.3.2</version>
-	<requires>
-		<livestreet>1.0</livestreet>
-		<plugins>
-		</plugins>
-	</requires>
-	<description>
-		<lang name="default">Allow to create galleries for user. Sponored by  
-            owner of the project http://paintstrike.ru/ and http://airsoft.paintstrike.ru</lang>
-		<lang name="russian">Позволяет пользователям создавать галереи. Разработку плагина спонсировал
-            владелец проектов http://paintstrike.ru/ и http://airsoft.paintstrike.ru</lang>
-		<lang name="ukrainian">Дозволяє користувачам створювати галереї. Розробку плагіна спонсорував
-            власник проектів http://paintstrike.ru/ і http://airsoft.paintstrike.ru</lang>
-	</description>
+    <name>
+        <lang name="default">LSGallery</lang>
+    </name>
+    <author>
+        <lang name="default">Web studio stfalcon.com</lang>
+    </author>
+    <homepage>http://stfalcon.com</homepage>
+    <version>0.4.0</version>
+    <requires>
+        <livestreet>1.0</livestreet>
+    </requires>
+    <description>
+        <lang name="default">Allow to create galleries for user</lang>
+        <lang name="russian">Предназначен для создания фотоальбомов пользователей</lang>
+        <lang name="ukrainian">Призначений для створення фотоальбомів користувачів</lang>
+    </description>
 </plugin>
