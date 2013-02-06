@@ -127,10 +127,10 @@ class PluginLsgallery_ModuleImage extends Module
         }
 
         $sFileTmp = Config::Get('path.root.server') . $sPath . $sFileName;
+
         if (!move_uploaded_file($aFile['tmp_name'], $sFileTmp)) {
             return false;
         }
-
 
         $aParams = $this->Image_BuildParams('lsgallery');
 
@@ -1000,5 +1000,35 @@ class PluginLsgallery_ModuleImage extends Module
 
         $oAlbumTo->setImageCount($oAlbumTo->getImageCount() + 1);
         $this->PluginLsgallery_Album_UpdateAlbum($oAlbumTo);
+    }
+
+    /**
+     * Пересчитывает счетчики голосований
+     *
+     * @return bool
+     */
+    public function RecalculateVote()
+    {
+        return $this->oMapper->RecalculateVote();
+    }
+
+    /**
+     * Пересчитать коментарии
+     *
+     * @return bool
+     */
+    public function RecalculateComment()
+    {
+        return $this->oMapper->RecalculateComment();
+    }
+
+    /**
+     * Пересчитывает счетчик избранных топиков
+     *
+     * @return bool
+     */
+    public function RecalculateFavourite()
+    {
+        return $this->oMapper->RecalculateFavourite();
     }
 }

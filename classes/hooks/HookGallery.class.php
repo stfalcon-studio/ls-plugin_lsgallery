@@ -5,6 +5,7 @@ class PluginLsgallery_HookGallery extends Hook
 
     public function RegisterHook()
     {
+		$this->AddHook('template_admin_action_item', 'MenuAdmin');
         $this->AddHook('template_main_menu', 'Menu');
         $this->AddHook('template_profile_whois_item', 'Profile');
         $this->AddHook('template_profile_whois_item', 'ProfileFoto');
@@ -15,6 +16,11 @@ class PluginLsgallery_HookGallery extends Hook
     public function Menu()
     {
         return $this->Viewer_Fetch(Plugin::GetTemplatePath(__CLASS__) . 'main_menu.tpl');
+    }
+
+	public function MenuAdmin()
+    {
+        return $this->Viewer_Fetch(Plugin::GetTemplatePath(__CLASS__) . 'admin_menu.tpl');
     }
 
     public function Profile($aData)

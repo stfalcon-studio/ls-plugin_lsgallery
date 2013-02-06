@@ -118,7 +118,10 @@ return array(
     'lsgallery_declension_images' => 'фотографии;фотографиях;фотографиях',
     'lsgallery_image_user_marked' => 'Пользователь отмечен на ',
     'lsgallery_image_mark_notice' => 'Выделите область, где изображен человек, и он будет подписан на фотографии',
-    'lsgallery_ready' => 'Готово'
+    'lsgallery_ready' => 'Готово',
+    'lsgallery_admin_images_recalculated' => 'Пересчитаны данные для фото',
+    'lsgallery_admin_data_recalcimage' => 'Пересчитать данные для фото (избраннои и голоса)',
+    'lsgallery_profile_marked' => 'Я на фото',
 );
 
 
