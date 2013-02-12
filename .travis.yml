@@ -23,6 +23,7 @@ before_script:
   - chmod -R 0777 ./templates/compiled/
 
   # install required PHP stuff
+  - sudo apt-get update
   - sudo apt-get install php5 php5-cli php5-mysql php5-mcrypt php5-xsl php5-xdebug php-apc php5-gd php5-curl php5-intl php5-xmlrpc
 
   # launch apache, MySQL and PHPUnit Selenium installers
