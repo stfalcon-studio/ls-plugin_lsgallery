@@ -70,22 +70,3 @@ CREATE TABLE IF NOT EXISTS `prefix_lsgallery_image_read` (
 ALTER TABLE `prefix_lsgallery_image_read`
   ADD CONSTRAINT `prefix_lsgallery_image_read_ibfk_1` FOREIGN KEY (`image_id`) REFERENCES `prefix_lsgallery_image` (`image_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `prefix_lsgallery_image_read_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `prefix_user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
-CREATE TABLE IF NOT EXISTS `prefix_lsgallery_image_user` (
-  `image_id` int(11) unsigned NOT NULL,
-  `user_id` int(11) unsigned NOT NULL,
-  `target_user_id` int(11) unsigned NOT NULL,
-  `lasso_x` int(3) unsigned NOT NULL,
-  `lasso_y` int(3) unsigned NOT NULL,
-  `lasso_w` int(3) unsigned NOT NULL,
-  `lasso_h` int(3) unsigned NOT NULL,
-  `status` enum('new','confirmed','declined') NOT NULL DEFAULT 'new',
-  UNIQUE KEY `image_id` (`image_id`,`target_user_id`),
-  KEY `user_id` (`user_id`),
-  KEY `target_user_id` (`target_user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-ALTER TABLE `prefix_lsgallery_image_user`
-  ADD CONSTRAINT `prefix_lsgallery_image_user_ibfk_1` FOREIGN KEY (`image_id`) REFERENCES `prefix_lsgallery_image` (`image_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `prefix_lsgallery_image_user_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `prefix_user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `prefix_lsgallery_image_user_ibfk_3` FOREIGN KEY (`target_user_id`) REFERENCES `prefix_user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;

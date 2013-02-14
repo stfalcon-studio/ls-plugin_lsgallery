@@ -17,9 +17,6 @@ class PluginLsgallery_HookGallery extends Hook
 
         $this->AddHook('template_write_item', 'MenuWriteItem');
 
-        $this->AddHook('template_profile_sidebar_menu_item_first', 'ProfileUserMarked');
-
-        $this->AddHook('template_profile_whois_item_after_privat', 'ProfilePhotoMarked');
         $this->AddHook('template_profile_whois_item_after_privat', 'ProfileAlbums');
 
         $this->AddHook('template_main_menu_item', 'Menu');
@@ -63,22 +60,6 @@ class PluginLsgallery_HookGallery extends Hook
     }
 
     /**
-     * Add user photo marked to profile
-     *
-     * @param array $aData
-     *
-     * @return string
-     */
-    public function ProfilePhotoMarked($aData)
-    {
-        $oUser = $aData['oUserProfile'];
-        $aResult = $this->PluginLsgallery_Image_GetImagesByUserMarked($oUser->getId(), 1, 4);
-        $this->Viewer_Assign("aProfileImages",$aResult['collection']);
-        $this->Viewer_Assign("iPhotoCount", $aResult['count']);
-        return $this->Viewer_Fetch(Plugin::GetTemplatePath(__CLASS__) . 'block.profile_images.tpl');
-    }
-
-    /**
      * Add to fav menu link to photos list
      *
      * @param array $aData
@@ -106,10 +87,4 @@ class PluginLsgallery_HookGallery extends Hook
     {
         return $this->Viewer_Fetch(Plugin::GetTemplatePath(__CLASS__) . 'write_item.tpl');
     }
-
-	public function ProfileUserMarked($aData)
-    {
-        return $this->Viewer_Fetch(Plugin::GetTemplatePath(__CLASS__) . 'menu.sidebar_marked.tpl');
-    }
-
 }

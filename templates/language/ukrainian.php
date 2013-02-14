@@ -101,28 +101,10 @@ return array(
 
     'lsgallery_user_menu_profile_favourites_images' => 'Вибрані фото',
 
-    'lsgallery_image_mark' => 'Додати',
-    'lsgallery_image_mark_friend' => 'Позначити людину',
-    'lsgallery_image_mark_cancel' => 'Відмінити позначку',
-    'lsgallery_disallow_mark_friend' => 'Користувач неявляється вашим другом',
-    'lsgallery_disallow_mark_personal' => 'Заборонено помічати людей в закритих альбомах',
-    'lsgallery_friend_marked' => 'Користувач відзначений на зображенні',
-    'lsgallery_already_mark_friend' => 'Користувач вже відзначений на зображенні',
-    'lsgallery_marked_subject' => 'Вас відзначили на фото',
-    'lsgallery_marked_changed_declined' => 'Ви відхилили відмітку на фото',
-    'lsgallery_marked_changed_confirmed' => 'Ви одобрили відмітку на фото',
     'lsgallery_uwere_marked' => 'Вас відмітили на цьому зображенні',
     'lsgallery_mark_confirm' => 'Підтвердити',
     'lsgallery_mark_decline' => 'Більше не відмічати мене на цьому фото',
     'lsgallery_mark_remove' => 'Видалити відмітку',
-    'lsgallery_mark_removed' => 'Відмітка видалена',
-    'lsgallery_declension_images' => 'фотографії;фотографіях;фотографіях',
-    'lsgallery_image_user_marked' => 'Користувач відмічений на ',
-    'lsgallery_image_mark_notice' => 'Виділіть область, де зображена людина, і він буде підписаний на фотографії',
-    'lsgallery_ready' => 'Готово',
-    'lsgallery_admin_images_recalculated' => 'Перераховані дані для фото',
-    'lsgallery_admin_data_recalcimage' => 'Перераховані дані для фото (обрані и голоси)',
-    'lsgallery_profile_marked' => 'Я на фото',
 );
 
 

@@ -32,17 +32,12 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         $this->AddEvent('setimagetags', 'EventSetImageTags');
         $this->AddEvent('markascover', 'EventSetImageAsCover');
 
-        $this->AddEvent('markfriend', 'EventSetImageUser');
-        $this->AddEvent('changemark', 'EventChangeMark');
-        $this->AddEvent('removemark', 'EventRemoveMark');
-
         $this->AddEvent('getrandomimages', 'EventGetRandomImages');
 
         $this->AddEvent('getnewimages', 'EventGetNewImages');
         $this->AddEvent('getbestimages', 'EventGetBestImages');
 
         $this->AddEvent('autocompleteimagetag', 'EventAutocompeleteImageTags');
-        $this->AddEvent('autocompletefriend', 'EventAutocompeleteFriend');
 
         $this->AddEvent('getimage', 'EventGetImage');
         $this->AddEvent('moveimage', 'EventMoveImage');
@@ -239,25 +234,6 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         $aTags = $this->PluginLsgallery_Image_GetImageTagsByLike($sValue, 10);
         foreach ($aTags as $oTag) {
             $aItems[] = $oTag->getText();
-        }
-        $this->Viewer_AssignAjax('aItems', $aItems);
-    }
-
-    /**
-     * Автокомплит друзей
-     */
-    public function EventAutocompeleteFriend()
-    {
-        if (!($sValue = getRequest('value', null, 'post'))) {
-            return;
-        }
-        if (!$this->oUserCurrent) {
-            return;
-        }
-        $aItems = array();
-        $aUsers = $this->User_GetFriendsByLoginLike($sValue, 10);
-        foreach ($aUsers as $oUser) {
-            $aItems[] = $oUser->getLogin();
         }
         $this->Viewer_AssignAjax('aItems', $aItems);
     }
@@ -464,188 +440,6 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             $oViewer->Assign('oUserCurrent', $this->oUserCurrent);
             $sTextResult = $oViewer->Fetch(Plugin::GetTemplatePath('lsgallery') . "block.stream_photo.tpl");
             $this->Viewer_AssignAjax('sText', $sTextResult);
-        }
-    }
-
-    /**
-     * Отмечаем пользователя на картинке
-     */
-    public function EventSetImageUser()
-    {
-        if (!$this->oUserCurrent) {
-            $this->Message_AddErrorSingle($this->Lang_Get('need_authorization'), $this->Lang_Get('error'));
-            return;
-        }
-
-        /* @var $oImage PluginLsgallery_ModuleImage_EntityImage */
-        if (!$oImage = $this->PluginLsgallery_Image_GetImageById(getRequest('idImage', null, 'post'))) {
-            $this->Message_AddErrorSingle($this->Lang_Get('plugin.lsgallery.lsgallery_image_not_found'), $this->Lang_Get('error'));
-            return;
-        }
-
-        /* @var $oAlbum PluginLsgallery_ModuleAlbum_EntityAlbum */
-        if (!$oAlbum = $this->PluginLsgallery_Album_GetAlbumById($oImage->getAlbumId())) {
-            $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
-            return;
-        }
-
-        /* @var $oUserMarked ModuleUser_EntityUser */
-        if (!$oUserMarked = $this->User_GetUserByLogin(getRequest('login', null, 'post'))) {
-            $this->Message_AddErrorSingle($this->Lang_Get('user_not_found', array('login' => getRequest('login', null, 'post'))), $this->Lang_Get('error'));
-            return;
-        }
-
-        if ($oImageUser = $this->PluginLsgallery_Image_GetImageUser($oUserMarked->getId(), $oImage->getId())) {
-            $this->Message_AddErrorSingle($this->Lang_Get('plugin.lsgallery.lsgallery_already_mark_friend'), $this->Lang_Get('error'));
-            return;
-        }
-
-        if ($oAlbum->getType() == PluginLsgallery_ModuleAlbum_EntityAlbum::TYPE_PERSONAL) {
-            $this->Message_AddErrorSingle($this->Lang_Get('plugin.lsgallery.lsgallery_disallow_mark_personal'), $this->Lang_Get('error'));
-        } else if ($oAlbum->getType() == PluginLsgallery_ModuleAlbum_EntityAlbum::TYPE_FRIEND) {
-            if (!$this->ACL_AllowAddUserToImage($this->oUserCurrent, $oUserMarked)) {
-                $this->Message_AddErrorSingle($this->Lang_Get('plugin.lsgallery.lsgallery_disallow_mark_friend'), $this->Lang_Get('error'));
-                return;
-            }
-        }
-
-        $aSelection = getRequest('selection');
-
-        $oImageUser = Engine::GetEntity('PluginLsgallery_ModuleImage_EntityImageUser');
-        $oImageUser->setImageId($oImage->getId());
-        $oImageUser->setUserId($this->oUserCurrent->getId());
-        $oImageUser->setTargertUserId($oUserMarked->getId());
-        $oImageUser->setLassoX($aSelection['x1']);
-        $oImageUser->setLassoY($aSelection['y1']);
-        $oImageUser->setLassoH($aSelection['height']);
-        $oImageUser->setLassoW($aSelection['width']);
-        if ($oUserMarked->getId() == $this->oUserCurrent->getId()) {
-            $oImageUser->setStatus(PluginLsgallery_ModuleImage_EntityImageUser::STATUS_CONFIRMED);
-        } else {
-            $oImageUser->setStatus(PluginLsgallery_ModuleImage_EntityImageUser::STATUS_NEW);
-        }
-
-        if ($this->PluginLsgallery_Image_AddImageUser($oImageUser)) {
-
-            if ($oUserMarked->getId() != $this->oUserCurrent->getId()) {
-                $oViewerLocal = $this->Viewer_GetLocalViewer();
-                $oViewerLocal->Assign('oUser', $this->oUserCurrent);
-                $oViewerLocal->Assign('oImage', $oImage);
-
-                $sLangDir = Plugin::GetTemplatePath('lsgallery') . 'notify/' . $this->Lang_GetLang();
-                if (is_dir($sLangDir)) {
-                    $sPath = $sLangDir . '/notify.marked.tpl';
-                } else {
-                    $sPath = Plugin::GetTemplatePath('lsgallery') . 'notify/' . $this->Lang_GetLangDefault() . '/notify.marked.tpl';
-                }
-
-                $sText = $oViewerLocal->Fetch($sPath);
-
-                $sTitle = $this->Lang_Get('plugin.lsgallery.lsgallery_marked_subject');
-
-                $oTalk = $this->Talk_SendTalk($sTitle, $sText, $this->oUserCurrent, array($oUserMarked), false, false);
-                /**
-                 * Отправляем пользователю заявку
-                 */
-                $this->Notify_SendUserMarkImageNew(
-                        $oUserMarked, $this->oUserCurrent, $sText
-                );
-                /**
-                 * Удаляем отправляющего юзера из переписки
-                 */
-                $this->Talk_DeleteTalkUserByArray($oTalk->getId(), $this->oUserCurrent->getId());
-            }
-
-            $this->Viewer_AssignAjax('sPath', $oUserMarked->getUserWebPath());
-            $this->Viewer_AssignAjax('idUser', $oUserMarked->getId());
-            $this->Message_AddNoticeSingle($this->Lang_Get('plugin.lsgallery.lsgallery_friend_marked'), $this->Lang_Get('attention'));
-        } else {
-            $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
-        }
-    }
-
-    /**
-     * Изменяем статус отметки
-     */
-    public function EventChangeMark()
-    {
-        if (!$this->oUserCurrent) {
-            $this->Message_AddErrorSingle($this->Lang_Get('need_authorization'), $this->Lang_Get('error'));
-            return;
-        }
-
-        /* @var $oImage PluginLsgallery_ModuleImage_EntityImage */
-        if (!$oImage = $this->PluginLsgallery_Image_GetImageById(getRequest('idImage', null, 'post'))) {
-            $this->Message_AddErrorSingle($this->Lang_Get('plugin.lsgallery.lsgallery_image_not_found'), $this->Lang_Get('error'));
-            return;
-        }
-        /* @var $oUserMarked ModuleUser_EntityUser */
-        if (!$oUserMarked = $this->User_GetUserById(getRequest('idUser', null, 'post'))) {
-            $this->Message_AddErrorSingle($this->Lang_Get('user_not_found_by_id', array('id' => getRequest('idUser', null, 'post'))), $this->Lang_Get('error'));
-            return;
-        }
-
-        if ($oUserMarked->getId() != $this->oUserCurrent->getId()) {
-            $this->Message_AddErrorSingle($this->Lang_Get('not_access'), $this->Lang_Get('error'));
-            return;
-        }
-        /* @var $oImageUser PluginLsgallery_ModuleImage_EntityImageUser */
-        if (!$oImageUser = $this->PluginLsgallery_Image_GetImageUser($oUserMarked->getId(), $oImage->getId())) {
-            $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
-            return;
-        }
-
-        $sStatus = getRequest('status', null, 'post');
-
-        if ($sStatus == PluginLsgallery_ModuleImage_EntityImageUser::STATUS_CONFIRMED || $sStatus == PluginLsgallery_ModuleImage_EntityImageUser::STATUS_DECLINED) {
-            $oImageUser->setStatus($sStatus);
-        } else {
-            $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
-            return;
-        }
-
-        if ($this->PluginLsgallery_Image_ChangeStatusImageUser($oImageUser)) {
-            $this->Message_AddNoticeSingle($this->Lang_Get('plugin.lsgallery.lsgallery_marked_changed_' . $sStatus), $this->Lang_Get('attention'));
-        } else {
-            $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
-        }
-    }
-
-    /**
-     * Удаляем отметку
-     */
-    public function EventRemoveMark()
-    {
-        if (!$this->oUserCurrent) {
-            $this->Message_AddErrorSingle($this->Lang_Get('need_authorization'), $this->Lang_Get('error'));
-            return;
-        }
-
-        /* @var $oImage PluginLsgallery_ModuleImage_EntityImage */
-        if (!$oImage = $this->PluginLsgallery_Image_GetImageById(getRequest('idImage', null, 'post'))) {
-            $this->Message_AddErrorSingle($this->Lang_Get('plugin.lsgallery.lsgallery_image_not_found'), $this->Lang_Get('error'));
-            return;
-        }
-        /* @var $oUserMarked ModuleUser_EntityUser */
-        if (!$oUserMarked = $this->User_GetUserById(getRequest('idUser', null, 'post'))) {
-            $this->Message_AddErrorSingle($this->Lang_Get('user_not_found_by_id', array('id' => getRequest('idUser', null, 'post'))), $this->Lang_Get('error'));
-            return;
-        }
-        if (($this->oUserCurrent->getId() != $oUserMarked->getId()) && ($oImage->getUserId() != $this->oUserCurrent->getId())) {
-            $this->Message_AddErrorSingle($this->Lang_Get('not_access'), $this->Lang_Get('error'));
-            return;
-        }
-        /* @var $oImageUser PluginLsgallery_ModuleImage_EntityImageUser */
-        if (!$oImageUser = $this->PluginLsgallery_Image_GetImageUser($oUserMarked->getId(), $oImage->getId())) {
-            $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
-            return;
-        }
-
-
-        if ($this->PluginLsgallery_Image_DeleteImageUser($oImageUser)) {
-            $this->Message_AddNoticeSingle($this->Lang_Get('plugin.lsgallery.lsgallery_mark_removed'), $this->Lang_Get('attention'));
-        } else {
-            $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
         }
     }
 

@@ -191,37 +191,6 @@ ls.gallery = (function ($) {
             }
         );
     };
-    // chaneg image people mark
-    this.changeMark = function (idImage, idUser, status, a) {
-        ls.ajax(aRouter.galleryajax + 'changemark', {
-            'idImage': idImage,
-            'idUser': idUser,
-            'status': status
-        },  function (response) {
-            if (response.bStateError) {
-                ls.msg.error(response.sMsgTitle, response.sMsg);
-            } else {
-                jQuery('#current-image-user').remove();
-                ls.msg.notice(response.sMsgTitle, response.sMsg);
-            }
-        });
-    };
-    // remove image user mark
-    this.removeMark = function (idImage, idUser, a) {
-        ls.ajax(aRouter.galleryajax + 'removemark', {
-            'idImage': idImage,
-            'idUser': idUser
-        },  function (response) {
-            if (response.bStateError) {
-                ls.msg.error(response.sMsgTitle, response.sMsg);
-            } else {
-                jQuery('#target-' + idUser).remove();
-                jQuery('#marked-user-' + idUser).remove();
-                jQuery('#current-image-user').remove();
-                ls.msg.notice(response.sMsgTitle, response.sMsg);
-            }
-        });
-    };
 
     this.moveImage = function () {
         ls.ajax(aRouter.galleryajax + 'moveimage', {
@@ -283,24 +252,7 @@ jQuery('document').ready(function(){
     if (jQuery('a.gal-expend').length) {
         jQuery('a.gal-expend').fancybox();
     };
-    // show marker on mark over
-    jQuery('div.image-marker').live('mouseover', function () {
-        jQuery(this).find('div.marker-wrap').first().show();
-    });
-    // hide marker on mark out
-    jQuery('div.image-marker').live('mouseout', function () {
-        jQuery(this).find('div.marker-wrap').first().hide();
-    });
-    // show marker on people over
-    jQuery('#selected-people li').live('mouseover', function () {
-        var id = jQuery(this).attr('id').replace('target-', '');
-        jQuery('#marked-user-' + id + ' div.marker-wrap').show();
-    });
-    // hide marker on people out
-    jQuery('#selected-people li').live('mouseout', function () {
-        var id = jQuery(this).attr('id').replace('target-', '');
-        jQuery('#marked-user-' + id + ' div.marker-wrap').hide();
-    });
+
     // change random images
     jQuery('#gallery-reload').live('click', function (event) {
         event.preventDefault();
@@ -338,179 +290,6 @@ jQuery('document').ready(function(){
         jQuery('a.image-slideshow').first().trigger('click');
     });
 
-    // init imgAreaSelect
-    function initMark() {
-        ias = jQuery('#image img').imgAreaSelect({
-            instance: true,
-            handles: true,
-            minHeight: 100,
-            minWidth: 100,
-            disable: true
-        });
-    }
-    //cancel marking
-    function cancelMarkFriend() {
-        jQuery('#image img').removeClass('select-pic');
-        jQuery('#select-people-notice').animate({
-            opacity: 0
-        }, 0).slideUp(30);
-        jQuery('div.mark-name.current').remove();
-        ias.setOptions({
-            disable: true,
-            hide: true
-        });
-    }
-    // hide markind
-    function hideMarkFriend() {
-        jQuery('div.mark-name.current input').val('');
-        ias.setOptions({
-            hide: true
-        });
-    }
-
-    // process clicking on image while mark
-    function clickSelect(event) {
-        var offset = jQuery('#image img.select-pic').offset(),
-            X1,
-            X2,
-            Y1,
-            Y2;
-        if ((event.pageX - offset.left - 50) > 0 ) {
-            X1 = event.pageX - offset.left - 50;
-            if ((event.pageX - offset.left + 50) < jQuery('#image img.select-pic').width()) {
-                X2 = (event.pageX - offset.left + 50);
-            } else {
-                X2 = jQuery('#image img.select-pic').width();
-                if ((X2 - 100) > 0) {
-                    X1 = X2 - 100;
-                } else {
-                    X1 = 0;
-                    X2 = 100;
-                }
-            }
-        } else {
-            X1 = 0;
-            X2 = 100;
-        }
-
-        if ((event.pageY - offset.top - 50) > 0 ) {
-            Y1 = event.pageY - offset.top - 50;
-            if ((event.pageY - offset.top + 50) < jQuery('#image img.select-pic').height()) {
-                Y2 = (event.pageY - offset.top + 50);
-            } else {
-                Y2 = jQuery('#image img.select-pic').height();
-                if ((Y2 - 100) > 0) {
-                    Y1 = Y2 - 100;
-                } else {
-                    Y1 = 0;
-                    Y2 = 100;
-                }
-            }
-        } else {
-            Y1 = 0;
-            Y2 = 100;
-        }
-
-
-        ias.setSelection(X1, Y1, X2, Y2);
-        ias.setOptions({
-            show: true
-        });
-
-        jQuery('.mark-name input.autocomplete-mark').focus();
-        return false;
-    }
-    // imgAreaSelect for people mark
-    if (jQuery('#select-friends').length) {
-        initMark();
-    }
-
-    // show mark
-    jQuery('#mark').live('click', function (event) {
-        event.preventDefault();
-        if (jQuery('div.mark-name.current').length) {
-            cancelMarkFriend();
-        } else {
-            jQuery('#image img').addClass('select-pic');
-            jQuery('#select-people-notice').css('opacity', 0).slideDown(70).animate({
-                opacity: 1
-            }, 200);
-            var name = jQuery('div.mark-name').clone(),
-                acp = name.find('input.autocomplete-mark').first();
-            name.addClass('current').show();
-
-            if (acp.hasClass('open')) {
-                ls.autocomplete.add(acp, aRouter.ajax + 'autocompleter/user/', false);
-            } else {
-                ls.autocomplete.add(acp, aRouter.galleryajax + 'autocompletefriend', false);
-            }
-
-            jQuery('.imgareaselect-handle:last').parent('div').first().append(name);
-            ias.setOptions({
-                enable: true
-            });
-            jQuery('html, body').animate({
-                scrollTop: $("#content").offset().top
-            }, 600);
-        }
-
-    });
-    // cancel set mark
-    jQuery('div.mark-name.current .cancel-selected-friend').live('click', function (event) {
-        event.preventDefault();
-        hideMarkFriend();
-    });
-    // submit mark
-    jQuery('div.mark-name.current .submit-selected-friend').live('click', function (event) {
-        event.preventDefault();
-        var selection = ias.getSelection(),
-            login = jQuery('div.mark-name.current .autocomplete-mark').val(),
-            idImage = jQuery('#image img').attr('id');
-        if (!selection.height || !login) {
-            return;
-        }
-        ls.ajax(aRouter.galleryajax + 'markfriend', {
-            'idImage': idImage,
-            'login': login,
-            'selection': selection
-        },  function (response) {
-            if (response.bStateError) {
-                ls.msg.error(response.sMsgTitle, response.sMsg);
-            } else {
-                var li = '<li id="target-' + response.idUser + '" class="selected-new">'
-                    + '<a class="user" href="' + response.sPath + '">' + login + '</a>\n'
-                    + '<a href="#" class="remove" onclick="ls.gallery.removeMark('
-                    + idImage + ', ' + response.idUser + ', this); return false;"></a>'
-                    + '</li>',
-                    div = '<div class="image-marker" id="marked-user-' + response.idUser + '" style="top: ' + selection.y1 + 'px; left: '
-                    + selection.x1 + 'px; width: ' + selection.width + 'px; height: ' + selection.height + 'px;">'
-                    + '<div class="marker-wrap" style="width: ' + selection.width + 'px; height: ' + selection.height + 'px;  display: none;">'
-                    + '<div class="marker-inside" style="width: ' + (selection.width - 2) + '}px; height: ' + (selection.height - 2) + 'px"></div>'
-                    + '<div class="user-href-wrap"><a class="user" href="' + response.sPath + '">' + login + '</a></div>'
-                    + '</div></div>';
-                jQuery('#selected-people').append(li);
-                jQuery('#image').append(div);
-                hideMarkFriend();
-                ls.msg.notice(response.sMsgTitle, response.sMsg);
-            }
-        });
-    });
-    // cancel mark
-    jQuery('#image-mark-ready').live('click', function (event) {
-        event.preventDefault();
-        cancelMarkFriend();
-    });
-
-    // positioning select mark
-    jQuery('#image img.select-pic').live('click', function (event) {
-        event.preventDefault();
-        clickSelect(event);
-    });
-    // positioning select mark
-    jQuery('.imgareaselect-outer').live('click', function (event) {
-        event.preventDefault();
-        clickSelect(event);
-    });
     // next|prev img on img click
     jQuery('#image img.gallery-big-photo:not(.select-pic)').live('click', function (event) {
         if (jQuery(this).parent('a').length) {
@@ -542,9 +321,9 @@ jQuery('document').ready(function(){
     function imageLoaded(data) {
         jQuery('#view-image').html(data.sImageContent);
         jQuery('#image-comments').html(data.sCommentContent);
-        if (jQuery('#select-friends').length) {
-            initMark();
-        }
+//        if (jQuery('#select-friends').length) {
+//            initMark();
+//        }
     }
 
     // add ajax load image

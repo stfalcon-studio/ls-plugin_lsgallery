@@ -97,28 +97,10 @@ return array(
     'lsgallery_save' => 'Save',
 
     'lsgallery_user_menu_profile_favourites_images' => 'My Favorites',
-    'lsgallery_image_mark' => 'Add',
-    'lsgallery_image_mark_friend' => 'Flag man',
-    'lsgallery_image_mark_cancel' => 'Cancel the mark',
-    'lsgallery_disallow_mark_friend' => 'User is not your friend',
-    'lsgallery_disallow_mark_personal' => 'Prohibited celebrate people in closed albums',
-    'lsgallery_friend_marked' => 'User is marked in the picture',
-    'lsgallery_already_mark_friend' => 'User is already marked in the picture',
-    'lsgallery_marked_subject' => "You've been tagged in the photo",
-    'lsgallery_marked_changed_declined' => 'You have declined a mark on the photo',
-    'lsgallery_marked_changed_confirmed' => 'You approved stamp on the photo',
     'lsgallery_uwere_marked' => "You've been tagged in this photo",
     'lsgallery_mark_confirm' => 'Confirm',
     'lsgallery_mark_decline' => 'Do not tag me in this photo',
     'lsgallery_mark_remove' => 'Remove the mark',
-    'lsgallery_mark_removed' => 'Mark removed',
-    'lsgallery_declension_images' => 'photos; photos; photography',
-    'lsgallery_image_user_marked' => 'User Logged In',
-    'lsgallery_image_mark_notice' => 'Select the area where the person is, and it will be signed in the photo',
-    'lsgallery_ready' => 'Finish',
-    'lsgallery_admin_images_recalculated' => 'restated for photo',
-    'lsgallery_admin_data_recalcimage' => 'Convert the data to the picture (selected and voice)',
-    'lsgallery_profile_marked' => 'I am in the photo',
 );
 
 

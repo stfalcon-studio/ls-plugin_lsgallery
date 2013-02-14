@@ -111,11 +111,6 @@ class PluginLsgallery_ActionProfile extends PluginLsgallery_Inherit_ActionProfil
         $aResult = $this->PluginLsgallery_Album_GetCountAlbumsPersonalByUser($this->oUserProfile->getId());
         $this->Viewer_Assign('iCountAlbumUser', $aResult);
 
-	    if (is_null($this->iCountMarkedUser)) {
-		    $aResult = $this->PluginLsgallery_Image_GetImagesByUserMarked($this->oUserProfile->getId(), 1, 1);
-		    $this->iCountMarkedUser = $aResult['count'];
-	    }
-
 	    $this->Viewer_Assign('iCountMarkedUser', $this->iCountMarkedUser);
 
         parent::EventShutdown();

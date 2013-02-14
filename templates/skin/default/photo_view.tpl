@@ -2,34 +2,13 @@
 {assign var="oUser" value=$oImage->getUser()}
 {assign var="oVote" value=$oImage->getVote()}
 <div class="image-wrap">
-    {if $bSelectFriends}
-    <div id="wrapper-notice">
-        <div id="select-people-notice" class="hidden">
-            <span>{$aLang.plugin.lsgallery.lsgallery_image_mark_notice}</span> <a href="#" id="image-mark-ready">{$aLang.plugin.lsgallery.lsgallery_ready}</a>
-        </div>
-    </div>
-    {/if}
+    {hookb run="image_status_list" oImage=$oImage aImageUser=$aImageUser bSelectFriends=$bSelectFriends}
     <div id="image" class="content">
-        {if !$bSelectFriends}
         <a href="{$oImage->getUrlFull()}" >
             <img class="gallery-big-photo" id="{$oImage->getId()}" src="{$oImage->getWebPath('638')}" alt="image" />
         </a>
-        {else}
-            <img class="gallery-big-photo" id="{$oImage->getId()}" src="{$oImage->getWebPath('638')}" alt="image" />
-        {/if}
-        {foreach from=$aImageUser item=oImageUser}
-                {assign var="oTargetUser" value=$oImageUser->getTargetUser()}
-                {if $oImageUser->getStatus() == 'new' || $oImageUser->getStatus() == 'confirmed' || ($oImageUser->getStatus() == 'declined' && $oUserCurrent && ($oTargetUser->getId() == $oUserCurrent->getId() || $oImage->getUserId() == $oUserCurrent->getId() || $ouserCurrent->isAdministrator()))}
-                    <div class="image-marker" id="marked-user-{$oImageUser->getTargetUserId()}"
-                         style="top: {$oImageUser->getLassoY()}px; left: {$oImageUser->getLassoX()}px; width: {$oImageUser->getLassoW()}px; height: {$oImageUser->getLassoH()}px;">
-						<div class="marker-wrap" style="width: {$oImageUser->getLassoW()}px; height: {$oImageUser->getLassoH()}px;  display: none;">
-							<div class="marker-inside" style="width: {$oImageUser->getLassoW()-2}px; height: {$oImageUser->getLassoH()-2}px"></div>
-							<div class="user-href-wrap"><a class="user" href="{$oTargetUser->getUserWebPath()}">{$oTargetUser->getLogin()}</a></div>
-						</div>
-                    </div>
-                {/if}
-        {/foreach}
     </div>
+    {/hookb}
 </div>
     {if $bSliderImage}
         <div class="gallery-navigation">
@@ -58,51 +37,14 @@
 				<div class="current-image-options">
 				 <a href="#" class="confirmed" onclick="ls.gallery.changeMark({$oImage->getId()}, {$oCurrentImageUser->getTargetUserId()}, 'confirmed', this); return false;"><span class="ico"></span><span class="txt">{$aLang.plugin.lsgallery.lsgallery_mark_confirm}</span></a>
                  <a href="#" class="remove-own" onclick="ls.gallery.removeMark({$oImage->getId()}, {$oCurrentImageUser->getTargetUserId()}, this); return false;"><span class="ico"></span><span class="txt">{$aLang.plugin.lsgallery.lsgallery_mark_remove}</span></a>
-				 <a href="#" class="declined" onclick="ls.gallery.changeMark({$oImage->getId()}, {$oCurrentImageUser->getTargetUserId()}, 'declined', this); return false;"><span class="ico"></span><span class="txt">{$aLang.plugin.lsgallery.lsgallery_mark_decline}</span></a>				 
+				 <a href="#" class="declined" onclick="ls.gallery.changeMark({$oImage->getId()}, {$oCurrentImageUser->getTargetUserId()}, 'declined', this); return false;"><span class="ico"></span><span class="txt">{$aLang.plugin.lsgallery.lsgallery_mark_decline}</span></a>
 				</div>
 			</div>
 		</div>
     {/if}
-    {if $bSelectFriends}
-        <ul id="selected-people">
-            {foreach from=$aImageUser item=oImageUser}
-                {assign var="oTargetUser" value=$oImageUser->getTargetUser()}
-                {if $oImageUser->getStatus() == 'new'}
-                    <li id="target-{$oImageUser->getTargetUserId()}" class="selected-new">
-                        <a class="user" href="{$oTargetUser->getUserWebPath()}">{$oTargetUser->getLogin()}</a>
-                        {if $oUserCurrent}
-                            {if $oImage->getUserId() == $oUserCurrent->getId()}
-                                <a href="#" class="remove" onclick="ls.gallery.removeMark({$oImage->getId()}, {$oImageUser->getTargetUserId()}, this); return false;"></a>
-                            {/if}
-                        {/if}
-                    </li>
-                {elseif $oImageUser->getStatus() == 'confirmed'}
-                    <li id="target-{$oImageUser->getTargetUserId()}" class="selected-confimed">
-                        <a class="user" href="{$oTargetUser->getUserWebPath()}">{$oTargetUser->getLogin()}</a>
-                        {if $oUserCurrent && ($oTargetUser->getId() == $oUserCurrent->getId() || $oUserCurrent->getId() == $oImage->getUserId())}
-                            <a href="#" class="remove" onclick="ls.gallery.removeMark({$oImage->getId()}, {$oImageUser->getTargetUserId()}, this); return false;"></a>
-                        {/if}
-                    </li>
-                {elseif $oImageUser->getStatus() == 'declined' && $oUserCurrent &&
-                    ($oTargetUser->getId() == $oUserCurrent->getId() || $oImage->getUserId() == $oUserCurrent->getId() || $oUserCurrent->isAdministrator())}
-                    <li id="target-{$oImageUser->getTargetUserId()}" class="selected-declined">
-                        <a class="user" href="{$oTargetUser->getUserWebPath()}">{$oTargetUser->getLogin()}</a>
-                        <a href="#" class="remove" onclick="ls.gallery.removeMark({$oImage->getId()}, {$oImageUser->getTargetUserId()}, this); return false;"></a>
-                    </li>
-                {/if}
-            {/foreach}
-        </ul>
-        {if $oUserCurrent}
-            <div id="select-friends">
-                <a id="mark" class="link-dotted" href="#">{$aLang.plugin.lsgallery.lsgallery_image_mark_friend}</a>
-                <div class="mark-name" style="display:none;">
-                    <input type="text" class="input-text autocomplete-mark {$oAlbum->getType()}" value=""/>
-                    <a href="#" class="submit-selected-friend link-dotted">{$aLang.plugin.lsgallery.lsgallery_image_mark}</a>
-                    <a href="#" class="cancel-selected-friend link-dotted">{$aLang.plugin.lsgallery.lsgallery_cancel}</a>
-                </div>
-            </div>
-        {/if}
-    {/if}
+
+    {hook run='image_content_after' oImage=$oImage aImageUser=$aImageUser oUserCurrent=$oUserCurrent oAlbum=$oAlbum bSelectFriends=$bSelectFriends}
+
     <div class="topic-content">
 		{$oImage->getDescription()|strip_tags}
 	</div>
@@ -136,43 +78,43 @@
             {/if}
             <li class="topic-info-vote">
                 <div id="vote_area_image_{$oImage->getId()}" class="vote-topic
-																	{if $oVote || ($oUserCurrent && $oImage->getUserId() == $oUserCurrent->getId()) || strtotime($oImage->getDateAdd()) < $smarty.now-$oConfig->GetValue('acl.vote.image.limit_time')}
-																		{if $oImage->getRating() > 0}
-																			vote-count-positive
-																		{elseif $oImage->getRating() < 0}
-																			vote-count-negative
-																		{elseif $oImage->getRating() == 0}
-																			vote-count-zero
-																		{/if}
-																	{/if}
+                {if $oVote || ($oUserCurrent && $oImage->getUserId() == $oUserCurrent->getId()) || strtotime($oImage->getDateAdd()) < $smarty.now-$oConfig->GetValue('acl.vote.image.limit_time')}
+                    {if $oImage->getRating() > 0}
+                        vote-count-positive
+                    {elseif $oImage->getRating() < 0}
+                        vote-count-negative
+                    {elseif $oImage->getRating() == 0}
+                        vote-count-zero
+                    {/if}
+                {/if}
 
-																	{if !$oUserCurrent or ($oUserCurrent && $oImage->getUserId() != $oUserCurrent->getId())}
-																		vote-not-self
-																	{/if}
+                {if !$oUserCurrent or ($oUserCurrent && $oImage->getUserId() != $oUserCurrent->getId())}
+                    vote-not-self
+                {/if}
 
-																	{if $oVote}
-																		voted
+                {if $oVote}
+                    voted
 
-																		{if $oVote->getDirection() > 0}
-																			voted-up
-																		{elseif $oVote->getDirection() < 0}
-																			voted-down
-																		{elseif $oVote->getDirection() == 0}
-																			voted-zero
-																		{/if}
-																	{else}
-																		not-voted
-																	{/if}
+                    {if $oVote->getDirection() > 0}
+                        voted-up
+                    {elseif $oVote->getDirection() < 0}
+                        voted-down
+                    {elseif $oVote->getDirection() == 0}
+                        voted-zero
+                    {/if}
+                {else}
+                    not-voted
+                {/if}
 
-																	{if (strtotime($oImage->getDateAdd()) < $smarty.now-$oConfig->GetValue('acl.vote.image.limit_time') && !$oVote) || ($oUserCurrent && $oImage->getUserId() == $oUserCurrent->getId())}
-																		vote-nobuttons
-																	{/if}
+                {if (strtotime($oImage->getDateAdd()) < $smarty.now-$oConfig->GetValue('acl.vote.image.limit_time') && !$oVote) || ($oUserCurrent && $oImage->getUserId() == $oUserCurrent->getId())}
+                    vote-nobuttons
+                {/if}
 
-																	{if strtotime($oImage->getDateAdd()) > $smarty.now-$oConfig->GetValue('acl.vote.iamge.limit_time')}
-																		vote-not-expired
-																	{/if}
+                {if strtotime($oImage->getDateAdd()) > $smarty.now-$oConfig->GetValue('acl.vote.iamge.limit_time')}
+                    vote-not-expired
+                {/if}
 
-																	{if $bVoteInfoShow}js-infobox-vote-image{/if}">
+                {if $bVoteInfoShow}js-infobox-vote-image{/if}">
                     <div class="vote-item vote-down" onclick="return ls.vote.vote({$oImage->getId()},this,-1,'image');"><span><i></i></span></div>
                     <div class="vote-item vote-count" title="{$aLang.topic_vote_count}: {$oImage->getCountVote()}">
 						<span id="vote_total_image_{$oImage->getId()}">
