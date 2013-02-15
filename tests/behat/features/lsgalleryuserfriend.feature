@@ -22,7 +22,7 @@ Feature: Lsgallery plugin standart features BDD
 
   #check images in sidebar
   Given I press element by css "#block_gallery_item_new a"
-  And I wait "500"
+  And I wait "1000"
     Then I should see in element by css "sidebar" values:
       | value |
       | http://livestreet.test/uploads/images/lsgallery/test2 |
@@ -83,7 +83,7 @@ Feature: Lsgallery plugin standart features BDD
       | http://livestreet.test/uploads/images/lsgallery/test3 |
 
     Given I press element by css "#block_gallery_item_new a"
-    And I wait "500"
+    And I wait "1000"
     And I should see in element by css "stream-images" values:
       | value |
       | http://livestreet.test/uploads/images/lsgallery/test2 |
@@ -122,7 +122,7 @@ Feature: Lsgallery plugin standart features BDD
       | /gallery/image/3"> |
 
     Given I press element by css "#block_gallery_item_new a"
-    And I wait "500"
+    And I wait "1000"
     Then I should see in element by css "stream-images" values:
       | value |
       | http://livestreet.test/uploads/images/lsgallery/test2 |
