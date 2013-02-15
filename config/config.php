@@ -21,6 +21,7 @@ Config::Set('module.image.lsgallery.jpg_quality', 95);
 
 Config::Set('block.rule_stream_gallery', array(
     'action'  => array(
+        'index',
         'gallery' => array(
             'photo', 'image', 'albums'
             )
