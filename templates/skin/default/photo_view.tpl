@@ -29,19 +29,6 @@
             {/if}
         </div>
     {/if}
-    {if $oCurrentImageUser && $oCurrentImageUser->getStatus() =='new'}
-        {assign var="oTargetUser" value=$oCurrentImageUser->getTargetUser()}
-        <div id="current-image-user">
-			<div class="inside wrapper-content">
-             {$aLang.plugin.lsgallery.lsgallery_uwere_marked}
-				<div class="current-image-options">
-				 <a href="#" class="confirmed" onclick="ls.gallery.changeMark({$oImage->getId()}, {$oCurrentImageUser->getTargetUserId()}, 'confirmed', this); return false;"><span class="ico"></span><span class="txt">{$aLang.plugin.lsgallery.lsgallery_mark_confirm}</span></a>
-                 <a href="#" class="remove-own" onclick="ls.gallery.removeMark({$oImage->getId()}, {$oCurrentImageUser->getTargetUserId()}, this); return false;"><span class="ico"></span><span class="txt">{$aLang.plugin.lsgallery.lsgallery_mark_remove}</span></a>
-				 <a href="#" class="declined" onclick="ls.gallery.changeMark({$oImage->getId()}, {$oCurrentImageUser->getTargetUserId()}, 'declined', this); return false;"><span class="ico"></span><span class="txt">{$aLang.plugin.lsgallery.lsgallery_mark_decline}</span></a>
-				</div>
-			</div>
-		</div>
-    {/if}
 
     {hook run='image_content_after' oImage=$oImage aImageUser=$aImageUser oUserCurrent=$oUserCurrent oAlbum=$oAlbum bSelectFriends=$bSelectFriends}
 

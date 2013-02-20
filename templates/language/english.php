@@ -97,10 +97,6 @@ return array(
     'lsgallery_save' => 'Save',
 
     'lsgallery_user_menu_profile_favourites_images' => 'My Favorites',
-    'lsgallery_uwere_marked' => "You've been tagged in this photo",
-    'lsgallery_mark_confirm' => 'Confirm',
-    'lsgallery_mark_decline' => 'Do not tag me in this photo',
-    'lsgallery_mark_remove' => 'Remove the mark',
 );
 
 

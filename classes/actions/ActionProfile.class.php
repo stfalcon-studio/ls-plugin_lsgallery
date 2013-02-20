@@ -8,11 +8,9 @@ class PluginLsgallery_ActionProfile extends PluginLsgallery_Inherit_ActionProfil
     {
         parent::RegisterEvent();
 
-	    $this->AddEventPreg('/^.+$/i','/^usermarked/i','/^(page([1-9]\d{0,5}))?$/i','EventMarked');
-
         $this->AddEventPreg('/^.+$/i', '/^favourites$/i', '/^images$/i', '/^(page([1-9]\d{0,5}))?$/i', 'EventFavouriteImages');
 
-        $this->AddEventPreg('/^.+$/i','/^created/i','/^albums$/i','/^(page([1-9]\d{0,5}))?$/i','EventCreatedAlbums');
+        $this->AddEventPreg('/^.+$/i', '/^created/i','/^albums$/i','/^(page([1-9]\d{0,5}))?$/i','EventCreatedAlbums');
     }
 
     protected function EventFavouriteImages()
@@ -78,27 +76,6 @@ class PluginLsgallery_ActionProfile extends PluginLsgallery_Inherit_ActionProfil
         $this->SetTemplateAction('albums');
     }
 
-	protected function EventMarked()
-	{
-
-		if (!$this->CheckUserProfile()) {
-			return parent::EventNotFound();
-		}
-
-		$iPage = $this->GetParamEventMatch(1, 2) ? $this->GetParamEventMatch(1, 2) : 1;
-
-		$aResult = $this->PluginLsgallery_Image_GetImagesByUserMarked($this->oUserProfile->getId(), $iPage, Config::Get('plugin.lsgallery.image_per_page'));
-		$aImages = $aResult['collection'];
-
-		$aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, Config::Get('plugin.lsgallery.image_per_page'), 4, $this->oUserProfile->getUserWebPath() . 'usermarked/');
-
-		$this->iCountMarkedUser = $aResult['count'];
-
-		$this->SetTemplateAction('usermarked');
-		$this->Viewer_Assign("iPhotoCount", $aResult['count']);
-		$this->Viewer_Assign('aImages', $aImages);
-		$this->Viewer_Assign('aPaging', $aPaging);
-	}
     public function EventShutdown()
     {
         if (!$this->oUserProfile) {
@@ -106,12 +83,10 @@ class PluginLsgallery_ActionProfile extends PluginLsgallery_Inherit_ActionProfil
         }
 
         $iCountImageFavourite=$this->PluginLsgallery_Image_GetCountImagesFavouriteByUserId($this->oUserProfile->getId());
-        $this->Viewer_Assign('iCountImageFavourite',$iCountImageFavourite);
+        $this->Viewer_Assign('iCountImageFavourite', $iCountImageFavourite);
 
         $aResult = $this->PluginLsgallery_Album_GetCountAlbumsPersonalByUser($this->oUserProfile->getId());
         $this->Viewer_Assign('iCountAlbumUser', $aResult);
-
-	    $this->Viewer_Assign('iCountMarkedUser', $this->iCountMarkedUser);
 
         parent::EventShutdown();
     }

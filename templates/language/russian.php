@@ -100,11 +100,6 @@ return array(
     'lsgallery_save' => 'Сохранить',
 
     'lsgallery_user_menu_profile_favourites_images' => 'Избранные фото',
-
-    'lsgallery_uwere_marked' => 'Вас отметили на этой фотографии',
-    'lsgallery_mark_confirm' => 'Подтвердить',
-    'lsgallery_mark_decline' => 'Больше не отмечать меня на этом фото',
-    'lsgallery_mark_remove' => 'Удалить отметку',
 );
 
 
