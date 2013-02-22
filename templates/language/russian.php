@@ -100,6 +100,8 @@ return array(
     'lsgallery_save' => 'Сохранить',
 
     'lsgallery_user_menu_profile_favourites_images' => 'Избранные фото',
+    'lsgallery_admin_images_recalculated' => 'Пересчитаны данные для фото',
+    'lsgallery_admin_data_recalcimage' => 'Пересчитать данные для фото (избраннои и голоса)',
 );
 
 

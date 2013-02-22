@@ -2,11 +2,15 @@
 {assign var="oUser" value=$oImage->getUser()}
 {assign var="oVote" value=$oImage->getVote()}
 <div class="image-wrap">
-    {hookb run="image_status_list" oImage=$oImage aImageUser=$aImageUser bSelectFriends=$bSelectFriends}
+    {hookb run="image_status_list" oImage=$oImage aImageUser=$aImageUser oAlbum=$oAlbum bSliderImage=$bSliderImage}
+    {if $bSliderImage}
     <div id="image" class="content">
+        <img class="gallery-big-photo" id="{$oImage->getId()}" src="{$oImage->getWebPath('638')}" alt="image" />
+    {else}
         <a href="{$oImage->getUrlFull()}" >
             <img class="gallery-big-photo" id="{$oImage->getId()}" src="{$oImage->getWebPath('638')}" alt="image" />
         </a>
+    {/if}
     </div>
     {/hookb}
 </div>
@@ -30,7 +34,7 @@
         </div>
     {/if}
 
-    {hook run='image_content_after' oImage=$oImage aImageUser=$aImageUser oUserCurrent=$oUserCurrent oAlbum=$oAlbum bSelectFriends=$bSelectFriends}
+    {hook run='image_content_after' oImage=$oImage aImageUser=$aImageUser oUserCurrent=$oUserCurrent oAlbum=$oAlbum bSliderImage=$bSliderImage }
 
     <div class="topic-content">
 		{$oImage->getDescription()|strip_tags}
