@@ -93,7 +93,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $aResult = $this->PluginLsgallery_Album_GetAlbumsIndex(1, Config::Get('plugin.lsgallery.album_block'));
 
         $this->Viewer_Assign('oImage', $oImage);
-        $this->Viewer_Assign('oAlbum', $oImage->getAlbum());
+        $this->Viewer_Assign('oAlbum', $oImage?$oImage->getAlbum():null);
         $this->Viewer_Assign('aAlbums', $aResult['collection']);
         $this->Viewer_Assign('aRandomImages', $aRandomImages);
 
