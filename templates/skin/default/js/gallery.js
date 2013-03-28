@@ -191,7 +191,9 @@ jQuery('document').ready(function(){
     });
 
     // перемещаем изображение в другой альбом
-    jQuery('#move_image_form').jqm();
+    if(jQuery('#move_image_form')[0]) {
+        jQuery('#move_image_form').jqm();
+    }
     jQuery('.image-move').on('click', function(event){
         event.preventDefault();
         if (!jQuery('#move_image_form').length) {
