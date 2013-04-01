@@ -570,7 +570,9 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         /**
          * Добавляем коммент
          */
+        $this->Hook_Run('image_comment_add_before', array('oCommentNew' => $oCommentNew, 'oCommentParent' => $oCommentParent, 'oImage' => $oImage));
         if ($this->Comment_AddComment($oCommentNew)) {
+            $this->Hook_Run('image_comment_add_after', array('oCommentNew' => $oCommentNew, 'oCommentParent' => $oCommentParent, 'oImage' => $oImage));
 
             $this->Viewer_AssignAjax('sCommentId', $oCommentNew->getId());
 

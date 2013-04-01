@@ -208,6 +208,31 @@ class PluginLsgallery_ModuleAlbum_MapperAlbum extends Mapper
     }
 
     /**
+     * Get close albums id
+     *
+     * @return array
+     */
+    public function GetCloseAlbums()
+    {
+        $sql = "SELECT
+                    a.album_id
+                FROM
+                    " . Config::Get('db.table.lsgallery.album') . " as a
+                WHERE
+                    a.album_type <> 'open'
+                GROUP BY
+                    a.album_id
+                ";
+        $aAlbums = array();
+        if ($aRows = $this->oDb->select($sql)) {
+            foreach ($aRows as $aRow) {
+                $aAlbums[] = $aRow['album_id'];
+            }
+        }
+        return $aAlbums;
+    }
+
+    /**
      * Build sql filter
      *
      * @param array $aFilter
