@@ -34,6 +34,9 @@ if (ls.blocks) {
     ls.blocks.options.type.block_gallery_best_images = {
         url: aRouter.galleryajax + 'getbestimages/'
     };
+    ls.blocks.options.type.block_gallery_images_comments = {
+        url: aRouter.galleryajax + 'getimagescomments/'
+    };
 }
 
 jQuery('document').ready(function(){
