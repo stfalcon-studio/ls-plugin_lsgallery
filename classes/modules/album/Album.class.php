@@ -356,6 +356,12 @@ class PluginLsgallery_ModuleAlbum extends Module
         return $this->GetAlbumsByFilter($aFilter, $iPage, $iPerPage);
     }
 
+    /**
+     * Get count albums by user
+     *
+     * @param string $sUserId
+     * @return int
+     */
     public function GetCountAlbumsPersonalByUser($sUserId)
     {
         $aFilter = array(
@@ -377,6 +383,60 @@ class PluginLsgallery_ModuleAlbum extends Module
         }
 
         return $this->GetCountAlbumsByFilter($aFilter);
+    }
+
+    /**
+     * Получаем массив идентификаторов блогов, которые являются закрытыми для пользователя
+     *
+     * @param  ModuleUser_EntityUser|null $oUser	Пользователь
+     * @return array
+     */
+    public function GetInaccessibleAlbumsByUser($oUser = null)
+    {
+        if ($oUser && $oUser->isAdministrator()) {
+            return array();
+        }
+
+        $sUserId = $oUser ? $oUser->getId() : 'guest';
+
+        if (false === ($aPrivateAlbums = $this->Cache_Get("album_inaccessible_user_{$sUserId}"))) {
+            $aPrivateAlbums = $this->oMapper->GetCloseAlbums();
+
+            if ($oUser) {
+
+                $aOwnAlbums = $this->GetAlbumsPersonalByUser($oUser->getId());
+                $aFriendsAlbums = array();
+                $aFriends = $this->User_GetUsersFriend($this->oUserCurrent->getId());
+                if ($aFriends['count']) {
+                    $aFilter['album_type']['friend'] = array_keys($aFriends['collection']);
+                    $aFriendsAlbums = $this->GetAlbumsByFilter($aFilter);
+                    $aFriendsAlbums  = array_keys($aFriendsAlbums['collection']);
+                }
+
+                $aOwnAlbums  = array_keys($aOwnAlbums['collection']);
+                $aPrivateAlbums = array_diff($aPrivateAlbums, $aOwnAlbums, $aFriendsAlbums );
+            }
+            /**
+             * Сохраняем в кеш
+             */
+            if ($oUser) {
+                $this->Cache_Set(
+                    $aPrivateAlbums,
+                    "album_inaccessible_user_{$sUserId}",
+                    array('album_new', 'album_update', "friend_change_user_{$oUser->getId()}"),
+                    60 * 60 * 24
+                );
+            } else {
+                $this->Cache_Set(
+                    $aPrivateAlbums,
+                    "album_inaccessible_user_{$sUserId}",
+                    array('album_new', 'album_update'),
+                    60 * 60 * 24 * 3
+                );
+            }
+        }
+
+        return $aPrivateAlbums;
     }
 
 }

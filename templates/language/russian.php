@@ -100,29 +100,8 @@ return array(
     'lsgallery_save' => 'Сохранить',
 
     'lsgallery_user_menu_profile_favourites_images' => 'Избранные фото',
-
-    'lsgallery_image_mark' => 'Добавить',
-    'lsgallery_image_mark_friend' => 'Отметить человека',
-    'lsgallery_image_mark_cancel' => 'Отменить отметку',
-    'lsgallery_disallow_mark_friend' => 'Пользователь не является вашим другом',
-    'lsgallery_disallow_mark_personal' => 'Запрещенно отмечать людей в закрытых альбомах',
-    'lsgallery_friend_marked' => 'Пользователь отмечен на картинке',
-    'lsgallery_already_mark_friend' => 'Пользователь уже отмечен на картинке',
-    'lsgallery_marked_subject' => 'Вас отметили на фото',
-    'lsgallery_marked_changed_declined' => 'Вы отклонили отметку на фото',
-    'lsgallery_marked_changed_confirmed' => 'Вы одобрили отметку на фото',
-    'lsgallery_uwere_marked' => 'Вас отметили на этой фотографии',
-    'lsgallery_mark_confirm' => 'Подтвердить',
-    'lsgallery_mark_decline' => 'Больше не отмечать меня на этом фото',
-    'lsgallery_mark_remove' => 'Удалить отметку',
-    'lsgallery_mark_removed' => 'Отметка удалена',
-    'lsgallery_declension_images' => 'фотографии;фотографиях;фотографиях',
-    'lsgallery_image_user_marked' => 'Пользователь отмечен на ',
-    'lsgallery_image_mark_notice' => 'Выделите область, где изображен человек, и он будет подписан на фотографии',
-    'lsgallery_ready' => 'Готово',
     'lsgallery_admin_images_recalculated' => 'Пересчитаны данные для фото',
     'lsgallery_admin_data_recalcimage' => 'Пересчитать данные для фото (избраннои и голоса)',
-    'lsgallery_profile_marked' => 'Я на фото',
 );
 
 

@@ -49,7 +49,6 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->AddEvent('albums', 'EventViewGallery');
 
         $this->AddEvent('tag', 'EventTag');
-        $this->AddEvent('usermarked', 'EventUserMarked');
 
         $this->AddEvent('photo', 'EventPhoto');
 
@@ -94,6 +93,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $aResult = $this->PluginLsgallery_Album_GetAlbumsIndex(1, Config::Get('plugin.lsgallery.album_block'));
 
         $this->Viewer_Assign('oImage', $oImage);
+        $this->Viewer_Assign('oAlbum', $oImage?$oImage->getAlbum():null);
         $this->Viewer_Assign('aAlbums', $aResult['collection']);
         $this->Viewer_Assign('aRandomImages', $aRandomImages);
 
@@ -178,7 +178,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $sId = $this->GetParam(0);
 
         if (!$oAlbum = $this->PluginLsgallery_Album_GetAlbumById($sId)) {
-            return parent::EventNotFound();
+            return $this->EventNotFound();
         }
         if (!$this->ACL_AllowDeleteAlbum($this->oUserCurrent, $oAlbum)) {
             $this->Message_AddErrorSingle($this->Lang_Get('not_access'), $this->Lang_Get('error'));
@@ -207,7 +207,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $sId = $this->GetParam(0);
 
         if (!$oAlbum = $this->PluginLsgallery_Album_GetAlbumById($sId)) {
-            return parent::EventNotFound();
+            return $this->EventNotFound();
         }
         if (!$this->ACL_AllowUpdateAlbum($this->oUserCurrent, $oAlbum)) {
             $this->Message_AddErrorSingle($this->Lang_Get('not_access'), $this->Lang_Get('error'));
@@ -250,7 +250,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $sId = $this->GetParam(0);
         /* @var $oAlbum PluginLsgallery_ModuleAlbum_EntityAlbum */
         if (!$oAlbum = $this->PluginLsgallery_Album_GetAlbumById($sId)) {
-            return parent::EventNotFound();
+            return $this->EventNotFound();
         }
         if (!$this->ACL_AllowAdminAlbumImages($this->oUserCurrent, $oAlbum)) {
             $this->Message_AddErrorSingle($this->Lang_Get('not_access'), $this->Lang_Get('error'));
@@ -282,11 +282,11 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
         /* @var $oImage PluginLsgallery_ModuleImage_EntityImage */
         if (!$oImage = $this->PluginLsgallery_Image_GetImageById($sId)) {
-            return parent::EventNotFound();
+            return $this->EventNotFound();
         }
         /* @var $oAlbum PluginLsgallery_ModuleAlbum_EntityAlbum */
         if (!$oAlbum = $this->PluginLsgallery_Album_GetAlbumById($oImage->getAlbumId())) {
-            return parent::EventNotFound();
+            return $this->EventNotFound();
         }
 
         if (!$this->ACL_AllowViewAlbumImages($this->oUserCurrent, $oAlbum)) {
@@ -327,13 +327,10 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
             $oImageRead->setDateRead();
             $this->PluginLsgallery_Image_SetImageRead($oImageRead);
 
-            $oCurrentImageUser = $this->PluginLsgallery_Image_GetImageUser($this->oUserCurrent->getId(), $oImage->getId());
-            $this->Viewer_Assign('oCurrentImageUser', $oCurrentImageUser);
         }
 
+        $this->Hook_Run('gallery_view_image', array('oUser'=>$this->oUserCurrent, 'oImage' => $oImage, 'oAlbum' => $oAlbum));
         $this->SetTemplateAction('view');
-
-        $aImageUser = $this->PluginLsgallery_Image_GetImageUsersByImageId($oImage->getId());
 
         $oPrevImage = $this->PluginLsgallery_Image_GetPrevImage($oImage);
         $oNextImage = $this->PluginLsgallery_Image_GetNextImage($oImage);
@@ -343,19 +340,13 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->Viewer_Assign('oPrevImage', $oPrevImage);
         $this->Viewer_Assign('oNextImage', $oNextImage);
 
-        $this->Viewer_Assign('aImageUser', $aImageUser);
         $this->Viewer_Assign('aComments', $aComments);
         $this->Viewer_Assign('iMaxIdComment', $iMaxIdComment);
 
         $this->Viewer_AddBlock('right', 'Album', array('plugin' => 'lsgallery', 'oAlbum' => $oAlbum), Config::Get('plugin.lsgallery.priority_album_block'));
 
-        $this->Viewer_Assign('sHistoryJsPath', Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/history/jquery.history.js');
         $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/fancybox/jquery.fancybox.pack.js');
         $this->Viewer_AppendStyle(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/fancybox/jquery.fancybox.css');
-
-        $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/imgareaselect/jquery.imgareaselect.dev.js');
-        $this->Viewer_AppendStyle(Plugin::GetTemplateWebPath('lsgallery') . 'css/imgareaselect-default.css');
-
     }
 
     public function EventViewAlbum()
@@ -364,7 +355,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
         /* @var $oAlbum PluginLsgallery_ModuleAlbum_EntityAlbum */
         if (!$oAlbum = $this->PluginLsgallery_Album_GetAlbumById($sId)) {
-            return parent::EventNotFound();
+            return $this->EventNotFound();
         }
 
         if (!$this->ACL_AllowViewAlbumImages($this->oUserCurrent, $oAlbum)) {
@@ -420,34 +411,12 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->Viewer_Assign('aPaging', $aPaging);
     }
 
-    public function EventUserMarked()
-    {
-        $sLogin = $this->GetParam(0);
-        $this->sMenuItemSelect = 'album';
-        if (!$oUser = $this->User_GetUserByLogin($sLogin)) {
-            return parent::EventNotFound();
-        }
-
-        $iPage = $this->_getPage();
-
-	    $iPage = $this->GetParamEventMatch(1, 2) ? $this->GetParamEventMatch(1, 2) : 1;
-
-	    /**
-	     * Выполняем редирект на новый URL
-	     */
-	    $sPage = $iPage == 1 ? '' : "page{$iPage}/";
-
-	    Router::Location($oUser->getUserWebPath().'usermarked/'.$sPage);
-
-
-    }
-
     public function EventTag()
     {
         $sTag = $this->GetParam(0);
 
         if (!$sTag) {
-            return parent::EventNotFound();
+            return $this->EventNotFound();
         }
         /**
          * Передан ли номер страницы
@@ -601,17 +570,11 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         /**
          * Добавляем коммент
          */
+        $this->Hook_Run('image_comment_add_before', array('oCommentNew' => $oCommentNew, 'oCommentParent' => $oCommentParent, 'oImage' => $oImage));
         if ($this->Comment_AddComment($oCommentNew)) {
+            $this->Hook_Run('image_comment_add_after', array('oCommentNew' => $oCommentNew, 'oCommentParent' => $oCommentParent, 'oImage' => $oImage));
 
             $this->Viewer_AssignAjax('sCommentId', $oCommentNew->getId());
-
-//            $oCommentOnline = Engine::GetEntity('Comment_CommentOnline');
-//            $oCommentOnline->setTargetId($oCommentNew->getTargetId());
-//            $oCommentOnline->setTargetType($oCommentNew->getTargetType());
-//            $oCommentOnline->setTargetParentId($oCommentNew->getTargetParentId());
-//            $oCommentOnline->setCommentId($oCommentNew->getId());
-//
-//            $this->Comment_AddCommentOnline($oCommentOnline);
 
             $this->PluginLsgallery_Image_IncreaseImageCountComment($oCommentNew->getTargetId());
 
@@ -646,7 +609,8 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $aComments = array();
 
         if (getRequest('bUsePaging', null, 'post') && $selfIdComment) {
-            if ($oComment = $this->Comment_GetCommentById($selfIdComment) && $oComment->getTargetId() == $oImage->getId() && $oComment->getTargetType() == 'image') {
+            $oComment = $this->Comment_GetCommentById($selfIdComment);
+            if ($oComment && $oComment->getTargetId() == $oImage->getId() && $oComment->getTargetType() == 'image') {
                 $oViewerLocal = $this->Viewer_GetLocalViewer();
                 $oViewerLocal->Assign('oUserCurrent', $this->oUserCurrent);
                 $oViewerLocal->Assign('bOneComment', true);

@@ -1,12 +1,7 @@
 {include file='header.tpl' menu="album"}
-<script src="{$sHistoryJsPath}"></script>
-{if $oAlbum->getType() == 'personal'}
-    {assign var="bSelectFriends" value=0}
-{else}
-    {assign var="bSelectFriends" value=1}
-{/if}
+
 <div id="view-image" class="topic gallery-topic">
-    {include file="`$sTemplatePathLsgallery`photo_view.tpl" oImage=$oImage bSelectFriends=$bSelectFriends bSliderImage=true}
+    {include file="`$sTemplatePathLsgallery`photo_view.tpl" oImage=$oImage bSliderImage=true}
 </div>
 
 <div id="image-comments">
