@@ -51,4 +51,4 @@ before_script:
   - sleep 5
 
 
-script: HTTP_APP_ENV=test cd tests/behat/ && php behat.phar --config='../../plugins/lsgallery/tests/behat/behat.yml' --strict
+script: HTTP_APP_ENV=test cd tests/behat/ && php behat.phar --config='../../plugins/lsgallery/tests/behat/behat.yml' --strict  && php behat.phar --strict
