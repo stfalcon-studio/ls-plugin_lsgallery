@@ -102,6 +102,10 @@ return array(
     'lsgallery_user_menu_profile_favourites_images' => 'Вибрані фото',
     'lsgallery_admin_images_recalculated' => 'Перераховані дані для фото',
     'lsgallery_admin_data_recalcimage' => 'Перераховані дані для фото (обрані и голоси)',
+
+    'lsgallery_title_albums' => 'альбоми',
+    'lsgallery_control_album' => 'керування альбомом',
+    'lsgallery_all_created_albums' => 'всі альбоми',
 );
 
 
