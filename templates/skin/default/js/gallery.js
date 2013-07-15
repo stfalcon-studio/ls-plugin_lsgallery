@@ -194,7 +194,7 @@ jQuery('document').ready(function(){
     if(jQuery('#move_image_form')[0]) {
         jQuery('#move_image_form').jqm();
     }
-    jQuery('.image-move').on('click', function(event){
+    jQuery(document).on('click', '.image-move', function(event){
         event.preventDefault();
         if (!jQuery('#move_image_form').length) {
             jQuery(this).remove();
@@ -215,7 +215,7 @@ jQuery('document').ready(function(){
     };
 
     // change random images
-    jQuery('#gallery-reload').on('click', function (event) {
+    jQuery(document).on('click', '#gallery-reload', function (event) {
         event.preventDefault();
         ls.ajax(aRouter.galleryajax + 'getrandomimages', {},
             function (result) {
@@ -225,13 +225,13 @@ jQuery('document').ready(function(){
             });
     });
     // Поиск по тегам
-    jQuery('#tag__image_search_form').on('submit', function () {
+    jQuery(document).on('submit', '#tag__image_search_form', function (event) {
+        event.preventDefault();
         window.location = aRouter.gallery + 'tag/' + jQuery('#tag_search').val() + '/';
-        return false;
     });
 
     // show slideshow
-    jQuery('#gallery-slideshow').on('click', function (event) {
+    jQuery(document).on('click', '#gallery-slideshow', function (event) {
         event.preventDefault();
         jQuery('a.image-slideshow').fancybox({
             arrows: true,
