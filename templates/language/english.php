@@ -99,6 +99,10 @@ return array(
     'lsgallery_user_menu_profile_favourites_images' => 'My Favorites',
     'lsgallery_admin_data_recalcimage' => 'Convert the data to the picture (selected and voice)',
     'lsgallery_admin_images_recalculated' => 'restated for photo',
+
+    'lsgallery_title_albums' => 'Albums',
+    'lsgallery_control_album' => 'Control album',
+    'lsgallery_all_created_albums' => 'All albums',
 );
 
 

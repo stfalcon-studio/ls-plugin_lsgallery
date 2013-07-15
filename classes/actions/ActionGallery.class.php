@@ -269,6 +269,10 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $aResult = $this->PluginLsgallery_Album_GetAlbumsPersonalByUser($oAlbum->getUserId());
         $aAlbums = $aResult['collection'];
         unset($aAlbums[$oAlbum->getId()]);
+
+        $this->Viewer_AddHtmlTitle($oAlbum->getTitle());
+        $this->Viewer_AddHtmlTitle($this->Lang_Get('plugin.lsgallery.lsgallery_control_album'));
+
         $this->Viewer_Assign('aImages', $aImages);
         $this->Viewer_Assign('oAlbumEdit', $oAlbum);
         $this->Viewer_Assign('aPaging', $aPaging);
@@ -335,6 +339,10 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $oPrevImage = $this->PluginLsgallery_Image_GetPrevImage($oImage);
         $oNextImage = $this->PluginLsgallery_Image_GetNextImage($oImage);
 
+        $this->Viewer_AddHtmlTitle($oAlbum->getTitle());
+        $this->Viewer_SetHtmlDescription($oImage->getDescription());
+        $this->Viewer_SetHtmlKeywords($oImage->getImageTags());
+
         $this->Viewer_Assign('oImage', $oImage);
         $this->Viewer_Assign('oAlbum', $oAlbum);
         $this->Viewer_Assign('oPrevImage', $oPrevImage);
@@ -379,6 +387,8 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
         $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, Config::Get('plugin.lsgallery.image_per_page'), 4, rtrim($oAlbum->getUrlFull(), '/'));
 
+        $this->Viewer_AddHtmlTitle($oAlbum->getTitle());
+
         $this->Viewer_Assign('oAlbum', $oAlbum);
         $this->Viewer_Assign('aImages', $aImages);
         $this->Viewer_Assign('aPaging', $aPaging);
@@ -406,6 +416,8 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $aAlbums = $aResult['collection'];
 
         $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, Config::Get('plugin.lsgallery.album_per_page'), 4, Router::GetPath('gallery') . 'albums/');
+
+        $this->Viewer_AddHtmlTitle($this->Lang_Get('plugin.lsgallery.lsgallery_title_albums'));
 
         $this->Viewer_Assign('aAlbums', $aAlbums);
         $this->Viewer_Assign('aPaging', $aPaging);
