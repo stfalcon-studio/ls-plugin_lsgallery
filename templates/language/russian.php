@@ -103,9 +103,9 @@ return array(
     'lsgallery_admin_images_recalculated' => 'Пересчитаны данные для фото',
     'lsgallery_admin_data_recalcimage' => 'Пересчитать данные для фото (избраннои и голоса)',
 
-    'lsgallery_title_albums' => 'альбомы',
-    'lsgallery_control_album' => 'управление альбомом',
-    'lsgallery_all_created_albums' => 'все альбомы',
+    'lsgallery_title_albums' => 'Альбомы',
+    'lsgallery_control_album' => 'Управление альбомом',
+    'lsgallery_all_created_albums' => 'Все альбомы',
 );
 
 
