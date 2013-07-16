@@ -6,14 +6,15 @@
 
 <script type="text/javascript">
 var DIR_WEB_LSGALLERY_SKIN = '{$sTemplateWebPathLsgallery}';
-if (jQuery.browser.flash) {
-	ls.gallery.initSwfUpload({
-		post_params: { 'album_id':'{$oAlbumEdit->getId()}' }
-	});
-}
+jQuery(document).on('ready', function(){
+    setTimeout(function(){
+        ls.gallery.initImageUpload('{$oAlbumEdit->getId()}');
+    }, 200);
+});
 </script>
 
 <div id="album-images-admin" class="topic-photo-upload">
+    {hook run='image_upload_begin' oImages=$oImages oAlbum=$oAlbum}
     <div class="topic-photo-upload-rules">
         <a href="#" id="images-start-upload">{$aLang.plugin.lsgallery.lsgallery_images_upload_choose}</a>
         <p class="left note">{$aLang.plugin.lsgallery.lsgallery_images_upload_rules|ls_lang:"SIZE%%`$oConfig->get('plugin.lsgallery.image_max_size')`":"COUNT%%`$oConfig->get('plugin.lsgallery.count_image_max')`"}</p>
@@ -51,6 +52,7 @@ if (jQuery.browser.flash) {
             {/foreach}
         {/if}
     </ul>
+    {hook run='image_upload_end' oImages=$oImages oAlbum=$oAlbum}
 </div>
 {if count($aAlbums)}
     <div class="move-image-form modal" id="move_image_form">
