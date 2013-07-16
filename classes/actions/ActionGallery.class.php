@@ -335,7 +335,8 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
         }
 
-        $this->Hook_Run('gallery_view_image', array('oUser'=>$this->oUserCurrent, 'oImage' => $oImage, 'oAlbum' => $oAlbum));
+        $this->Hook_Run('gallery_view_image', array('oUser' => $this->oUserCurrent, 'oImage' => $oImage, 'oAlbum' => $oAlbum));
+
         $this->SetTemplateAction('view');
 
         $oPrevImage = $this->PluginLsgallery_Image_GetPrevImage($oImage);

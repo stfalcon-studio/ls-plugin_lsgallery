@@ -1,19 +1,19 @@
 <div>
-{assign var="oUser" value=$oImage->getUser()}
-{assign var="oVote" value=$oImage->getVote()}
-<div class="image-wrap">
-    {hookb run="image_status_list" oImage=$oImage aImageUser=$aImageUser oAlbum=$oAlbum bSliderImage=$bSliderImage}
-    {if $bSliderImage}
-    <div id="image" class="content">
-        <img class="gallery-big-photo" id="{$oImage->getId()}" src="{$oImage->getWebPath('638')}" alt="image" />
-    {else}
-        <a href="{$oImage->getUrlFull()}" >
-            <img class="gallery-big-photo" id="{$oImage->getId()}" src="{$oImage->getWebPath('638')}" alt="image" />
-        </a>
-    {/if}
+    {assign var="oUser" value=$oImage->getUser()}
+    {assign var="oVote" value=$oImage->getVote()}
+    <div class="image-wrap">
+        {hookb run="image_status_list" oImage=$oImage oAlbum=$oAlbum bSliderImage=$bSliderImage}
+            <div id="image" class="content">
+                {if $bSliderImage}
+                    <img class="gallery-big-photo" id="{$oImage->getId()}" src="{$oImage->getWebPath('638')}" alt="image" />
+                {else}
+                    <a href="{$oImage->getUrlFull()}" >
+                        <img class="gallery-big-photo" id="{$oImage->getId()}" src="{$oImage->getWebPath('638')}" alt="image" />
+                    </a>
+                {/if}
+            </div>
+        {/hookb}
     </div>
-    {/hookb}
-</div>
     {if $bSliderImage}
         <div class="gallery-navigation">
             {if $oPrevImage}
@@ -34,7 +34,7 @@
         </div>
     {/if}
 
-    {hook run='image_content_after' oImage=$oImage aImageUser=$aImageUser oUserCurrent=$oUserCurrent oAlbum=$oAlbum bSliderImage=$bSliderImage }
+    {hook run='image_content_after' oImage=$oImage oAlbum=$oAlbum bSliderImage=$bSliderImage }
 
     <div class="topic-content">
 		{$oImage->getDescription()|strip_tags}
@@ -130,5 +130,4 @@
             </li>
         </ul>
     </footer>
-
 </div>
