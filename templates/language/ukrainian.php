@@ -103,6 +103,8 @@ return array(
     'lsgallery_admin_images_recalculated' => 'Перераховані дані для фото',
     'lsgallery_admin_data_recalcimage' => 'Перераховані дані для фото (обрані и голоси)',
 
+    'lsgallery_flash_upload_init_error' => 'Не вдалося ініціалізувати flash завантажувач фото',
+
     'lsgallery_title_albums' => 'Альбоми',
     'lsgallery_control_album' => 'Керування альбомом',
     'lsgallery_all_created_albums' => 'Всі альбоми',

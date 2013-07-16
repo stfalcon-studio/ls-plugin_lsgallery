@@ -270,6 +270,8 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $aAlbums = $aResult['collection'];
         unset($aAlbums[$oAlbum->getId()]);
 
+        $this->Hook_Run('gallery_admin_image', array('oAlbum' => $oAlbum));
+        
         $this->Viewer_AddHtmlTitle($oAlbum->getTitle());
         $this->Viewer_AddHtmlTitle($this->Lang_Get('plugin.lsgallery.lsgallery_control_album'));
 
