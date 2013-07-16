@@ -104,6 +104,10 @@ return array(
     'lsgallery_admin_data_recalcimage' => 'Пересчитать данные для фото (избраннои и голоса)',
 
     'lsgallery_flash_upload_init_error' => 'Не удалось инициализировать flash загрузчик фото',
+
+    'lsgallery_title_albums' => 'Альбомы',
+    'lsgallery_control_album' => 'Управление альбомом',
+    'lsgallery_all_created_albums' => 'Все альбомы',
 );
 
 

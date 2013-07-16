@@ -70,6 +70,8 @@ class PluginLsgallery_ActionProfile extends PluginLsgallery_Inherit_ActionProfil
 
         $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, Config::Get('plugin.lsgallery.album_per_page'), 4, $this->oUserProfile->getUserWebPath()  . 'created/albums');
 
+        $this->Viewer_AddHtmlTitle($this->Lang_Get('plugin.lsgallery.lsgallery_all_created_albums'));
+
         $this->Viewer_Assign('aAlbums', $aAlbums);
         $this->Viewer_Assign('aPaging', $aPaging);
 
