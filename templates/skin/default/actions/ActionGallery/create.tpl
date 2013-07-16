@@ -23,7 +23,7 @@
     </p>
     <p>
         <label for="album_description">{$aLang.plugin.lsgallery.lsgallery_album_description}</label>
-        <textarea rows="5" onkeypress="return imposeMaxLength(this, 512);" id="album_description" name="album_description" class="input-text input-width-full" >{$_aRequest.album_description}</textarea>
+        <textarea rows="5" id="album_description" name="album_description" class="input-text input-width-full" >{$_aRequest.album_description}</textarea>
     </p>
     <p>
         <input type="hidden" name="security_ls_key" value="{$LIVESTREET_SECURITY_KEY}" />
