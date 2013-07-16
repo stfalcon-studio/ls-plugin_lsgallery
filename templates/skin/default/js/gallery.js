@@ -169,6 +169,18 @@ ls.gallery = (function ($) {
             jQuery('#album_to_id').val('');
             jQuery('#move_image_form').jqmHide();
         });
+    };
+
+    if (!this.initImageUpload) {
+        this.initImageUpload = function(album_id) {
+            if (jQuery.browser.flash) {
+                ls.gallery.initSwfUpload({
+                    post_params: { 'album_id': album_id }
+                });
+            } else {
+                alert(ls.lang.get('plugin.lsgallery.lsgallery_flash_upload_init_error'));
+            }
+        };
     }
 
     return this;
@@ -273,6 +285,8 @@ jQuery('document').ready(function(){
             jQuery(this).css('cursor', 'auto');
         }
     });
+
+    jQuery(document).on('keypress', '#album_description', function(){imposeMaxLength(this, 512)});
 });
 
 function imposeMaxLength(Object, MaxLen) {

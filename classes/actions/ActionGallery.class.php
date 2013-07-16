@@ -269,6 +269,9 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $aResult = $this->PluginLsgallery_Album_GetAlbumsPersonalByUser($oAlbum->getUserId());
         $aAlbums = $aResult['collection'];
         unset($aAlbums[$oAlbum->getId()]);
+
+        $this->Hook_Run('gallery_admin_image', array('oAlbum' => $oAlbum));
+
         $this->Viewer_Assign('aImages', $aImages);
         $this->Viewer_Assign('oAlbumEdit', $oAlbum);
         $this->Viewer_Assign('aPaging', $aPaging);
