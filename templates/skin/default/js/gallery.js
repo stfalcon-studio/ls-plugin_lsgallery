@@ -183,6 +183,12 @@ ls.gallery = (function ($) {
         };
     }
 
+    if (!this.initImageFancy) {
+        this.initImageFancy = function() {
+            jQuery('a.gal-expend').fancybox();
+        };
+    }
+
     return this;
 }).call(ls.gallery || {}, jQuery);
 
@@ -223,7 +229,7 @@ jQuery('document').ready(function(){
 
     // init fancybox for gallery
     if (jQuery('a.gal-expend').length) {
-        jQuery('a.gal-expend').fancybox();
+        ls.gallery.initImageFancy();
     };
 
     // change random images
