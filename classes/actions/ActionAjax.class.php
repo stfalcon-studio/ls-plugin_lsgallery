@@ -62,7 +62,9 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             return Router::Action('error');
         }
 
-        if (!isset($_FILES['Filedata']['tmp_name'])) {
+        $sFileTmp = $this->PluginLsgallery_Image_UploadFile();
+
+        if (!$sFileTmp) {
             $this->Message_AddError($this->Lang_Get('system_error'), $this->Lang_Get('error'));
             return false;
         }
@@ -83,17 +85,11 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             $this->Message_AddError($this->Lang_Get('plugin.lsgallery.lsgallery_images_too_much_images', array('MAX' => Config::Get('plugin.lsgallery.count_image_max'))), $this->Lang_Get('error'));
             return false;
         }
-        /**
-         * Максимальный размер фото
-         */
-        if (filesize($_FILES['Filedata']['tmp_name']) > Config::Get('plugin.lsgallery.image_max_size') * 1024) {
-            $this->Message_AddError($this->Lang_Get('plugin.lsgallery.lsgallery_images_error_bad_filesize', array('MAX' => Config::Get('module.topic.photoset.photo_max_size'))), $this->Lang_Get('error'));
-            return false;
-        }
+
         /**
          * Загружаем файл
          */
-        $sFile = $this->PluginLsgallery_Image_UploadImage($_FILES['Filedata']);
+        $sFile = $this->PluginLsgallery_Image_UploadImage($sFileTmp);
         if ($sFile) {
             $oImage = Engine::GetEntity('PluginLsgallery_ModuleImage_EntityImage');
             $oImage->setUserId($this->oUserCurrent->getId());
@@ -103,6 +99,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             if ($oImage = $this->PluginLsgallery_Image_AddImage($oImage)) {
                 $this->Viewer_AssignAjax('file', $oImage->getWebPath('100crop'));
                 $this->Viewer_AssignAjax('id', $oImage->getId());
+                $this->Viewer_AssignAjax('success', true);
                 $this->Message_AddNotice($this->Lang_Get('plugin.lsgallery.lsgallery_image_added'), $this->Lang_Get('attention'));
             } else {
                 $this->Message_AddError($this->Lang_Get('system_error'), $this->Lang_Get('error'));

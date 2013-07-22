@@ -109,28 +109,36 @@ class PluginLsgallery_ModuleImage extends Module
     }
 
     /**
+     * Load file to tmp dir
+     *
+     * @return bool|string
+     */
+    public function UploadFile()
+    {
+        if (isset($_FILES['Filedata'])) {
+            $sTmpFilename = tempnam(sys_get_temp_dir(), 'lsgallery');
+
+            if (!move_uploaded_file($_FILES['Filedata']['tmp_name'], $sTmpFilename)) {
+                return false;
+            }
+            return $sTmpFilename;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Upload Image
-     * @param array $aFile
+     *
+     * @param string $sFileTmp
+     *
      * @return string|boolean
      */
-    public function UploadImage($aFile)
+    public function UploadImage($sFileTmp)
     {
-        if (!is_array($aFile) || !isset($aFile['tmp_name'])) {
+        if (!$sFileTmp) {
             return false;
         }
-
-        $sFileName = func_generator(10);
-        $sPath = Config::Get('path.uploads.images') . '/lsgallery/' . date('Y/m/d') . '/';
-
-        if (!is_dir(Config::Get('path.root.server') . $sPath)) {
-            mkdir(Config::Get('path.root.server') . $sPath, 0755, true);
-        }
-
-        $sFileTmp = Config::Get('path.root.server') . $sPath . $sFileName;
-        if (!move_uploaded_file($aFile['tmp_name'], $sFileTmp)) {
-            return false;
-        }
-
 
         $aParams = $this->Image_BuildParams('lsgallery');
 
@@ -147,6 +155,15 @@ class PluginLsgallery_ModuleImage extends Module
         }
 
         /**
+         * Максимальный размер фото
+         */
+        if (filesize($sFileTmp) > Config::Get('plugin.lsgallery.image_max_size') * 1024) {
+            $this->Message_AddError($this->Lang_Get('plugin.lsgallery.lsgallery_images_error_bad_filesize', array('MAX' => Config::Get('module.topic.photoset.photo_max_size'))), $this->Lang_Get('error'));
+            @unlink($sFileTmp);
+            return false;
+        }
+
+        /**
          * Превышает максимальные размеры из конфига
          */
         if (($oImage->get_image_params('width') > Config::Get('view.img_max_width')) or ($oImage->get_image_params('height') > Config::Get('view.img_max_height'))) {
@@ -155,9 +172,18 @@ class PluginLsgallery_ModuleImage extends Module
             return false;
         }
 
+        $sFileName = func_generator(10);
+        $sPath = Config::Get('path.uploads.images') . '/lsgallery/' . date('Y/m/d') . '/';
+        if (!is_dir(Config::Get('path.root.server') . $sPath)) {
+            mkdir(Config::Get('path.root.server') . $sPath, 0755, true);
+        }
+
         // Добавляем к загруженному файлу расширение
-        $sFile = $sFileTmp . '.' . $oImage->get_image_params('format');
-        rename($sFileTmp, $sFile);
+        $sFile = Config::Get('path.root.server') . $sPath . $sFileName . '.' . $oImage->get_image_params('format');
+        if (!rename($sFileTmp, $sFile)) {
+            return false;
+        }
+        @unlink($sFileTmp);
 
         $aSizes = Config::Get('plugin.lsgallery.size');
         foreach ($aSizes as $aSize) {
