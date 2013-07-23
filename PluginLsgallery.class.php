@@ -16,12 +16,8 @@ class PluginLsgallery extends Plugin
         'module' => array(
             'ModuleACL' => '_ModuleACL',
             'ModuleRating' => '_ModuleRating',
-            'ModuleUser' => '_ModuleUser',
             'ModuleNotify' => '_ModuleNotify',
             'PluginSitemap_ModuleSitemap' => 'PluginLsgallery_ModuleSitemap',
-        ),
-        'mapper' => array(
-            'ModuleUser_MapperUser' => '_ModuleUser_MapperUser'
         ),
     );
     protected $aDelegates = array(
