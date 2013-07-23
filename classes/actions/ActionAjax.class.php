@@ -75,6 +75,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         $oAlbum = $this->PluginLsgallery_Album_GetAlbumById($iAlbumId);
         if (!$oAlbum || !$this->ACL_AllowAdminAlbumImages($this->oUserCurrent, $oAlbum)) {
             $this->Message_AddError($this->Lang_Get('system_error'), $this->Lang_Get('error'));
+            $this->Viewer_AssignAjax('success', false);
             return false;
         }
 
@@ -83,6 +84,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
          */
         if ($oAlbum->getImageCount() >= Config::Get('plugin.lsgallery.count_image_max')) {
             $this->Message_AddError($this->Lang_Get('plugin.lsgallery.lsgallery_images_too_much_images', array('MAX' => Config::Get('plugin.lsgallery.count_image_max'))), $this->Lang_Get('error'));
+            $this->Viewer_AssignAjax('success', false);
             return false;
         }
 
@@ -105,7 +107,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
                 $this->Message_AddError($this->Lang_Get('system_error'), $this->Lang_Get('error'));
             }
         } else {
-            $this->Message_AddError($this->Lang_Get('system_error'), $this->Lang_Get('error'));
+            $this->Viewer_AssignAjax('success', false);
         }
     }
 
