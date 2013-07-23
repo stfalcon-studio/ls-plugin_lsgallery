@@ -137,6 +137,7 @@ class PluginLsgallery_ModuleImage extends Module
     public function UploadImage($sFileTmp)
     {
         if (!$sFileTmp) {
+            $this->Message_AddError($this->Lang_Get('system_error'), $this->Lang_Get('error'));
             return false;
         }
 
@@ -181,6 +182,7 @@ class PluginLsgallery_ModuleImage extends Module
         // Добавляем к загруженному файлу расширение
         $sFile = Config::Get('path.root.server') . $sPath . $sFileName . '.' . $oImage->get_image_params('format');
         if (!rename($sFileTmp, $sFile)) {
+            $this->Message_AddError($this->Lang_Get('system_error'), $this->Lang_Get('error'));
             return false;
         }
         @unlink($sFileTmp);
