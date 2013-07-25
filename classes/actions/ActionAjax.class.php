@@ -98,7 +98,10 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             $oImage->setAlbumId($oAlbum->getId());
             $oImage->setFilename($sFile);
 
+            $this->Hook_Run('gallery_image_add_before', array('oImage' => $oImage));
             if ($oImage = $this->PluginLsgallery_Image_AddImage($oImage)) {
+                $this->Hook_Run('gallery_image_add_after', array('oImage' => $oImage));
+
                 $this->Viewer_AssignAjax('file', $oImage->getWebPath('100crop'));
                 $this->Viewer_AssignAjax('id', $oImage->getId());
                 $this->Viewer_AssignAjax('success', true);
@@ -380,7 +383,11 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         } elseif ($iValue==0) {
             $oImage->setCountVoteAbstain($oImage->getCountVoteAbstain()+1);
         }
+
+        $this->Hook_Run('gallery_image_vote_before', array('oImageVote' => $oImageVote, 'oImage' => $oImage));
         if ($this->Vote_AddVote($oImageVote) && $this->PluginLsgallery_Image_UpdateImage($oImage)) {
+            $this->Hook_Run('gallery_image_vote_after', array('oImageVote' => $oImageVote, 'oImage' => $oImage));
+
             if ($iValue) {
                 $this->Message_AddNoticeSingle($this->Lang_Get('plugin.lsgallery.lsgallery_image_vote_ok'), $this->Lang_Get('attention'));
             } else {
