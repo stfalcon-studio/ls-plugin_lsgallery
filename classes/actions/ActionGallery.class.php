@@ -158,8 +158,9 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
             $oAlbum->setDescription(getRequest('album_description'));
             $oAlbum->setType(getRequest('album_type'));
 
-
+            $this->Hook_Run('gallery_album_add_before', array('oAlbum' => $oAlbum));
             if ($this->PluginLsgallery_Album_CreateAlbum($oAlbum)) {
+                $this->Hook_Run('gallery_album_add_after', array('oAlbum' => $oAlbum));
                 Router::Location($oAlbum->getUrlFull('images'));
             } else {
                 $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
