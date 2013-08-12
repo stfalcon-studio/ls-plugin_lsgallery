@@ -37,6 +37,7 @@
         </time>
     </div>
 	<footer>
+        {hook run='block_album_footer_begin' oAlbum=$oAlbum}
 		<a href="{router page='my'}{$oUser->getLogin()}/album">{$aLang.plugin.lsgallery.lsgallery_albums_user_all}</a>
 	</footer>
 </section>
