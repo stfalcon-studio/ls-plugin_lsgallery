@@ -68,7 +68,6 @@ ls.gallery = (function ($) {
                 + '</div></li>';
             jQuery('#swfu_images').prepend(template);
             ls.autocomplete.add($(".autocomplete-image-tags"), aRouter['galleryajax'] + 'autocompleteimagetag/', true);
-            ls.msg.notice(response.sMsgTitle, response.sMsg);
         } else {
             ls.msg.error(response.sMsgTitle, response.sMsg);
         }
