@@ -375,6 +375,8 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
             return Router::Action('error');
         }
 
+        $this->Hook_Run('gallery_album_show', array('oAlbum' => $oAlbum));
+
         $this->sMenuItemSelect = 'album';
 
         if ($this->oUserCurrent && $this->oUserCurrent->getId() == $oAlbum->getUserId()) {
