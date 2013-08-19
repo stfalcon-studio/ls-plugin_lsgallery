@@ -27,7 +27,7 @@ ls.gallery = (function ($) {
         var percent = Math.ceil((bytesLoaded / file.size) * 100);
         jQuery('#gallery_image_empty_progress').text(file.name + ': ' + (percent == 100 ? 'resize..' : percent +'%'));
     };
-    // dialog uplaod complete, load image
+    // dialog upload complete, load image
     this.handlerFileDialogComplete = function(numFilesSelected, numFilesQueued) {
         var stats = this.getStats();
         if (stats.files_queued == numFilesSelected && numFilesSelected > 0) {
@@ -170,24 +170,21 @@ ls.gallery = (function ($) {
         });
     };
 
-    if (!this.initImageUpload) {
-        this.initImageUpload = function(album_id) {
-            if (jQuery.browser.flash) {
-                ls.gallery.initSwfUpload({
-                    post_params: { 'album_id': album_id }
-                });
-            } else {
-                alert(ls.lang.get('plugin.lsgallery.lsgallery_flash_upload_init_error'));
-            }
-        };
-    }
+    this.initImageUpload = function(album_id) {
+        if (jQuery.browser.flash) {
+            ls.gallery.initSwfUpload({
+                post_params: { 'album_id': album_id }
+            });
+        } else {
+            alert(ls.lang.get('plugin.lsgallery.lsgallery_flash_upload_init_error'));
+        }
+    };
 
-    if (!this.initImageFancy) {
-        this.initImageFancy = function() {
-            jQuery('a.gal-expend').fancybox();
-        };
-    }
+    this.initImageFancy = function() {
+        jQuery('a.gal-expend').fancybox();
+    };
 
+    ls.hook.run('ls_gallery_init_complete',[this],this);
     return this;
 }).call(ls.gallery || {}, jQuery);
 
