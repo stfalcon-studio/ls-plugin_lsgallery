@@ -24,8 +24,7 @@ class PluginLsgallery_ModuleAlbum_MapperAlbum extends Mapper
                  album_date_add
                 )
                 VALUES
-                    (?d, ?, ?, ?, ?)
-		";
+                    (?d, ?, ?, ?, ?)";
         if ($iId = $this->oDb->query($sql, $oAlbum->getUserId(), $oAlbum->getTitle(), $oAlbum->getDescription(), $oAlbum->getType(), $oAlbum->getDateAdd())) {
             return $iId;
         }
@@ -70,7 +69,7 @@ class PluginLsgallery_ModuleAlbum_MapperAlbum extends Mapper
                     " . Config::Get('db.table.lsgallery.album') . "
                 WHERE
                     album_id = ?d
-    		";
+            ";
         if ($this->oDb->query($sql, $iAlbumId)) {
             return true;
         }
@@ -267,6 +266,11 @@ class PluginLsgallery_ModuleAlbum_MapperAlbum extends Mapper
             }
             $sWhere.=" AND (" . join(" OR ", (array) $aAlbumTypes) . ")";
         }
+
+        if(isset($aFilter['title'])){
+            $sWhere .= " AND album_title = '".$this->oDb->escape($aFilter['title'])."'";
+        }
+
         return $sWhere;
     }
 
