@@ -2,6 +2,13 @@
 <div class="topic gallery-topic">
     <h2 class="page-header">
         {if count($aImages)}
+            {if $sOrder == 'asc'}
+                <a class="gallery-image-sort"
+                   href="{$oAlbum->getUrlFull()}/desc">{$aLang.plugin.lsgallery.lsgallery_image_sort_new_to_old}</a>
+            {else}
+                <a class="gallery-image-sort"
+                   href="{$oAlbum->getUrlFull()}/asc">{$aLang.plugin.lsgallery.lsgallery_image_sort_old_to_new}</a>
+            {/if}
             <a id="gallery-slideshow" href="#">{$aLang.plugin.lsgallery.lsgallery_album_slideshow}</a>
         {/if}
         {$oAlbum->getTitle()|escape:'html'}

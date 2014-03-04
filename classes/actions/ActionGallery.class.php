@@ -364,6 +364,12 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
     public function EventViewAlbum()
     {
         $sId = $this->GetParam(0);
+        $sOrder = $this->GetParam(1);
+
+        $aOrderPermission = array('asc', 'desc');
+        if (!in_array($sOrder, $aOrderPermission)) {
+            $sOrder = '';
+        }
 
         /* @var $oAlbum PluginLsgallery_ModuleAlbum_EntityAlbum */
         if (!$oAlbum = $this->PluginLsgallery_Album_GetAlbumById($sId)) {
@@ -388,16 +394,17 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->SetTemplateAction('album');
 
         $iPage = $this->_getPage();
-        $aResult = $this->PluginLsgallery_Image_GetImagesByAlbumId($oAlbum->getId(), $iPage, Config::Get('plugin.lsgallery.image_per_page'));
+        $aResult = $this->PluginLsgallery_Image_GetImagesByAlbumId($oAlbum->getId(), $iPage, Config::Get('plugin.lsgallery.image_per_page'), $sOrder);
         $aImages = $aResult['collection'];
 
-        $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, Config::Get('plugin.lsgallery.image_per_page'), 4, rtrim($oAlbum->getUrlFull(), '/'));
+        $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, Config::Get('plugin.lsgallery.image_per_page'), 4, rtrim($oAlbum->getUrlFull() . '/' . $sOrder, '/'));
 
         $this->Viewer_AddHtmlTitle($oAlbum->getTitle());
 
         $this->Viewer_Assign('oAlbum', $oAlbum);
         $this->Viewer_Assign('aImages', $aImages);
         $this->Viewer_Assign('aPaging', $aPaging);
+        $this->Viewer_Assign('sOrder', $sOrder);
 
         $this->Viewer_AddBlock('right', 'Album', array('plugin' => 'lsgallery', 'oAlbum' => $oAlbum), Config::Get('plugin.lsgallery.priority_album_block'));
 

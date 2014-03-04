@@ -125,6 +125,11 @@
 		font-size:11px;
 		margin:3px 0 0 0;
 		}
+    .gallery-topic .page-header .gallery-image-sort {
+        float: right;
+        font-size: 11px;
+        margin: 3px 0 0 10px;
+    }
 	.block-content .gallery-item{
 		float:left;
 		padding:5px;

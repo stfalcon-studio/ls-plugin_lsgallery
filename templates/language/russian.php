@@ -95,6 +95,9 @@ return array(
 
     'lsgallery_album_slideshow' => 'Показать слайдшоу',
 
+    'lsgallery_image_sort_new_to_old' => 'От новых к старым',
+    'lsgallery_image_sort_old_to_new' => 'От старых к новым',
+
     'lsgallery_image_zoom' => 'Увеличить',
     'lsgallery_cancel' => 'Отмена',
     'lsgallery_save' => 'Сохранить',
