@@ -560,3 +560,9 @@ a.remove{display:inline-block; width:11px; height:11px; background:url(../images
 
 .modal.modal-write .write-list li.write-item-type-album .write-item-image { background-position: -460px 0; }
 .modal.modal-write .write-list li.write-item-type-album:hover  .write-item-image { background-position: -460px -115px; }
+
+.gallery-topic .gallery-image-sort {
+    background: url(../images/duration.png) no-repeat left 7px;
+    margin-left: 26px!important;
+    padding-left: 25px;
+}
