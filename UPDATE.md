@@ -1,3 +1,11 @@
+# UPDATE to v0.5.1
+Выполнить запрос к БД:
+<pre>
+	ALTER TABLE `prefix_lsgallery_album`
+	    CHANGE `album_type` `album_type`
+	    ENUM( 'personal', 'open', 'friend', 'shared' )
+	    CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'open';</pre>
+
 # UPDATE to v0.3.0
 
 Для апдейта необходимо полностью удалить текущую версию галереи на сайте и залить новую.

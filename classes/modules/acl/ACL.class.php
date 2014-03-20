@@ -108,6 +108,10 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
             return true;
         }
 
+        if ($oAlbum->getType() == $oAlbum::TYPE_SHARED) {
+            return true;
+        }
+
         return false;
     }
 
@@ -116,10 +120,16 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
      *
      * @param ModuleUser_EntityUser $oUser
      * @param PluginLsgallery_ModuleAlbum_EntityAlbum $oAlbum
+     *
+     * @return bool
      */
     public function AllowViewAlbumImages($oUser, $oAlbum)
     {
         if ($oAlbum->getType() == PluginLsgallery_ModuleAlbum_EntityAlbum::TYPE_OPEN) {
+            return true;
+        }
+
+        if ($oAlbum->getType() == PluginLsgallery_ModuleAlbum_EntityAlbum::TYPE_SHARED) {
             return true;
         }
 
@@ -135,7 +145,7 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
             return true;
         }
 
-        if ($oAlbum->getTitle() == PluginLsgallery_ModuleAlbum_EntityAlbum::TYPE_PERSONAL) {
+        if ($oAlbum->getType() == PluginLsgallery_ModuleAlbum_EntityAlbum::TYPE_PERSONAL) {
             return false;
         }
 
@@ -156,6 +166,8 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
      *
      * @param ModuleUser_EntityUser $oUserCurrent
      * @param ModuleUser_EntityUser $oUserMarked
+     *
+     * @return bool
      */
     public function AllowAddUserToImage($oUserCurrent, $oUserMarked)
     {
@@ -169,6 +181,36 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
                 }
         }
         return false;
+    }
+
+    /**
+     * Allow update image
+     *
+     * @param ModuleUser_EntityUser                   $oUser
+     * @param PluginLsgallery_ModuleImage_EntityImage $oImage
+     *
+     * @return bool
+     */
+    public function AllowUpdateImage($oUser, $oImage)
+    {
+        if (!$oUser) {
+            return false;
+        }
+
+        if ($oUser->isAdministrator()) {
+            return true;
+        }
+
+        if ($oUser->getId() == $oImage->getUserId()) {
+            return true;
+        }
+
+        if ($oUser->getId() == $oImage->getAlbum()->getUserId()) {
+            return true;
+        }
+
+        return false;
+
     }
 
 }

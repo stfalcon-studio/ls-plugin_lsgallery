@@ -48,25 +48,15 @@ ls.gallery = (function ($) {
     };
     // place empty upload in html
     this.addImageEmpty = function () {
-        var template = '<li id="gallery_image_empty"><img src="' + DIR_STATIC_SKIN + '/images/loader.gif'+'" alt="image" style="margin-left: 35px;margin-top: 20px;" />'
-            + '<div id="gallery_image_empty_progress" style="height: 60px;width: 350px;padding: 3px;border: 1px solid #DDDDDD;"></div><br /></li>';
-        jQuery('#swfu_images').prepend(template);
+        var template = _.template($('#emptyImageTemplate').html());
+        jQuery('#swfu_images').prepend(template());
     };
     // place uploaded image in html
     this.addImage = function (response) {
         jQuery('#gallery_image_empty').remove();
         if (!response.bStateError) {
-            var template = '<li id="image_' + response.id + '"><img class="image-100" src="' + response.file + '" alt="image" />'
-                + '<label class="description">' + ls.lang.get('plugin.lsgallery.lsgallery_image_description') + '</label><br/>'
-                + '<textarea onBlur="ls.gallery.setImageDescription(' + response.id + ', this.value)"></textarea><br />'
-                + '<label class="tags">' + ls.lang.get('plugin.lsgallery.lsgallery_image_tags') + '</label><br/>'
-                + '<input type="text" class="autocomplete-image-tags" onBlur="ls.gallery.setImageTags(' + response.id + ', this.value)"/><br/>'
-                + '<div class="options-line"><span class="photo-preview-state"><span id="image_preview_state_' + response.id + '">'
-                + '<a href="javascript:ls.gallery.setPreview(' + response.id + ')" class="mark-as-preview">' + ls.lang.get('plugin.lsgallery.lsgallery_album_set_image_cover') + '</a></span><br/>'
-                + '<a href="#" class="image-move">' + ls.lang.get('plugin.lsgallery.lsgallery_image_move_album') + '</a></span>'
-                + '<a href="javascript:ls.gallery.deleteImage(' + response.id + ')" class="image-delete">' + ls.lang.get('plugin.lsgallery.lsgallery_album_image_delete') + '</a>'
-                + '</div></li>';
-            jQuery('#swfu_images').prepend(template);
+            var template = _.template($('#uploadedImageTemplate').html());
+            jQuery('#swfu_images').prepend(template(response));
             ls.autocomplete.add($(".autocomplete-image-tags"), aRouter['galleryajax'] + 'autocompleteimagetag/', true);
         } else {
             ls.msg.error(response.sMsgTitle, response.sMsg);

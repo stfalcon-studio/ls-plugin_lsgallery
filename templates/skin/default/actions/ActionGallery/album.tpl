@@ -6,7 +6,7 @@
         {/if}
         {$oAlbum->getTitle()|escape:'html'}
     </h2>
-    {if $oUserCurrent && ($oUserCurrent->isAdministrator() || $oUserCurrent->getId() == $oAlbum->getUserId()) && count($aImages)}
+    {if $LS->ACL_AllowAdminAlbumImages($oUserCurrent, $oAlbum)}
     <div class="info-top">
         <ul class="actions">
             <li>

@@ -12,6 +12,7 @@ class PluginLsgallery_ModuleAlbum_EntityAlbum extends Entity
     const TYPE_OPEN = 'open';
     const TYPE_FRIEND = 'friend';
     const TYPE_PERSONAL = 'personal';
+    const TYPE_SHARED = 'shared';
 
     public function getId()
     {
@@ -72,6 +73,7 @@ class PluginLsgallery_ModuleAlbum_EntityAlbum extends Entity
             self::TYPE_OPEN => $engine->Lang_Get('plugin.lsgallery.lsgallery_type_open'),
             self::TYPE_FRIEND => $engine->Lang_Get('plugin.lsgallery.lsgallery_type_friend'),
             self::TYPE_PERSONAL => $engine->Lang_Get('plugin.lsgallery.lsgallery_type_personal'),
+            self::TYPE_SHARED => $engine->Lang_Get('plugin.lsgallery.lsgallery_type_shared'),
         );
     }
 
