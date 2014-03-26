@@ -790,21 +790,29 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
      * Get prev image id
      *
      * @param PluginLsgallery_ModuleImage_EntityImage $oImage
+     * @param string $sOrder
      * @return int|null
      */
-    public function GetPrevImageId($oImage)
+    public function GetPrevImageId($oImage, $sOrder = "DESC")
     {
+        if (strtolower($sOrder) == 'desc') {
+            $sSqlOrder = 'DESC';
+            $sWhere = 'image_id < ?d';
+        } else {
+            $sSqlOrder = 'ASC';
+            $sWhere = 'image_id > ?d';
+        }
         $sql = "
                 SELECT
                     image_id
                 FROM
                     " . Config::Get('db.table.lsgallery.image') . "
                 WHERE
-                        image_id < ?d
+                        {$sWhere}
                 AND
                         album_id = ?d
                 ORDER BY
-                    image_id DESC
+                    image_id {$sSqlOrder}
             ";
 
         if ($aRow = $this->oDb->selectRow($sql, $oImage->getId(), $oImage->getAlbumId())) {
@@ -817,21 +825,29 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
      * Get next image id
      *
      * @param PluginLsgallery_ModuleImage_EntityImage $oImage
+     * @param string $sOrder
      * @return int|null
      */
-    public function GetNextImageId($oImage)
+    public function GetNextImageId($oImage, $sOrder = "DESC")
     {
+        if (strtolower($sOrder) == 'desc') {
+            $sSqlOrder = 'ASC';
+            $sWhere = 'image_id > ?d';
+        } else {
+            $sSqlOrder = 'DESC';
+            $sWhere = 'image_id < ?d';
+        }
         $sql = "
                 SELECT
                     image_id
                 FROM
                     " . Config::Get('db.table.lsgallery.image') . "
                 WHERE
-                    image_id > ?d
+                    {$sWhere}
                 AND
                     album_id = ?d
                 ORDER BY
-                    image_id ASC
+                    image_id {$sSqlOrder}
                 ";
 
         if ($aRow = $this->oDb->selectRow($sql, $oImage->getId(), $oImage->getAlbumId())) {

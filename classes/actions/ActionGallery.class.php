@@ -59,6 +59,8 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
     public function EventPhoto()
     {
         $sType = $this->GetParam(0, 'main');
+        $sOrder = $this->GetParam(1);
+        $this->Viewer_Assign('sOrder', $sOrder);
 
         switch ($sType) {
             case 'main':
@@ -286,6 +288,10 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
     public function EventViewImage()
     {
         $sId = $this->GetParam(0);
+        $sOrder = $this->GetParam(1);
+        if (!in_array(strtolower($sOrder), array('asc', 'desc'))){
+            $sOrder = 'desc';
+        }
 
         /* @var $oImage PluginLsgallery_ModuleImage_EntityImage */
         if (!$oImage = $this->PluginLsgallery_Image_GetImageById($sId)) {
@@ -336,12 +342,13 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
         }
 
+
         $this->Hook_Run('gallery_view_image', array('oUser' => $this->oUserCurrent, 'oImage' => $oImage, 'oAlbum' => $oAlbum));
 
         $this->SetTemplateAction('view');
 
-        $oPrevImage = $this->PluginLsgallery_Image_GetPrevImage($oImage);
-        $oNextImage = $this->PluginLsgallery_Image_GetNextImage($oImage);
+        $oPrevImage = $this->PluginLsgallery_Image_GetPrevImage($oImage, $sOrder);
+        $oNextImage = $this->PluginLsgallery_Image_GetNextImage($oImage, $sOrder);
 
         $this->Viewer_AddHtmlTitle($oAlbum->getTitle());
         $this->Viewer_SetHtmlDescription($oImage->getDescription());
@@ -351,6 +358,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->Viewer_Assign('oAlbum', $oAlbum);
         $this->Viewer_Assign('oPrevImage', $oPrevImage);
         $this->Viewer_Assign('oNextImage', $oNextImage);
+        $this->Viewer_Assign('sOrder', $sOrder);
 
         $this->Viewer_Assign('aComments', $aComments);
         $this->Viewer_Assign('iMaxIdComment', $iMaxIdComment);
@@ -368,7 +376,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
         $aOrderPermission = array('asc', 'desc');
         if (!in_array($sOrder, $aOrderPermission)) {
-            $sOrder = '';
+            $sOrder = 'desc';
         }
 
         /* @var $oAlbum PluginLsgallery_ModuleAlbum_EntityAlbum */
