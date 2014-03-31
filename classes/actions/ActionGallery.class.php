@@ -59,7 +59,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
     public function EventPhoto()
     {
         $sType = $this->GetParam(0, 'main');
-        $sOrder = $this->GetParam(1);
+        $sOrder = getRequest("order", "desc", 'get');
         $this->Viewer_Assign('sOrder', $sOrder);
 
         switch ($sType) {
@@ -288,7 +288,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
     public function EventViewImage()
     {
         $sId = $this->GetParam(0);
-        $sOrder = $this->GetParam(1);
+        $sOrder = getRequest("order", "desc", 'get');
         if (!in_array(strtolower($sOrder), array('asc', 'desc'))){
             $sOrder = 'desc';
         }
@@ -372,7 +372,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
     public function EventViewAlbum()
     {
         $sId = $this->GetParam(0);
-        $sOrder = $this->GetParam(1);
+        $sOrder = getRequest("order", "desc", 'get');
 
         $aOrderPermission = array('asc', 'desc');
         if (!in_array($sOrder, $aOrderPermission)) {
@@ -413,6 +413,12 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->Viewer_Assign('aImages', $aImages);
         $this->Viewer_Assign('aPaging', $aPaging);
         $this->Viewer_Assign('sOrder', $sOrder);
+        if ($sOrder == "desc"){
+            $sOrderLink = "asc";
+        } else {
+            $sOrderLink = "desc";
+        }
+        $this->Viewer_Assign('sOrderLink', $sOrderLink);
 
         $this->Viewer_AddBlock('right', 'Album', array('plugin' => 'lsgallery', 'oAlbum' => $oAlbum), Config::Get('plugin.lsgallery.priority_album_block'));
 

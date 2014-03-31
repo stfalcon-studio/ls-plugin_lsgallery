@@ -95,8 +95,8 @@ return array(
 
     'lsgallery_album_slideshow' => 'Показати слайдшоу',
 
-    'lsgallery_image_sort_new_to_old' => 'Від нових до старих',
-    'lsgallery_image_sort_old_to_new' => 'Від старих до нових',
+    'lsgallery_image_sort_asc' => 'Від нових до старих',
+    'lsgallery_image_sort_desc' => 'Від старих до нових',
 
     'lsgallery_image_zoom' => 'Збільшити',
     'lsgallery_cancel' => 'Відмінити',

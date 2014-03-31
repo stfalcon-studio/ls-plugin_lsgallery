@@ -7,7 +7,7 @@
         {/if}
         {foreach from=$aImages item=oImage}
             <li>
-                <a class="image-100" href="{$oImage->getUrlFull()}/{$sOrder}"><img src="{$oImage->getWebPath('100crop')}" alt="Image" /></a>
+                <a class="image-100" href="{$oImage->getUrlFull()}?order={$sOrder}"><img src="{$oImage->getWebPath('100crop')}" alt="Image" /></a>
             </li>
         {/foreach}
     </ul>
