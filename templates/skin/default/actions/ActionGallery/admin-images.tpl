@@ -90,6 +90,7 @@ jQuery(document).on('ready', function(){
     </div>
 {/if}
 {include file='paging.tpl' aPaging="$aPaging"}
+{hookb run="image_empty_template"}
 <script type="text/template" id="emptyImageTemplate">
     <li id="gallery_image_empty">
         <img src="{cfg name='path.static.skin'}/images/loader.gif" alt="image" style="margin-left: 35px;margin-top: 20px;"/>
@@ -99,6 +100,8 @@ jQuery(document).on('ready', function(){
         <br/>
     </li>
 </script>
+{/hookb}
+{hookb run="image_uploaded_template"}
 <script type="text/template" id="uploadedImageTemplate">
     <li id="image_<%= id %>"><img class="image-100" src="<%= file %>" alt="image" />
         <label class="description">{$aLang.plugin.lsgallery.lsgallery_image_description}</label><br/>
@@ -123,4 +126,5 @@ jQuery(document).on('ready', function(){
         </div>
     </li>
 </script>
+{/hookb}
 {include file='footer.tpl'}
