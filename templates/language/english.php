@@ -92,6 +92,9 @@ return array(
 
     'lsgallery_album_slideshow' => 'Slideshow',
 
+    'lsgallery_image_sort_asc' => 'New to old',
+    'lsgallery_image_sort_desc' => 'Old to new',
+
     'lsgallery_image_zoom' => 'Zoom',
     'lsgallery_cancel' => 'Cancel',
     'lsgallery_save' => 'Save',

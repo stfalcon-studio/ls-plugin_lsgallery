@@ -261,17 +261,26 @@ class PluginLsgallery_ModuleImage extends Module
      * @param int $iAlbumId
      * @param int $iPage
      * @param int $iPerPage
+     * @param string $sOrder
+     *
      * @return PluginLsgallery_ModuleImage_EntityImage
      */
-    public function GetImagesByAlbumId($iAlbumId, $iPage = 0, $iPerPage = 0)
+    public function GetImagesByAlbumId($iAlbumId, $iPage = 0, $iPerPage = 0, $sOrder = 'desc')
     {
         if ($iAlbumId instanceof PluginLsgallery_ModuleAlbum_EntityAlbum) {
             $iAlbumId = $iAlbumId->getId();
         }
 
+        $aOrderPermission = array('asc', 'desc');
+        if (!in_array($sOrder, $aOrderPermission)) {
+            $sOrder = 'desc';
+        }
+
         $aFilter = array(
             'album_id' => $iAlbumId,
+            'order' => 'i.image_date_add ' . $sOrder,
         );
+
         return $this->GetImagesByFilter($aFilter, $iPage, $iPerPage);
     }
 
@@ -878,14 +887,15 @@ class PluginLsgallery_ModuleImage extends Module
      * Get prev image id
      *
      * @param PluginLsgallery_ModuleImage_EntityImage$oImage
+     * @param string $sOrder
      *
      * @return PluginLsgallery_ModuleImage_EntityImage|null
      */
-    public function GetPrevImage($oImage)
+    public function GetPrevImage($oImage, $sOrder='desc')
     {
-        if (false === ($sId = $this->Cache_Get("image_prev_{$oImage->getId()}"))) {
-            $sId = $this->oMapper->GetPrevImageId($oImage);
-            $this->Cache_Set($sId, "image_prev_{$oImage->getId()}", array('image_update', 'image_new'), 60 * 60 * 24 * 1);
+        if (false === ($sId = $this->Cache_Get("image_prev_{$oImage->getId()}_{$sOrder}"))) {
+            $sId = $this->oMapper->GetPrevImageId($oImage, $sOrder);
+            $this->Cache_Set($sId, "image_prev_{$oImage->getId()}_{$sOrder}", array('image_update', 'image_new'), 60 * 60 * 24 * 1);
         }
         return $this->GetImageById($sId);
     }
@@ -894,14 +904,15 @@ class PluginLsgallery_ModuleImage extends Module
      * Get next image id
      *
      * @param PluginLsgallery_ModuleImage_EntityImage $oImage
+     * @param string $sOrder
      *
      * @return PluginLsgallery_ModuleImage_EntityImage|null
      */
-    public function GetNextImage($oImage)
+    public function GetNextImage($oImage, $sOrder='desc')
     {
-        if (false === ($sId = $this->Cache_Get("image_next_{$oImage->getId()}"))) {
-            $sId = $this->oMapper->GetNextImageId($oImage);
-            $this->Cache_Set($sId, "image_next_{$oImage->getId()}", array('image_update', 'image_new'), 60 * 60 * 24 * 1);
+        if (false === ($sId = $this->Cache_Get("image_next_{$oImage->getId()}_{$sOrder}"))) {
+            $sId = $this->oMapper->GetNextImageId($oImage, $sOrder);
+            $this->Cache_Set($sId, "image_next_{$oImage->getId()}_{$sOrder}", array('image_update', 'image_new'), 60 * 60 * 24 * 1);
         }
         return $this->GetImageById($sId);
     }

@@ -59,6 +59,8 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
     public function EventPhoto()
     {
         $sType = $this->GetParam(0, 'main');
+        $sOrder = getRequest("order", "desc", 'get');
+        $this->Viewer_Assign('sOrder', $sOrder);
 
         switch ($sType) {
             case 'main':
@@ -286,6 +288,10 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
     public function EventViewImage()
     {
         $sId = $this->GetParam(0);
+        $sOrder = getRequest("order", "desc", 'get');
+        if (!in_array(strtolower($sOrder), array('asc', 'desc'))){
+            $sOrder = 'desc';
+        }
 
         /* @var $oImage PluginLsgallery_ModuleImage_EntityImage */
         if (!$oImage = $this->PluginLsgallery_Image_GetImageById($sId)) {
@@ -336,12 +342,13 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
         }
 
+
         $this->Hook_Run('gallery_view_image', array('oUser' => $this->oUserCurrent, 'oImage' => $oImage, 'oAlbum' => $oAlbum));
 
         $this->SetTemplateAction('view');
 
-        $oPrevImage = $this->PluginLsgallery_Image_GetPrevImage($oImage);
-        $oNextImage = $this->PluginLsgallery_Image_GetNextImage($oImage);
+        $oPrevImage = $this->PluginLsgallery_Image_GetPrevImage($oImage, $sOrder);
+        $oNextImage = $this->PluginLsgallery_Image_GetNextImage($oImage, $sOrder);
 
         $this->Viewer_AddHtmlTitle($oAlbum->getTitle());
         $this->Viewer_SetHtmlDescription($oImage->getDescription());
@@ -351,6 +358,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->Viewer_Assign('oAlbum', $oAlbum);
         $this->Viewer_Assign('oPrevImage', $oPrevImage);
         $this->Viewer_Assign('oNextImage', $oNextImage);
+        $this->Viewer_Assign('sOrder', $sOrder);
 
         $this->Viewer_Assign('aComments', $aComments);
         $this->Viewer_Assign('iMaxIdComment', $iMaxIdComment);
@@ -364,6 +372,12 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
     public function EventViewAlbum()
     {
         $sId = $this->GetParam(0);
+        $sOrder = getRequest("order", "desc", 'get');
+
+        $aOrderPermission = array('asc', 'desc');
+        if (!in_array($sOrder, $aOrderPermission)) {
+            $sOrder = 'desc';
+        }
 
         /* @var $oAlbum PluginLsgallery_ModuleAlbum_EntityAlbum */
         if (!$oAlbum = $this->PluginLsgallery_Album_GetAlbumById($sId)) {
@@ -388,16 +402,23 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->SetTemplateAction('album');
 
         $iPage = $this->_getPage();
-        $aResult = $this->PluginLsgallery_Image_GetImagesByAlbumId($oAlbum->getId(), $iPage, Config::Get('plugin.lsgallery.image_per_page'));
+        $aResult = $this->PluginLsgallery_Image_GetImagesByAlbumId($oAlbum->getId(), $iPage, Config::Get('plugin.lsgallery.image_per_page'), $sOrder);
         $aImages = $aResult['collection'];
 
-        $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, Config::Get('plugin.lsgallery.image_per_page'), 4, rtrim($oAlbum->getUrlFull(), '/'));
+        $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, Config::Get('plugin.lsgallery.image_per_page'), 4, rtrim($oAlbum->getUrlFull() . '/' . $sOrder, '/'));
 
         $this->Viewer_AddHtmlTitle($oAlbum->getTitle());
 
         $this->Viewer_Assign('oAlbum', $oAlbum);
         $this->Viewer_Assign('aImages', $aImages);
         $this->Viewer_Assign('aPaging', $aPaging);
+        $this->Viewer_Assign('sOrder', $sOrder);
+        if ($sOrder == "desc"){
+            $sOrderLink = "asc";
+        } else {
+            $sOrderLink = "desc";
+        }
+        $this->Viewer_Assign('sOrderLink', $sOrderLink);
 
         $this->Viewer_AddBlock('right', 'Album', array('plugin' => 'lsgallery', 'oAlbum' => $oAlbum), Config::Get('plugin.lsgallery.priority_album_block'));
 
