@@ -1,4 +1,4 @@
-# UPDATE to v0.5.1
+# UPDATE to v0.6.0
 Выполнить запрос к БД:
 <pre>
 	ALTER TABLE `prefix_lsgallery_album`
