@@ -35,11 +35,17 @@ jQuery(document).on('ready', function(){
                               {if $bAllowUpdate}
                                   onBlur="ls.gallery.setImageDescription({$oImage->getId()}, this.value)"
                               {else}
-                                readonly
+                                  readonly="readonly"
                               {/if}
                             >{$oImage->getDescription()}</textarea><br />
                     <label class="tags">{$aLang.plugin.lsgallery.lsgallery_image_tags}</label><br/>
-                    <input type="text" class="autocomplete-image-tags input-text input-width-full" onBlur="ls.gallery.setImageTags({$oImage->getId()}, this.value)" value="{$oImage->getImageTags()}"/><br/>
+                    <input type="text" class="autocomplete-image-tags input-text input-width-full"
+                            {if $bAllowUpdate}
+                                onBlur="ls.gallery.setImageTags({$oImage->getId()}, this.value)"
+                            {else}
+                                readonly="readonly"
+                            {/if}
+                           value="{$oImage->getImageTags()}"/><br/>
                     <div class="options-line">
                         <span class="photo-preview-state">
                             <span id="image_preview_state_{$oImage->getId()}">
