@@ -62,18 +62,19 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
             return Router::Action('error');
         }
 
-        $sFileTmp = $this->PluginLsgallery_Image_UploadFile();
-
-        if (!$sFileTmp) {
-            $this->Message_AddError($this->Lang_Get('system_error'), $this->Lang_Get('error'));
-            return false;
-        }
-
         $iAlbumId = getRequest('album_id');
 
         /* @var $oAlbum PluginLsgallery_ModuleAlbum_EntityAlbum */
         $oAlbum = $this->PluginLsgallery_Album_GetAlbumById($iAlbumId);
         if (!$oAlbum || !$this->ACL_AllowAdminAlbumImages($this->oUserCurrent, $oAlbum)) {
+            $this->Message_AddError($this->Lang_Get('system_error'), $this->Lang_Get('error'));
+            $this->Viewer_AssignAjax('success', false);
+            return false;
+        }
+
+        $sFileTmp = $this->PluginLsgallery_Image_UploadFile();
+
+        if (!$sFileTmp) {
             $this->Message_AddError($this->Lang_Get('system_error'), $this->Lang_Get('error'));
             $this->Viewer_AssignAjax('success', false);
             return false;
@@ -133,7 +134,8 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         if ($oImage) {
             /* @var $oAlbum PluginLsgallery_ModuleAlbum_EntityAlbum */
             $oAlbum = $this->PluginLsgallery_Album_GetAlbumById($oImage->getAlbumId());
-            if (!$oAlbum || !$this->ACL_AllowAdminAlbumImages($this->oUserCurrent, $oAlbum)) {
+            $oImage->setAlbum($oAlbum);
+            if (!$oAlbum || !$this->ACL_AllowUpdateImage($this->oUserCurrent, $oImage)) {
                 $this->Message_AddError($this->Lang_Get('system_error'), $this->Lang_Get('error'));
                 return false;
             }
@@ -155,7 +157,8 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         if ($oImage) {
             /* @var $oAlbum PluginLsgallery_ModuleAlbum_EntityAlbum */
             $oAlbum = $this->PluginLsgallery_Album_GetAlbumById($oImage->getAlbumId());
-            if (!$oAlbum || !$this->ACL_AllowAdminAlbumImages($this->oUserCurrent, $oAlbum)) {
+            $oImage->setAlbum($oAlbum);
+            if (!$oAlbum || !$this->ACL_AllowUpdateImage($this->oUserCurrent, $oImage)) {
                 $this->Message_AddError($this->Lang_Get('no_access'), $this->Lang_Get('error'));
                 return false;
             }
@@ -175,7 +178,7 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         if ($oImage) {
             /* @var $oAlbum PluginLsgallery_ModuleAlbum_EntityAlbum */
             $oAlbum = $this->PluginLsgallery_Album_GetAlbumById($oImage->getAlbumId());
-            if (!$oAlbum || !$this->ACL_AllowAdminAlbumImages($this->oUserCurrent, $oAlbum)) {
+            if (!$oAlbum || !$this->ACL_AllowUpdateAlbum($this->oUserCurrent, $oAlbum)) {
                 $this->Message_AddError($this->Lang_Get('no_access'), $this->Lang_Get('error'));
                 return false;
             }
@@ -213,7 +216,8 @@ class PluginLsgallery_ActionAjax extends ActionPlugin
         if ($oImage) {
             /* @var $oAlbum PluginLsgallery_ModuleAlbum_EntityAlbum */
             $oAlbum = $this->PluginLsgallery_Album_GetAlbumById($oImage->getAlbumId());
-            if (!$oAlbum || !$this->ACL_AllowAdminAlbumImages($this->oUserCurrent, $oAlbum)) {
+            $oImage->setAlbum($oAlbum);
+            if (!$oAlbum || !$this->ACL_AllowUpdateImage($this->oUserCurrent, $oImage)) {
                 $this->Message_AddError($this->Lang_Get('no_access'), $this->Lang_Get('error'));
                 return false;
             }

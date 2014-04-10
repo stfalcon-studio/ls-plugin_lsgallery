@@ -179,6 +179,11 @@ class PluginLsgallery_ModuleImage_EntityImage extends Entity
         $this->_aData['album_id'] = $data;
     }
 
+    public function setAlbum($data)
+    {
+        $this->_aData['album'] = $data;
+    }
+
     public function setDescription($data)
     {
         $this->_aData['image_description'] = $data;

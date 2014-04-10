@@ -269,7 +269,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
         $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, Config::Get('plugin.lsgallery.image_per_page'), 4, rtrim($oAlbum->getUrlFull('images'), '/'));
 
-        $aResult = $this->PluginLsgallery_Album_GetAlbumsPersonalByUser($oAlbum->getUserId());
+        $aResult = $this->PluginLsgallery_Album_GetAlbumsPersonalByUser($this->oUserCurrent->getId());
         $aAlbums = $aResult['collection'];
         unset($aAlbums[$oAlbum->getId()]);
 
@@ -710,6 +710,10 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
                 $this->Message_AddError($this->Lang_Get('plugin.lsgallery.lsgallery_album_id_error'), $this->Lang_Get('error'));
                 $bOk = false;
             }
+            if ($oAlbum->getType() == $oAlbum::TYPE_SHARED && getRequest('album_type') != $oAlbum::TYPE_SHARED) {
+                $this->Message_AddError($this->Lang_Get('plugin.lsgallery.lsgallery_album_type_error'), $this->Lang_Get('error'));
+                $bOk = false;
+            }
         }
 
         if (!func_check(getRequest('album_title'), 'text', 2, 64)) {
@@ -740,6 +744,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->Viewer_Assign('sMenuSubItemSelect', $this->sMenuSubItemSelect);
 
         $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'js/gallery.js');
+        $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'js/libs/underscore-min.js', array());
     }
 
 }

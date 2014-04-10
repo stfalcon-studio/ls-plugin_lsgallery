@@ -266,7 +266,8 @@ class PluginLsgallery_ModuleAlbum extends Module
     {
         $aFilter = array(
             'album_type' => array(
-                'open' => true
+                'open' => true,
+                'shared' => true,
             ),
             'not_empty' => true
         );
@@ -339,7 +340,7 @@ class PluginLsgallery_ModuleAlbum extends Module
         $aFilter = array(
             'user_id' => $sUserId,
             'album_type' => array(
-                'open'
+                'open', 'shared'
             ),
         );
 
@@ -367,7 +368,7 @@ class PluginLsgallery_ModuleAlbum extends Module
         $aFilter = array(
             'user_id' => $sUserId,
             'album_type' => array(
-                'open'
+                'open', 'shared'
             ),
         );
 

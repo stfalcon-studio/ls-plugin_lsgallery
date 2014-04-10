@@ -40,10 +40,11 @@ return array(
     'lsgallery_type_open' => 'Відкритий',
     'lsgallery_type_friend' => 'Для друзів',
     'lsgallery_type_personal' => 'Персональний',
+    'lsgallery_type_shared' => 'Загальний',
 
     'lsgallery_album_title_notice' => 'Заповнення обовязкове',
     'lsgallery_album_description_notice' => 'Опис повинен бути від 10 до 512 символів',
-    'lsgallery_album_type_notice' => '«Відкритий» - доступний для всіх. <br/>«Для друзів» - для вас і ваших друзів.<br/>«Персональний» - тілько для вас.',
+    'lsgallery_album_type_notice' => '«Відкритий» - доступний для всіх. <br/>«Для друзів» - для вас і ваших друзів.<br/>«Персональний» - тілько для вас.<br/>«Общий» - зображення можуть додавати усi.',
     'lsgallery_albums_no_rating' => 'Недостатньо рейтингу для створення альбому',
 
     'lsgallery_album_id_error' => 'Неправильний id альбому!',

@@ -694,7 +694,7 @@ class PluginLsgallery_ModuleImage extends Module
         $sDate = date("Y-m-d 00:00:00");
         $aFilter = array(
             'album_type' => array(
-                'open'
+                'open', 'shared'
             ),
             'image_new' => $sDate,
             'order' => 'image_rating desc'
@@ -720,7 +720,7 @@ class PluginLsgallery_ModuleImage extends Module
         $sDate = date("Y-m-d H:00:00", time() - Config::Get('plugin.lsgallery.images_new_time'));
         $aFilter = array(
             'album_type' => array(
-                'open',
+                'open', 'shared'
             ),
             'image_new' => $sDate,
         );
@@ -745,7 +745,7 @@ class PluginLsgallery_ModuleImage extends Module
     {
         $aFilter = array(
             'album_type' => array(
-                'open',
+                'open', 'shared'
             ),
             'image_rating' => array(
                 'value' => Config::Get('plugin.lsgallery.images_best'),

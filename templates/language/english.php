@@ -39,9 +39,10 @@ return array(
     'lsgallery_type_open' => 'Open',
     'lsgallery_type_friend' => 'For Friends',
     'lsgallery_type_personal' => 'Personal',
+    'lsgallery_type_shared' => 'Shared',
     'lsgallery_album_title_notice' => 'Fill necessarily',
     'lsgallery_album_description_notice' => 'The description must be between 10 and 512 characters',
-    'lsgallery_album_type_notice' => '«Open" - available for all. <br/> «For Friends" - for you and your friends. <br/> «Personal" - just for you.',
+    'lsgallery_album_type_notice' => '«Open" - available for all. <br/> «For Friends" - for you and your friends. <br/> «Personal" - just for you.<br/>«Shared» - images can be added by any user.',
     'lsgallery_albums_no_rating' => 'Not enough rating for the album',
 
     'lsgallery_album_id_error' => 'Invalid id album!',
