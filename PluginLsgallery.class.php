@@ -59,6 +59,7 @@ class PluginLsgallery extends Plugin
         $this->Viewer_Assign("sTemplatePathLsgallery", Plugin::GetTemplatePath(__CLASS__));
 	    $this->Viewer_AppendStyle(Plugin::GetTemplateWebPath('lsgallery') . 'css/gallery-style.css');
         $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/jquery.tools.min.js');
+        $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'js/libs/underscore-min.js', array());
         $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'js/common.js');
     }
 

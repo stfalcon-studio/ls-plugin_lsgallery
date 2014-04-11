@@ -744,7 +744,6 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->Viewer_Assign('sMenuSubItemSelect', $this->sMenuSubItemSelect);
 
         $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'js/gallery.js');
-        $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'js/libs/underscore-min.js', array());
     }
 
 }
