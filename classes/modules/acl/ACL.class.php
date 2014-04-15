@@ -125,11 +125,7 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
      */
     public function AllowViewAlbumImages($oUser, $oAlbum)
     {
-        if ($oAlbum->getType() == PluginLsgallery_ModuleAlbum_EntityAlbum::TYPE_OPEN) {
-            return true;
-        }
-
-        if ($oAlbum->getType() == PluginLsgallery_ModuleAlbum_EntityAlbum::TYPE_SHARED) {
+        if ($oAlbum->isPublic()) {
             return true;
         }
 

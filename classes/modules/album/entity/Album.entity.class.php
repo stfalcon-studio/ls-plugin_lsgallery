@@ -158,4 +158,19 @@ class PluginLsgallery_ModuleAlbum_EntityAlbum extends Entity
         $this->_aData['image_count'] = $data;
     }
 
+    /**
+     * @return bool
+     */
+    public function isPublic()
+    {
+        switch ($this->getType()) {
+            case self::TYPE_SHARED:
+                return true;
+            case self::TYPE_OPEN:
+                return true;
+            default:
+                return false;
+        }
+    }
+
 }
