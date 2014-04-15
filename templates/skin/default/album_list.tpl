@@ -16,7 +16,7 @@
                                 {/if}
                             </a><br/>
                         </div>
-                            <a class="gallery-name" href="{$oAlbum->getUrlFull()}">{$oAlbum->getTitle()|escape:'html'}</a><br/>
+                            <a class="gallery-name" href="{$oAlbum->getUrlFull()}">{$oAlbum->getTitle()|escape:'html'}</a>
                             <a class="user" href="{$oUser->getUserWebPath()}">{$oUser->getLogin()}</a><br/>
                     </li>
                 {/foreach}

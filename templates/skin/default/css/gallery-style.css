@@ -234,6 +234,10 @@
 	overflow:hidden;
 	min-width:590px;
 	}
+	
+.content-profile .gallery-albums-preview {
+	min-width:390px;	
+}
 	.gallery-albums-preview .gallery-albums-right{
 		padding-left:10px;
 		float:left;
@@ -331,6 +335,12 @@
 					.gallery-albums-list ul li .bk a img{
 						display:block;
 						}
+
+.gallery-albums-list .gallery-name {
+	overflow-x: hidden;
+	width: 100px;
+	display: block;
+}
 
 .gallery-photos-list{
 
