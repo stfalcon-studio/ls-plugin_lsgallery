@@ -69,7 +69,7 @@ class PluginLsgallery_ModuleImage extends Module
             $aTags = explode(',', $oImage->getImageTags());
             $this->DeleteImageTagsByImageId($oImage->getId());
 
-            if ($oAlbum->getType() == PluginLsgallery_ModuleAlbum_EntityAlbum::TYPE_OPEN) {
+            if ($oAlbum->getType() == PluginLsgallery_ModuleAlbum_EntityAlbum::TYPE_OPEN || $oAlbum->getType() == PluginLsgallery_ModuleAlbum_EntityAlbum::TYPE_SHARED) {
                 foreach ($aTags as $sTag) {
                     $oTag = Engine::GetEntity('PluginLsgallery_ModuleImage_EntityImageTag');
                     $oTag->setImageId($oImage->getId());
