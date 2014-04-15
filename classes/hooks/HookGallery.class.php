@@ -54,7 +54,7 @@ class PluginLsgallery_HookGallery extends Hook
     public function ProfileAlbums($aData)
     {
         $oUser = $aData['oUserProfile'];
-        $aResult = $this->PluginLsgallery_Album_GetAlbumsPersonalByUser($oUser->getId(), 1, 4);
+        $aResult = $this->PluginLsgallery_Album_GetAlbumsPersonalByUser($oUser->getId(), 1, 2);
         $this->Viewer_Assign("aAlbums", $aResult['collection']);
         return $this->Viewer_Fetch(Plugin::GetTemplatePath(__CLASS__) . 'block.albums_list.tpl');
     }
