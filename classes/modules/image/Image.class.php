@@ -271,14 +271,13 @@ class PluginLsgallery_ModuleImage extends Module
             $iAlbumId = $iAlbumId->getId();
         }
 
-        $aOrderPermission = array('asc', 'desc');
-        if (!in_array($sOrder, $aOrderPermission)) {
+        if (!in_array($sOrder, array('asc', 'desc'))) {
             $sOrder = 'desc';
         }
 
         $aFilter = array(
             'album_id' => $iAlbumId,
-            'order' => 'i.image_date_add ' . $sOrder,
+            'order' => array('image_date_add' => $sOrder),
         );
 
         return $this->GetImagesByFilter($aFilter, $iPage, $iPerPage);
@@ -697,7 +696,7 @@ class PluginLsgallery_ModuleImage extends Module
                 'open', 'shared'
             ),
             'image_new' => $sDate,
-            'order' => 'image_rating desc'
+            'order' => array('image_rating' => 'desc')
         );
 
         $aResult = $this->GetImagesByFilter($aFilter, 1, 1);
@@ -751,7 +750,7 @@ class PluginLsgallery_ModuleImage extends Module
                 'value' => Config::Get('plugin.lsgallery.images_best'),
                 'type' => 'top'
             ),
-            'order' => 'image_rating DESC'
+            'order' => array('image_rating' => 'desc')
         );
 
         if ($this->oUserCurrent) {

@@ -100,6 +100,7 @@ return array(
     'lsgallery_image_sort_desc' => 'Від старих до нових',
 
     'lsgallery_image_zoom' => 'Збільшити',
+    'lsgallery_image_zoom_out' => 'Зменшити',
     'lsgallery_cancel' => 'Відмінити',
     'lsgallery_save' => 'Зберегти',
 

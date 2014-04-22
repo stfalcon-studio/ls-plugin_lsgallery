@@ -97,6 +97,7 @@ return array(
     'lsgallery_image_sort_desc' => 'Old to new',
 
     'lsgallery_image_zoom' => 'Zoom',
+    'lsgallery_image_zoom_out' => 'Zoom out',
     'lsgallery_cancel' => 'Cancel',
     'lsgallery_save' => 'Save',
 

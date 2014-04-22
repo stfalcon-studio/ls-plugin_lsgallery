@@ -11,6 +11,11 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
      * @var DbSimple_Generic_Database
      */
     protected $oDb;
+
+    protected $aAllowedOrder = array(
+        'image_id', 'image_date_add', 'image_rating'
+    );
+
     /**
      * Add image
      *
@@ -197,13 +202,7 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
     public function GetImages($aFilter, &$iCount, $iCurrPage, $iPerPage)
     {
         $sWhere = $this->buildFilter($aFilter);
-
-        if (!isset($aFilter['order'])) {
-            $aFilter['order'] = 'i.image_date_add desc';
-        }
-        if (!is_array($aFilter['order'])) {
-            $aFilter['order'] = array($aFilter['order']);
-        }
+        $sOrder = $this->buildOrder($aFilter);
 
         $sql = "SELECT
                     i.image_id
@@ -217,7 +216,7 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
                 GROUP BY
                     i.image_id
                 ORDER BY " .
-                implode(', ', $aFilter['order']) . "
+                    $sOrder . "
                 LIMIT
                     ?d, ?d";
         $aImages = array();
@@ -237,6 +236,8 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
     public function GetCountImages($aFilter)
     {
         $sWhere = $this->buildFilter($aFilter);
+        $sOrder = $this->buildOrder($aFilter);
+
         $sql = "SELECT
                     count(i.image_id) as count
                 FROM
@@ -245,7 +246,9 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
                     " . Config::Get('db.table.lsgallery.album') . " as a ON a.album_id = i.album_id
                 WHERE
                     1=1
-                " . $sWhere;
+                " . $sWhere . "
+                ORDER BY " .
+                    $sOrder;
         if ($aRow = $this->oDb->selectRow($sql)) {
             return $aRow['count'];
         }
@@ -261,13 +264,7 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
     public function GetAllImages($aFilter)
     {
         $sWhere = $this->buildFilter($aFilter);
-
-        if (!isset($aFilter['order'])) {
-            $aFilter['order'] = 'i.image_id desc';
-        }
-        if (!is_array($aFilter['order'])) {
-            $aFilter['order'] = array($aFilter['order']);
-        }
+        $sOrder = $this->buildOrder($aFilter);
 
         $sql = "SELECT
                     i.image_id
@@ -281,7 +278,8 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
                 GROUP BY
                     i.image_id
                 ORDER BY
-                    " . implode(', ', $aFilter['order']) . " ";
+                    " . $sOrder;
+
         $aImages = array();
         if ($aRows = $this->oDb->select($sql)) {
             foreach ($aRows as $aRow) {
@@ -351,6 +349,35 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
         return $sWhere;
     }
 
+    /**
+     * @param array $aFilter
+     *
+     * @return string
+     */
+    public function buildOrder($aFilter)
+    {
+        $sOrder = '';
+
+        if (!isset($aFilter['order'])) {
+            $aFilter['order'] = 'i.image_id desc';
+        } else {
+            $aOrder = $aFilter['order'];
+            if (!is_array($aOrder)) {
+                $aOrder = array($aOrder);
+            }
+            foreach ($aOrder as $key => $value) {
+                $value = (string) $value;
+                if (!in_array($key, $this->aAllowedOrder)) {
+                    unset($aOrder[$key]);
+                } elseif (in_array($value, array('asc', 'desc'))) {
+                    $sOrder .= " i.{$key} {$value},";
+                }
+            }
+            $sOrder = trim($sOrder, ',');
+        }
+
+        return $sOrder;
+    }
     /**
      * Update image read
      *
