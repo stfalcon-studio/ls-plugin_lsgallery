@@ -359,7 +359,7 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
         $sOrder = '';
 
         if (!isset($aFilter['order'])) {
-            $aFilter['order'] = 'i.image_id desc';
+            $sOrder = 'i.image_id desc';
         } else {
             $aOrder = $aFilter['order'];
             if (!is_array($aOrder)) {
