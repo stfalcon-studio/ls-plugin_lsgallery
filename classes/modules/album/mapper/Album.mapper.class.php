@@ -257,15 +257,21 @@ class PluginLsgallery_ModuleAlbum_MapperAlbum extends Mapper
         if (isset($aFilter['album_type']) and is_array($aFilter['album_type'])) {
             $aAlbumTypes = array();
             foreach ($aFilter['album_type'] as $sType => $aAlbumId) {
-                if ($sType == 'shared') {
-                    $aAlbumTypes[] = "a.album_type = 'shared'";
-                } else if ($sType == 'open') {
-                    $aAlbumTypes[] = "a.album_type = 'open'";
-                } else if ($sType == 'friend' && is_array($aAlbumId)) {
-                    $aAlbumTypes[] = "(a.album_type = 'friend'  AND a.album_user_id IN (" . implode(', ', $aAlbumId) . ")) ";
-                } else if ($sType == 'personal') {
-                    $aAlbumTypes[] = "a.album_type = 'personal'";
+                /**
+                 * Позиция вида 'type'=>array('id1', 'id2')
+                 */
+                if (!is_array($aAlbumId) && is_string($sType)) {
+                    $aAlbumId = array($aAlbumId);
                 }
+                /**
+                 * Позиция вида 'type'
+                 */
+                if (is_string($aAlbumId) && is_int($sType)) {
+                    $sType = $aAlbumId;
+                    $aAlbumId = array();
+                }
+
+                $aAlbumTypes[] = (count($aAlbumId) == 0) ? "(a.album_type='" . $sType . "')" : "(a.album_type='" . $sType . "' AND a.album_user_id IN ('" . join("','", $aAlbumId) . "'))";
             }
             $sWhere.=" AND (" . join(" OR ", (array) $aAlbumTypes) . ")";
         }
