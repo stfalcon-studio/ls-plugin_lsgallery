@@ -576,8 +576,8 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
                 LEFT JOIN
                     " . Config::Get('db.table.lsgallery.album') . " as a ON a.album_id = it.album_id
                 WHERE
-                    a.album_type  = 'open' OR a.album_type  = 'shared'
-				 AND
+                    (a.album_type  = 'open' OR a.album_type  = 'shared')
+                AND
                     image_tag_text = ?
                 ORDER BY image_id DESC
                 LIMIT ?d, ?d ";
