@@ -61,6 +61,10 @@ class PluginLsgallery extends Plugin
         $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/jquery.tools.min.js');
         $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'js/libs/underscore-min.js', array());
         $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'js/common.js');
+        $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/fancybox/jquery.fancybox.pack.js');
+        $this->Viewer_AppendStyle(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/fancybox/jquery.fancybox.css');
+        $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/fancybox/jquery.fancybox-buttons.js');
+        $this->Viewer_AppendStyle(Plugin::GetTemplateWebPath('lsgallery') . 'lib/jQuery/plugins/fancybox/jquery.fancybox-buttons.css');
     }
 
     /**
