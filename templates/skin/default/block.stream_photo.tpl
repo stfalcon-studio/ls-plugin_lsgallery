@@ -33,6 +33,7 @@
     {/foreach}
 </ul>
 <footer>
+    {hook run='block_stream_photo_footer_begin' aImages=$aImages sType=$sType}
     {if $sType == 'new'}
         <a href="{router page='gallery'}photo/new">{$aLang.plugin.lsgallery.lsgallery_photo_all_new}</a>
     {else}

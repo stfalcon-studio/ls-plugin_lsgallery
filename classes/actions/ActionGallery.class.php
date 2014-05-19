@@ -91,6 +91,9 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->SetTemplateAction('photo');
 
         $oImage = $this->PluginLsgallery_Image_GetImageOfDay();
+
+        $this->Hook_Run('gallery_main_photo_show', array('oImage' => $oImage));
+
         $aRandomImages = $this->PluginLsgallery_Image_GetRandomImages(Config::Get('plugin.lsgallery.images_random'));
         $aResult = $this->PluginLsgallery_Album_GetAlbumsIndex(1, Config::Get('plugin.lsgallery.album_block'));
 
