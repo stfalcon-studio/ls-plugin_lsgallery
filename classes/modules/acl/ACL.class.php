@@ -108,7 +108,7 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
             return true;
         }
 
-        if ($oAlbum->getType() == $oAlbum::TYPE_SHARED) {
+        if ($oAlbum->getType() == PluginLsgallery_ModuleAlbum_EntityAlbum::TYPE_SHARED) {
             return true;
         }
 
