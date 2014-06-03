@@ -702,7 +702,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
                 $this->Message_AddError($this->Lang_Get('plugin.lsgallery.lsgallery_album_id_error'), $this->Lang_Get('error'));
                 $bOk = false;
             }
-            if ($oAlbum->getType() == $oAlbum::TYPE_SHARED && getRequest('album_type') != $oAlbum::TYPE_SHARED) {
+            if ($oAlbum->getType() == PluginLsgallery_ModuleAlbum_EntityAlbum::TYPE_SHARED && getRequest('album_type') != PluginLsgallery_ModuleAlbum_EntityAlbum::TYPE_SHARED) {
                 $this->Message_AddError($this->Lang_Get('plugin.lsgallery.lsgallery_album_type_error'), $this->Lang_Get('error'));
                 $bOk = false;
             }
