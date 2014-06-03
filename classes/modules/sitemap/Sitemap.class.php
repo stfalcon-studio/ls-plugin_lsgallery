@@ -16,7 +16,7 @@ class PluginLsgallery_ModuleSitemap extends PluginLsgallery_Inherit_PluginSitema
         $aCounters = parent::getExternalCounters();
         $aFilter = array(
             'album_type' => array(
-                'open' => true
+                'open', 'shared'
             ),
             'not_empty' => true
         );
@@ -40,7 +40,7 @@ class PluginLsgallery_ModuleSitemap extends PluginLsgallery_Inherit_PluginSitema
         if (false === ($aData = $this->Cache_Get($sCacheKey))) {
             $aFilter = array(
                 'album_type' => array(
-                    'open' => true
+                    'open', 'shared'
                 ),
                 'not_empty' => true
             );
@@ -71,7 +71,7 @@ class PluginLsgallery_ModuleSitemap extends PluginLsgallery_Inherit_PluginSitema
         if (false === ($aData = $this->Cache_Get($sCacheKey))) {
             $aFilter = array(
                 'album_type' => array(
-                    'open' => true
+                    'open', 'shared'
                 ),
                 'not_empty' => true
             );
