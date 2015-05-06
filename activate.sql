@@ -1,9 +1,16 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS prefix_lsgallery_image_read;
+DROP TABLE IF EXISTS prefix_lsgallery_image_tag;
+DROP TABLE IF EXISTS prefix_lsgallery_image;
+DROP TABLE IF EXISTS prefix_lsgallery_album;
+
 CREATE TABLE IF NOT EXISTS `prefix_lsgallery_album` (
   `album_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `album_user_id` int(11) unsigned NOT NULL,
   `album_title` varchar(200) NOT NULL,
   `album_description` text NOT NULL,
-  `album_type` enum('personal','open','friend') NOT NULL DEFAULT 'open',
+  `album_type` enum('personal','open','friend', 'shared') NOT NULL DEFAULT 'open',
   `album_date_add` datetime NOT NULL,
   `album_date_edit` datetime NOT NULL,
   `album_cover_image_id` int(11) unsigned DEFAULT NULL,
@@ -70,3 +77,5 @@ CREATE TABLE IF NOT EXISTS `prefix_lsgallery_image_read` (
 ALTER TABLE `prefix_lsgallery_image_read`
   ADD CONSTRAINT `prefix_lsgallery_image_read_ibfk_1` FOREIGN KEY (`image_id`) REFERENCES `prefix_lsgallery_image` (`image_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `prefix_lsgallery_image_read_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `prefix_user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+SET FOREIGN_KEY_CHECKS = 1;
