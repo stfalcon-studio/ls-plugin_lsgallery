@@ -1,18 +1,33 @@
 <?php
 
+/**
+ * Class PluginLsgallery_ActionGallery
+ */
 class PluginLsgallery_ActionGallery extends ActionPlugin
 {
 
     /**
-     * @var ModuleUser_EntityUser
+     * @var ModuleUser_EntityUser $oUserCurrent
      */
     protected $oUserCurrent = null;
+
+    /**
+     * @var string $sMenuHeadItemSelect
+     */
     protected $sMenuHeadItemSelect = 'gallery';
+
+    /**
+     * @var string $sMenuItemSelect
+     */
     protected $sMenuItemSelect = 'image';
+
+    /**
+     * @var string $sMenuSubItemSelect
+     */
     protected $sMenuSubItemSelect = 'all';
 
     /**
-     * Action initiaization
+     * Action initialization
      */
     public function Init()
     {
@@ -56,35 +71,43 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->AddEvent('ajaxresponsecomment', 'AjaxResponseComment');
     }
 
+    /**
+     * Event photo
+     *
+     * @return void
+     */
     public function EventPhoto()
     {
-        $sType = $this->GetParam(0, 'main');
+        $sType  = $this->GetParam(0, 'main');
         $sOrder = getRequest("order", "desc", 'get');
         $this->Viewer_Assign('sOrder', $sOrder);
 
         switch ($sType) {
             case 'main':
                 $this->EventMainPhoto();
+
                 return;
-                break;
             case 'new':
                 $this->EventListPhoto($sType);
+
                 return;
-                break;
             case 'best':
                 $this->EventListPhoto($sType);
+
                 return;
-                break;
             default:
                 $this->EventMainPhoto();
+
                 return;
-                break;
         }
     }
 
+    /**
+     * Event main photo
+     */
     protected function EventMainPhoto()
     {
-        $this->sMenuItemSelect = 'image';
+        $this->sMenuItemSelect    = 'image';
         $this->sMenuSubItemSelect = 'main';
 
         $this->Viewer_AddHtmlTitle($this->Lang_Get('plugin.lsgallery.lsgallery_photo_day'));
@@ -95,24 +118,30 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->Hook_Run('gallery_main_photo_show', array('oImage' => $oImage));
 
         $aRandomImages = $this->PluginLsgallery_Image_GetRandomImages(Config::Get('plugin.lsgallery.images_random'));
-        $aResult = $this->PluginLsgallery_Album_GetAlbumsIndex(1, Config::Get('plugin.lsgallery.album_block'));
+        $aResult       = $this->PluginLsgallery_Album_GetAlbumsIndex(1, Config::Get('plugin.lsgallery.album_block'));
 
         $this->Viewer_Assign('oImage', $oImage);
-        $this->Viewer_Assign('oAlbum', $oImage?$oImage->getAlbum():null);
+        $this->Viewer_Assign('oAlbum', $oImage ? $oImage->getAlbum() : null);
         $this->Viewer_Assign('aAlbums', $aResult['collection']);
         $this->Viewer_Assign('aRandomImages', $aRandomImages);
-
     }
 
+    /**
+     * Event list photo
+     *
+     * @param $sType
+     */
     protected function EventListPhoto($sType)
     {
-        $this->sMenuItemSelect = 'image';
+        $this->sMenuItemSelect    = 'image';
         $this->sMenuSubItemSelect = $sType;
 
         $this->Viewer_AddHtmlTitle($this->Lang_Get('plugin.lsgallery.lsgallery_photo_' . $sType));
         $this->SetTemplateAction('photos');
 
         $iPage = $this->_getPage();
+
+        $aResult = array();
 
         if ($sType == 'new') {
             $aResult = $this->PluginLsgallery_Image_GetImagesNew($iPage, Config::Get('plugin.lsgallery.image_per_page'));
@@ -122,7 +151,13 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
         $aImages = $aResult['collection'];
 
-        $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, Config::Get('plugin.lsgallery.image_per_page'), 4, Router::GetPath('gallery') . 'photo/' . $sType);
+        $aPaging = $this->Viewer_MakePaging(
+            $aResult['count'],
+            $iPage,
+            Config::Get('plugin.lsgallery.image_per_page'),
+            4,
+            Router::GetPath('gallery') . 'photo/' . $sType
+        );
 
         $this->Viewer_Assign('aImages', $aImages);
         $this->Viewer_Assign('aPaging', $aPaging);
@@ -130,6 +165,8 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
     /**
      * Create album
+     *
+     * @return string|void
      */
     public function EventCreateAlbum()
     {
@@ -139,11 +176,13 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
         if (!$this->ACL_AllowCreateAlbum($this->oUserCurrent)) {
             $this->Message_AddErrorSingle($this->Lang_Get('not_access'), $this->Lang_Get('error'));
+
             return Router::Action('error');
         }
 
         if (!$this->ACL_CanCreateAlbum($this->oUserCurrent)) {
             $this->Message_AddErrorSingle($this->Lang_Get('plugin.lsgallery.lsgallery_albums_no_rating'), $this->Lang_Get('error'));
+
             return Router::Action('error');
         }
 
@@ -167,6 +206,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
                 Router::Location($oAlbum->getUrlFull('images'));
             } else {
                 $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
+
                 return Router::Action('error');
             }
         }
@@ -174,6 +214,8 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
     /**
      *  Delete album
+     *
+     * @return string
      */
     public function EventDeleteAlbum()
     {
@@ -186,6 +228,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         }
         if (!$this->ACL_AllowDeleteAlbum($this->oUserCurrent, $oAlbum)) {
             $this->Message_AddErrorSingle($this->Lang_Get('not_access'), $this->Lang_Get('error'));
+
             return Router::Action('error');
         }
 
@@ -200,10 +243,12 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
     /**
      * Update album
+     *
+     * @return string|void
      */
     public function EventUpdateAlbum()
     {
-        $this->sMenuItemSelect = 'album';
+        $this->sMenuItemSelect    = 'album';
         $this->sMenuSubItemSelect = 'update';
 
         $this->Viewer_AddHtmlTitle($this->Lang_Get('plugin.lsgallery.lsgallery_update_album_title'));
@@ -215,6 +260,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         }
         if (!$this->ACL_AllowUpdateAlbum($this->oUserCurrent, $oAlbum)) {
             $this->Message_AddErrorSingle($this->Lang_Get('not_access'), $this->Lang_Get('error'));
+
             return Router::Action('error');
         }
 
@@ -231,23 +277,25 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
             $oAlbum->setDescription(getRequest('album_description'));
             $oAlbum->setType(getRequest('album_type'));
 
-
             if ($this->PluginLsgallery_Album_UpdateAlbum($oAlbum)) {
                 Router::Location($oAlbum->getUrlFull());
             } else {
                 $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
+
                 return Router::Action('error');
             }
         } else {
-            $_REQUEST['album_id'] = $oAlbum->getId();
-            $_REQUEST['album_title'] = $oAlbum->getTitle();
+            $_REQUEST['album_id']          = $oAlbum->getId();
+            $_REQUEST['album_title']       = $oAlbum->getTitle();
             $_REQUEST['album_description'] = $oAlbum->getDescription();
-            $_REQUEST['album_type'] = $oAlbum->getType();
+            $_REQUEST['album_type']        = $oAlbum->getType();
         }
     }
 
     /**
      * Admin images
+     *
+     * @return string
      */
     public function EventAdminImages()
     {
@@ -258,13 +306,14 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         }
         if (!$this->ACL_AllowAdminAlbumImages($this->oUserCurrent, $oAlbum)) {
             $this->Message_AddErrorSingle($this->Lang_Get('not_access'), $this->Lang_Get('error'));
+
             return Router::Action('error');
         }
 
-        $this->sMenuItemSelect = 'album';
+        $this->sMenuItemSelect    = 'album';
         $this->sMenuSubItemSelect = 'admin-images';
 
-        $iPage = $this->_getPage();
+        $iPage   = $this->_getPage();
         $aResult = $this->PluginLsgallery_Image_GetImagesByAlbumId($oAlbum->getId(), $iPage, Config::Get('plugin.lsgallery.image_per_page'));
         $aImages = $aResult['collection'];
 
@@ -275,7 +324,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         unset($aAlbums[$oAlbum->getId()]);
 
         $this->Hook_Run('gallery_admin_image', array('oAlbum' => $oAlbum));
-        
+
         $this->Viewer_AddHtmlTitle($oAlbum->getTitle());
         $this->Viewer_AddHtmlTitle($this->Lang_Get('plugin.lsgallery.lsgallery_control_album'));
 
@@ -283,14 +332,19 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->Viewer_Assign('oAlbumEdit', $oAlbum);
         $this->Viewer_Assign('aPaging', $aPaging);
         $this->Viewer_Assign('aAlbums', $aAlbums);
-
     }
 
+    /**
+     * Event view image
+     *
+     * @return string
+     * @throws Exception
+     */
     public function EventViewImage()
     {
-        $sId = $this->GetParam(0);
+        $sId    = $this->GetParam(0);
         $sOrder = getRequest("order", "desc", 'get');
-        if (!in_array(strtolower($sOrder), array('asc', 'desc'))){
+        if (!in_array(strtolower($sOrder), array('asc', 'desc'))) {
             $sOrder = 'desc';
         }
 
@@ -305,6 +359,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
         if (!$this->ACL_AllowViewAlbumImages($this->oUserCurrent, $oAlbum)) {
             $this->Message_AddErrorSingle($this->Lang_Get('not_access'), $this->Lang_Get('error'));
+
             return Router::Action('error');
         }
 
@@ -312,23 +367,31 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
             $this->SubmitComment();
         }
 
-        if (!Config::Get('module.comment.nested_page_reverse') and Config::Get('module.comment.use_nested') and Config::Get('module.comment.nested_per_page')) {
-            $iPageDef = ceil($this->Comment_GetCountCommentsRootByTargetId($oImage->getId(), 'image') / Config::Get('module.comment.nested_per_page'));
+        if (!Config::Get('module.comment.nested_page_reverse') and
+            Config::Get('module.comment.use_nested') and Config::Get('module.comment.nested_per_page')
+        ) {
+            $iPageDef = ceil(
+                $this->Comment_GetCountCommentsRootByTargetId($oImage->getId(), 'image') /
+                Config::Get('module.comment.nested_per_page')
+            );
         } else {
             $iPageDef = 1;
         }
 
-        $iPage = getRequest('cmtpage', 0) ? (int) getRequest('cmtpage', 0) : $iPageDef;
-        $aReturn = $this->Comment_GetCommentsByTargetId($oImage->getId(), 'image', $iPage, Config::Get('module.comment.nested_per_page'));
+        $iPage         = getRequest('cmtpage', 0) ? (int) getRequest('cmtpage', 0) : $iPageDef;
+        $aReturn       = $this->Comment_GetCommentsByTargetId($oImage->getId(), 'image', $iPage, Config::Get('module.comment.nested_per_page'));
         $iMaxIdComment = $aReturn['iMaxIdComment'];
-        $aComments = $aReturn['comments'];
+        $aComments     = $aReturn['comments'];
+
         if (Config::Get('module.comment.use_nested') and Config::Get('module.comment.nested_per_page')) {
             $aPaging = $this->Viewer_MakePaging($aReturn['count'], $iPage, Config::Get('module.comment.nested_per_page'), 4, '');
+
             if (!Config::Get('module.comment.nested_page_reverse') and $aPaging) {
                 // переворачиваем страницы в обратном порядке
-                $aPaging['aPagesLeft'] = array_reverse($aPaging['aPagesLeft']);
+                $aPaging['aPagesLeft']  = array_reverse($aPaging['aPagesLeft']);
                 $aPaging['aPagesRight'] = array_reverse($aPaging['aPagesRight']);
             }
+
             $this->Viewer_Assign('aPagingCmt', $aPaging);
         }
 
@@ -340,11 +403,11 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
             $oImageRead->setCommentIdLast($iMaxIdComment);
             $oImageRead->setDateRead();
             $this->PluginLsgallery_Image_SetImageRead($oImageRead);
-
         }
 
-
-        $this->Hook_Run('gallery_view_image', array('oUser' => $this->oUserCurrent, 'oImage' => $oImage, 'oAlbum' => $oAlbum));
+        $this->Hook_Run('gallery_view_image', array(
+            'oUser' => $this->oUserCurrent, 'oImage' => $oImage, 'oAlbum' => $oAlbum
+        ));
 
         $this->SetTemplateAction('view');
 
@@ -364,13 +427,19 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->Viewer_Assign('aComments', $aComments);
         $this->Viewer_Assign('iMaxIdComment', $iMaxIdComment);
 
-        $this->Viewer_AddBlock('right', 'Album', array('plugin' => 'lsgallery', 'oAlbum' => $oAlbum), Config::Get('plugin.lsgallery.priority_album_block'));
-
+        $this->Viewer_AddBlock('right', 'Album', array(
+            'plugin' => 'lsgallery', 'oAlbum' => $oAlbum
+        ), Config::Get('plugin.lsgallery.priority_album_block'));
     }
 
+    /**
+     * Event view album
+     *
+     * @return string
+     */
     public function EventViewAlbum()
     {
-        $sId = $this->GetParam(0);
+        $sId    = $this->GetParam(0);
         $sOrder = getRequest("order", "desc", 'get');
 
         $aOrderPermission = array('asc', 'desc');
@@ -385,6 +454,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
         if (!$this->ACL_AllowViewAlbumImages($this->oUserCurrent, $oAlbum)) {
             $this->Message_AddErrorSingle($this->Lang_Get('not_access'), $this->Lang_Get('error'));
+
             return Router::Action('error');
         }
 
@@ -400,11 +470,17 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
         $this->SetTemplateAction('album');
 
-        $iPage = $this->_getPage();
+        $iPage   = $this->_getPage();
         $aResult = $this->PluginLsgallery_Image_GetImagesByAlbumId($oAlbum->getId(), $iPage, Config::Get('plugin.lsgallery.image_per_page'), $sOrder);
         $aImages = $aResult['collection'];
 
-        $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, Config::Get('plugin.lsgallery.image_per_page'), 4, rtrim($oAlbum->getUrlFull() . '/' . $sOrder, '/'));
+        $aPaging = $this->Viewer_MakePaging(
+            $aResult['count'],
+            $iPage,
+            Config::Get('plugin.lsgallery.image_per_page'),
+            4,
+            rtrim($oAlbum->getUrlFull() . '/' . $sOrder, '/')
+        );
 
         $this->Viewer_AddHtmlTitle($oAlbum->getTitle());
 
@@ -412,29 +488,39 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->Viewer_Assign('aImages', $aImages);
         $this->Viewer_Assign('aPaging', $aPaging);
         $this->Viewer_Assign('sOrder', $sOrder);
-        if ($sOrder == "desc"){
+
+        if ($sOrder == "desc") {
             $sOrderLink = "asc";
         } else {
             $sOrderLink = "desc";
         }
         $this->Viewer_Assign('sOrderLink', $sOrderLink);
 
-        $this->Viewer_AddBlock('right', 'Album', array('plugin' => 'lsgallery', 'oAlbum' => $oAlbum), Config::Get('plugin.lsgallery.priority_album_block'));
-
+        $this->Viewer_AddBlock('right', 'Album', array(
+            'plugin' => 'lsgallery', 'oAlbum' => $oAlbum
+        ), Config::Get('plugin.lsgallery.priority_album_block'));
     }
 
+    /**
+     * Event view gallery
+     */
     public function EventViewGallery()
     {
-
         $this->sMenuItemSelect = 'album';
 
         $this->SetTemplateAction('gallery');
 
-        $iPage = $this->_getPage();
+        $iPage   = $this->_getPage();
         $aResult = $this->PluginLsgallery_Album_GetAlbumsIndex($iPage, Config::Get('plugin.lsgallery.album_per_page'));
         $aAlbums = $aResult['collection'];
 
-        $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, Config::Get('plugin.lsgallery.album_per_page'), 4, Router::GetPath('gallery') . 'albums/');
+        $aPaging = $this->Viewer_MakePaging(
+            $aResult['count'],
+            $iPage,
+            Config::Get('plugin.lsgallery.album_per_page'),
+            4,
+            Router::GetPath('gallery') . 'albums/'
+        );
 
         $this->Viewer_AddHtmlTitle($this->Lang_Get('plugin.lsgallery.lsgallery_title_albums'));
 
@@ -442,6 +528,11 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->Viewer_Assign('aPaging', $aPaging);
     }
 
+    /**
+     * Event tag
+     *
+     * @return string
+     */
     public function EventTag()
     {
         $sTag = $this->GetParam(0);
@@ -449,22 +540,24 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         if (!$sTag) {
             return $this->EventNotFound();
         }
-        /**
-         * Передан ли номер страницы
-         */
+
+        // Передан ли номер страницы
         $iPage = $this->_getPage();
-        /**
-         * Получаем список топиков
-         */
+
+        // Получаем список топиков
         $aResult = $this->PluginLsgallery_Image_GetImagesByTag($sTag, $iPage, Config::Get('plugin.lsgallery.image_per_page'));
-        $aImage = $aResult['collection'];
-        /**
-         * Формируем постраничность
-         */
-        $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, Config::Get('plugin.lsgallery.image_per_page'), 4, Router::GetPath('gallery') . 'tag/' . htmlspecialchars($sTag));
-        /**
-         * Загружаем переменные в шаблон
-         */
+        $aImage  = $aResult['collection'];
+
+        // Формируем постраничность
+        $aPaging = $this->Viewer_MakePaging(
+            $aResult['count'],
+            $iPage,
+            Config::Get('plugin.lsgallery.image_per_page'),
+            4,
+            Router::GetPath('gallery') . 'tag/' . htmlspecialchars($sTag)
+        );
+
+        // Загружаем переменные в шаблон
         $this->Viewer_Assign('aPaging', $aPaging);
         $this->Viewer_Assign('aImage', $aImage);
         $this->Viewer_Assign('sTag', $sTag);
@@ -472,9 +565,15 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $this->Viewer_AddHtmlTitle($sTag);
     }
 
+    /**
+     * Get page
+     *
+     * @return int
+     */
     protected function _getPage()
     {
         $iPage = 1;
+
         foreach ($this->GetParams() as $sParam) {
             if (preg_match('/^page(\d+)?$/i', $sParam, $matches)) {
                 if (isset($matches[1])) {
@@ -486,6 +585,9 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         return $iPage;
     }
 
+    /**
+     * Ajax add comment
+     */
     protected function AjaxAddComment()
     {
         $this->Viewer_SetResponseAjax('json');
@@ -495,97 +597,94 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
     /**
      * Обработка добавление комментария
      *
-     * @return bool
+     * @return void
      */
     protected function SubmitComment()
     {
-        /**
-         * Проверям авторизован ли пользователь
-         */
+        // Проверям авторизован ли пользователь
         if (!$this->User_IsAuthorization()) {
             $this->Message_AddErrorSingle($this->Lang_Get('need_authorization'), $this->Lang_Get('error'));
+
             return;
         }
 
         /* @var $oImage PluginLsgallery_ModuleImage_EntityImage */
         if (!($oImage = $this->PluginLsgallery_Image_GetImageById(getRequest('cmt_target_id')))) {
             $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
+
             return;
         }
         /* @var $oAlbum PluginLsgallery_ModuleAlbum_EntityAlbum */
         if (!$oAlbum = $this->PluginLsgallery_Album_GetAlbumById($oImage->getAlbumId())) {
             $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
+
             return;
         }
 
         if (!$this->ACL_AllowViewAlbumImages($this->oUserCurrent, $oAlbum)) {
             $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
+
             return;
         }
 
-        /**
-         * Проверяем разрешено ли постить комменты
-         */
+        // Проверяем разрешено ли постить комменты
         if (!$this->ACL_CanPostComment($this->oUserCurrent) and !$this->oUserCurrent->isAdministrator()) {
             $this->Message_AddErrorSingle($this->Lang_Get('topic_comment_acl'), $this->Lang_Get('error'));
-            return;
-        }
-        /**
-         * Проверяем разрешено ли постить комменты по времени
-         */
-        if (!$this->ACL_CanPostCommentTime($this->oUserCurrent) and !$this->oUserCurrent->isAdministrator()) {
-            $this->Message_AddErrorSingle($this->Lang_Get('topic_comment_limit'), $this->Lang_Get('error'));
+
             return;
         }
 
-        /**
-         * Проверяем текст комментария
-         */
+        // Проверяем разрешено ли постить комменты по времени
+        if (!$this->ACL_CanPostCommentTime($this->oUserCurrent) and !$this->oUserCurrent->isAdministrator()) {
+            $this->Message_AddErrorSingle($this->Lang_Get('topic_comment_limit'), $this->Lang_Get('error'));
+
+            return;
+        }
+
+
+        // Проверяем текст комментария
         $sText = $this->Text_Parser(getRequest('comment_text'));
         if (!func_check($sText, 'text', 2, 10000)) {
             $this->Message_AddErrorSingle($this->Lang_Get('topic_comment_add_text_error'), $this->Lang_Get('error'));
+
             return;
         }
-        /**
-         * Проверям на какой коммент отвечаем
-         */
+
+        // Проверям на какой коммент отвечаем
         $sParentId = (int) getRequest('reply');
         if (!func_check($sParentId, 'id')) {
             $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
+
             return;
         }
         $oCommentParent = null;
         if ($sParentId != 0) {
-            /**
-             * Проверяем существует ли комментарий на который отвечаем
-             */
+            // Проверяем существует ли комментарий на который отвечаем
             if (!($oCommentParent = $this->Comment_GetCommentById($sParentId))) {
                 $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
+
                 return;
             }
-            /**
-             * Проверяем из одного топика ли новый коммент и тот на который отвечаем
-             */
+
+            // Проверяем из одного топика ли новый коммент и тот на который отвечаем
             if ($oCommentParent->getTargetId() != $oImage->getId()) {
                 $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
+
                 return;
             }
         } else {
-            /**
-             * Корневой комментарий
-             */
+            // Корневой комментарий
             $sParentId = null;
         }
-        /**
-         * Проверка на дублирующий коммент
-         */
+
+        // Проверка на дублирующий коммент
         if ($this->Comment_GetCommentUnique($oImage->getId(), 'image', $this->oUserCurrent->getId(), $sParentId, md5($sText))) {
             $this->Message_AddErrorSingle($this->Lang_Get('topic_comment_spam'), $this->Lang_Get('error'));
+
             return;
         }
-        /**
-         * Создаём коммент
-         */
+
+        // Создаём коммент
         $oCommentNew = Engine::GetEntity('Comment');
         $oCommentNew->setTargetId($oImage->getId());
         $oCommentNew->setTargetType('image');
@@ -598,12 +697,14 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         $oCommentNew->setTextHash(md5($sText));
         $oCommentNew->setPublish(1);
 
-        /**
-         * Добавляем коммент
-         */
-        $this->Hook_Run('image_comment_add_before', array('oCommentNew' => $oCommentNew, 'oCommentParent' => $oCommentParent, 'oImage' => $oImage));
+        // Добавляем коммент
+        $this->Hook_Run('image_comment_add_before', array(
+            'oCommentNew' => $oCommentNew, 'oCommentParent' => $oCommentParent, 'oImage' => $oImage
+        ));
         if ($this->Comment_AddComment($oCommentNew)) {
-            $this->Hook_Run('image_comment_add_after', array('oCommentNew' => $oCommentNew, 'oCommentParent' => $oCommentParent, 'oImage' => $oImage));
+            $this->Hook_Run('image_comment_add_after', array(
+                'oCommentNew' => $oCommentNew, 'oCommentParent' => $oCommentParent, 'oImage' => $oImage
+            ));
 
             $this->Viewer_AssignAjax('sCommentId', $oCommentNew->getId());
 
@@ -618,7 +719,6 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
     /**
      * Получение новых комментариев
-     *
      */
     protected function AjaxResponseComment()
     {
@@ -626,18 +726,20 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
         if (!$this->oUserCurrent) {
             $this->Message_AddErrorSingle($this->Lang_Get('need_authorization'), $this->Lang_Get('error'));
+
             return;
         }
 
         $idImage = getRequest('idTarget', null, 'post');
         if (!($oImage = $this->PluginLsgallery_Image_GetImageById($idImage))) {
             $this->Message_AddErrorSingle($this->Lang_Get('system_error'), $this->Lang_Get('error'));
+
             return;
         }
 
         $idCommentLast = getRequest('idCommentLast', null, 'post');
         $selfIdComment = getRequest('selfIdComment', null, 'post');
-        $aComments = array();
+        $aComments     = array();
 
         if (getRequest('bUsePaging', null, 'post') && $selfIdComment) {
             $oComment = $this->Comment_GetCommentById($selfIdComment);
@@ -647,16 +749,16 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
                 $oViewerLocal->Assign('bOneComment', true);
 
                 $oViewerLocal->Assign('oComment', $oComment);
-                $sText = $oViewerLocal->Fetch("comment.tpl");
-                $aCmt = array();
+                $sText  = $oViewerLocal->Fetch("comment.tpl");
+                $aCmt   = array();
                 $aCmt[] = array(
                     'html' => $sText,
-                    'obj' => $oComment,
+                    'obj'  => $oComment,
                 );
             } else {
                 $aCmt = array();
             }
-            $aReturn['comments'] = $aCmt;
+            $aReturn['comments']      = $aCmt;
             $aReturn['iMaxIdComment'] = $selfIdComment;
         } else {
             $aReturn = $this->Comment_GetCommentsNewByTargetId($oImage->getId(), 'image', $idCommentLast);
@@ -675,9 +777,9 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         if ($aCmts and is_array($aCmts)) {
             foreach ($aCmts as $aCmt) {
                 $aComments[] = array(
-                    'html' => $aCmt['html'],
+                    'html'     => $aCmt['html'],
                     'idParent' => $aCmt['obj']->getPid(),
-                    'id' => $aCmt['obj']->getId(),
+                    'id'       => $aCmt['obj']->getId(),
                 );
             }
         }
@@ -690,6 +792,7 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
      * Validate album fields
      *
      * @param PluginLsgallery_ModuleAlbum_EntityAlbum $oAlbum
+     *
      * @return boolean
      */
     protected function _checkAlbumFields($oAlbum = null)
@@ -702,7 +805,9 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
                 $this->Message_AddError($this->Lang_Get('plugin.lsgallery.lsgallery_album_id_error'), $this->Lang_Get('error'));
                 $bOk = false;
             }
-            if ($oAlbum->getType() == PluginLsgallery_ModuleAlbum_EntityAlbum::TYPE_SHARED && getRequest('album_type') != PluginLsgallery_ModuleAlbum_EntityAlbum::TYPE_SHARED) {
+            if ($oAlbum->getType() == PluginLsgallery_ModuleAlbum_EntityAlbum::TYPE_SHARED
+                && getRequest('album_type') != PluginLsgallery_ModuleAlbum_EntityAlbum::TYPE_SHARED
+            ) {
                 $this->Message_AddError($this->Lang_Get('plugin.lsgallery.lsgallery_album_type_error'), $this->Lang_Get('error'));
                 $bOk = false;
             }
@@ -729,6 +834,9 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
         return $bOk;
     }
 
+    /**
+     * Event shutdown
+     */
     public function EventShutdown()
     {
         $this->Viewer_Assign('sMenuHeadItemSelect', $this->sMenuHeadItemSelect);
@@ -737,5 +845,4 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
 
         $this->Viewer_AppendScript(Plugin::GetTemplateWebPath('lsgallery') . 'js/gallery.js');
     }
-
 }

@@ -1,23 +1,26 @@
 <?php
 
+/**
+ * Class PluginLsgallery_ModuleAlbum
+ */
 class PluginLsgallery_ModuleAlbum extends Module
 {
-
     /**
-     *
-     * @var PluginLsgallery_ModuleAlbum_MapperAlbum
+     * @var PluginLsgallery_ModuleAlbum_MapperAlbum $oMapper
      */
     protected $oMapper;
 
     /**
-     *
-     * @var ModuleUser_EntityUser
+     * @var ModuleUser_EntityUser $oUserCurrent
      */
     protected $oUserCurrent = null;
 
+    /**
+     * Initialization
+     */
     public function Init()
     {
-        $this->oMapper = Engine::GetMapper(__CLASS__);
+        $this->oMapper      = Engine::GetMapper(__CLASS__);
         $this->oUserCurrent = $this->User_GetUserCurrent();
     }
 
@@ -25,6 +28,7 @@ class PluginLsgallery_ModuleAlbum extends Module
      * Create album
      *
      * @param PluginLsgallery_ModuleAlbum_EntityAlbum $oAlbum
+     *
      * @return boolean|PluginLsgallery_ModuleAlbum_EntityAlbum
      */
     public function CreateAlbum($oAlbum)
@@ -33,8 +37,10 @@ class PluginLsgallery_ModuleAlbum extends Module
         if ($sId = $this->oMapper->CreateAlbum($oAlbum)) {
             $oAlbum->setId($sId);
             $this->Cache_Clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array('album_new'));
+
             return $oAlbum;
         }
+
         return false;
     }
 
@@ -42,6 +48,7 @@ class PluginLsgallery_ModuleAlbum extends Module
      * Update album
      *
      * @param PluginLsgallery_ModuleAlbum_EntityAlbum $oAlbum
+     *
      * @return boolean
      */
     public function UpdateAlbum($oAlbum)
@@ -49,16 +56,22 @@ class PluginLsgallery_ModuleAlbum extends Module
         $oAlbum->setDateEdit();
         if ($this->oMapper->UpdateAlbum($oAlbum)) {
             //чистим зависимые кеши
-            $this->Cache_Clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array('album_update', "album_update_{$oAlbum->getId()}", "image_update"));
+            $this->Cache_Clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array(
+                'album_update', "album_update_{$oAlbum->getId()}", "image_update"
+            ));
             $this->Cache_Delete("album_{$oAlbum->getId()}");
+
             return true;
         }
+
         return false;
     }
 
     /**
      * Delete album
+     *
      * @param int|PluginLsgallery_ModuleAlbum_EntityAlbum $iAlbumId
+     *
      * @return boolean
      */
     public function DeleteAlbum($iAlbumId)
@@ -74,7 +87,7 @@ class PluginLsgallery_ModuleAlbum extends Module
         }
 
         if ($aResult['count']) {
-            $aImages = $aResult['collection'];
+            $aImages   = $aResult['collection'];
             $aImagesId = array_keys($aImages);
             foreach ($aImages as $oImage) {
                 $this->PluginLsGallery_Image_DeleteImageFiles($oImage);
@@ -84,13 +97,11 @@ class PluginLsgallery_ModuleAlbum extends Module
             $this->Comment_DeleteCommentByTargetId($aImagesId, 'image');
         }
 
-        /**
-         * Чистим кеш
-         */
+        // Чистим кеш
         $this->Cache_Clean(
-                Zend_Cache::CLEANING_MODE_MATCHING_TAG, array(
-                    "album_update", "image_update", "comment_update"
-                )
+            Zend_Cache::CLEANING_MODE_MATCHING_TAG, array(
+                "album_update", "image_update", "comment_update"
+            )
         );
 
         $this->Cache_Delete("album_{$iAlbumId}");
@@ -102,6 +113,7 @@ class PluginLsgallery_ModuleAlbum extends Module
      * Get album by Id
      *
      * @param string $sAlbumId
+     *
      * @return PluginLsgallery_ModuleAlbum_EntityAlbum|null
      */
     public function GetAlbumById($sAlbumId)
@@ -110,6 +122,7 @@ class PluginLsgallery_ModuleAlbum extends Module
         if (isset($aAlbums[$sAlbumId])) {
             return $aAlbums[$sAlbumId];
         }
+
         return null;
     }
 
@@ -117,8 +130,10 @@ class PluginLsgallery_ModuleAlbum extends Module
      * Get albums additional data
      *
      * @todo Подтягивание картинок
+     *
      * @param array $aAlbumsId
      * @param array $aAllowData
+     *
      * @return array
      */
     public function GetAlbumsAdditionalData($aAlbumsId, $aAllowData = array('user' => array(), 'cover' => array()))
@@ -130,7 +145,7 @@ class PluginLsgallery_ModuleAlbum extends Module
 
         $aAlbums = $this->GetAlbumsByArrayId($aAlbumsId);
 
-        $aUserId = array();
+        $aUserId  = array();
         $aImageId = array();
 
         foreach ($aAlbums as $oAlbum) {
@@ -142,8 +157,14 @@ class PluginLsgallery_ModuleAlbum extends Module
                 $aImageId[] = $oAlbum->getCoverId();
             }
         }
-        $aUsers = isset($aAllowData['user']) && is_array($aAllowData['user']) ? $this->User_GetUsersAdditionalData($aUserId, $aAllowData['user']) : $this->User_GetUsersAdditionalData($aUserId);
-        $aImages = isset($aAllowData['cover']) && is_array($aAllowData['cover']) ? $this->PluginLsgallery_Image_GetImagesAdditionalData($aImageId, $aAllowData['cover']) : $this->PluginLsgallery_Image_GetImagesAdditionalData($aUserId);
+        $aUsers  = isset($aAllowData['user']) && is_array($aAllowData['user'])
+            ? $this->User_GetUsersAdditionalData($aUserId, $aAllowData['user'])
+            : $this->User_GetUsersAdditionalData($aUserId);
+
+        $aImages = isset($aAllowData['cover']) && is_array($aAllowData['cover'])
+            ? $this->PluginLsgallery_Image_GetImagesAdditionalData($aImageId, $aAllowData['cover'])
+            : $this->PluginLsgallery_Image_GetImagesAdditionalData($aUserId);
+
         foreach ($aAlbums as $oAlbum) {
             if (isset($aUsers[$oAlbum->getUserId()])) {
                 $oAlbum->setUser($aUsers[$oAlbum->getUserId()]);
@@ -165,6 +186,7 @@ class PluginLsgallery_ModuleAlbum extends Module
      * Get albums by array Id
      *
      * @param array $aAlbumId
+     *
      * @return array
      */
     public function GetAlbumsByArrayId($aAlbumId)
@@ -181,17 +203,14 @@ class PluginLsgallery_ModuleAlbum extends Module
             $aAlbumId = array($aAlbumId);
         }
 
-        $aAlbumId = array_unique($aAlbumId);
-        $aAlbums = array();
+        $aAlbumId             = array_unique($aAlbumId);
+        $aAlbums              = array();
         $aAlbumIdNotNeedQuery = array();
-        /**
-         * Делаем мульти-запрос к кешу
-         */
+
+        // Делаем мульти-запрос к кешу
         $aCacheKeys = func_build_cache_keys($aAlbumId, 'album_');
         if (false !== ($data = $this->Cache_Get($aCacheKeys))) {
-            /**
-             * проверяем что досталось из кеша
-             */
+            // проверяем что досталось из кеша
             foreach ($aCacheKeys as $sValue => $sKey) {
                 if (array_key_exists($sKey, $data)) {
                     if ($data[$sKey]) {
@@ -208,24 +227,21 @@ class PluginLsgallery_ModuleAlbum extends Module
         $aAlbumIdNeedStore = $aAlbumIdNeedQuery;
         if ($data = $this->oMapper->GetAlbumsByArrayId($aAlbumIdNeedQuery)) {
             foreach ($data as $oAlbum) {
-                /**
-                 * Добавляем к результату и сохраняем в кеш
-                 */
+                // Добавляем к результату и сохраняем в кеш
                 $aAlbums[$oAlbum->getId()] = $oAlbum;
                 $this->Cache_Set($oAlbum, "album_{$oAlbum->getId()}", array(), 60 * 60 * 24 * 4);
                 $aAlbumIdNeedStore = array_diff($aAlbumIdNeedStore, array($oAlbum->getId()));
             }
         }
-        /**
-         * Сохраняем в кеш запросы не вернувшие результата
-         */
+
+        // Сохраняем в кеш запросы не вернувшие результата
         foreach ($aAlbumIdNeedStore as $sId) {
             $this->Cache_Set(null, "album_{$sId}", array(), 60 * 60 * 24 * 4);
         }
-        /**
-         * Сортируем результат согласно входящему массиву
-         */
+
+        // Сортируем результат согласно входящему массиву
         $aAlbums = func_array_sort_by_keys($aAlbums, $aAlbumId);
+
         return $aAlbums;
     }
 
@@ -233,6 +249,7 @@ class PluginLsgallery_ModuleAlbum extends Module
      * Get albums by array id from solid cache
      *
      * @param array $aAlbumId
+     *
      * @return array
      */
     public function GetAlbumsByArrayIdSolid($aAlbumId)
@@ -241,25 +258,28 @@ class PluginLsgallery_ModuleAlbum extends Module
             $aAlbumId = array($aAlbumId);
         }
         $aAlbumId = array_unique($aAlbumId);
-        $aAlbums = array();
-        $s = join(',', $aAlbumId);
+        $aAlbums  = array();
+        $s        = join(',', $aAlbumId);
         if (false === ($data = $this->Cache_Get("album_id_{$s}"))) {
             $data = $this->oMapper->GetAlbumsByArrayId($aAlbumId);
             foreach ($data as $oAlbum) {
                 $aAlbums[$oAlbum->getId()] = $oAlbum;
             }
             $this->Cache_Set($aAlbums, "album_id_{$s}", array("album_update"), 60 * 60 * 24 * 1);
+
             return $aAlbums;
         }
+
         return $data;
     }
 
     /**
      * Get albums for list
      *
-     * @param int $iPage
-     * @param int $iPerPage
+     * @param int     $iPage
+     * @param int     $iPerPage
      * @param boolean $bMy
+     *
      * @return \PluginLsgallery_ModuleAlbum_EntityAlbum
      */
     public function GetAlbumsIndex($iPage, $iPerPage, $bMy = false)
@@ -268,7 +288,7 @@ class PluginLsgallery_ModuleAlbum extends Module
             'album_type' => array(
                 'open', 'shared',
             ),
-            'not_empty' => true
+            'not_empty'  => true
         );
 
         if ($this->oUserCurrent) {
@@ -278,42 +298,61 @@ class PluginLsgallery_ModuleAlbum extends Module
                 $aFilter['album_type']['friend'] = array_keys($aFriends['collection']);
             }
         }
+
         return $this->GetAlbumsByFilter($aFilter, $iPage, $iPerPage);
     }
 
     /**
-     * Get albims by filter
+     * Get albums by filter
      *
-     * @param array $aFilter
-     * @param int $iPage
-     * @param int $iPerPage
-     * @param array $aAllowData
+     * @param array   $aFilter
+     * @param int     $iPage
+     * @param int     $iPerPage
+     * @param array   $aAllowData
      * @param boolean $bOnlyIds
+     *
      * @return \PluginLsgallery_ModuleAlbum_EntityAlbum
      */
-    public function GetAlbumsByFilter($aFilter, $iPage = 0, $iPerPage = 0, $aAllowData = array('user' => array(), 'cover' => array()), $bOnlyIds = false)
+    public function GetAlbumsByFilter(
+        $aFilter,
+        $iPage = 0,
+        $iPerPage = 0,
+        $aAllowData = array(
+            'user' => array(),
+            'cover' => array()
+        ),
+        $bOnlyIds = false)
     {
         $s = serialize($aFilter);
         if (false === ($data = $this->Cache_Get("album_filter_{$s}_{$iPage}_{$iPerPage}"))) {
             $data = ($iPage * $iPerPage != 0) ? array(
                 'collection' => $this->oMapper->GetAlbums($aFilter, $iCount, $iPage, $iPerPage),
-                'count' => $iCount
-                    ) : array(
+                'count'      => $iCount
+            ) : array(
                 'collection' => $this->oMapper->GetAllAlbums($aFilter),
-                'count' => $this->GetCountAlbumsByFilter($aFilter)
-                    );
-            $this->Cache_Set($data, "album_filter_{$s}_{$iPage}_{$iPerPage}", array('album_update', 'album_new'), 60 * 60 * 24 * 3);
+                'count'      => $this->GetCountAlbumsByFilter($aFilter)
+            );
+
+            $this->Cache_Set(
+                $data,
+                "album_filter_{$s}_{$iPage}_{$iPerPage}",
+                array('album_update', 'album_new'),
+                60 * 60 * 24 * 3
+            );
         }
+
         if (!$bOnlyIds) {
             $data['collection'] = $this->GetAlbumsAdditionalData($data['collection'], $aAllowData);
         }
+
         return $data;
     }
 
     /**
-     * Get count aldums by filter
+     * Get count albums by filter
      *
      * @param array $aFilter
+     *
      * @return int
      */
     public function GetCountAlbumsByFilter($aFilter)
@@ -321,23 +360,30 @@ class PluginLsgallery_ModuleAlbum extends Module
         $s = serialize($aFilter);
         if (false === ($data = $this->Cache_Get("album_count_{$s}"))) {
             $data = $this->oMapper->GetCountAlbums($aFilter);
-            $this->Cache_Set($data, "album_count_{$s}", array('album_update', 'album_new'), 60 * 60 * 24 * 1);
+            $this->Cache_Set(
+                $data,
+                "album_count_{$s}",
+                array('album_update', 'album_new'),
+                60 * 60 * 24 * 1
+            );
         }
+
         return $data;
     }
 
     /**
-     * Get user aldums
+     * Get user albums
      *
      * @param string $sUserId
-     * @param int $iPage
-     * @param int $iPerPage
+     * @param int    $iPage
+     * @param int    $iPerPage
+     *
      * @return \PluginLsgallery_ModuleAlbum_EntityAlbum
      */
     public function GetAlbumsPersonalByUser($sUserId, $iPage = 0, $iPerPage = 0)
     {
         $aFilter = array(
-            'user_id' => $sUserId,
+            'user_id'    => $sUserId,
             'album_type' => array(
                 'open', 'shared'
             ),
@@ -353,6 +399,7 @@ class PluginLsgallery_ModuleAlbum extends Module
                 }
             }
         }
+
         return $this->GetAlbumsByFilter($aFilter, $iPage, $iPerPage);
     }
 
@@ -360,12 +407,13 @@ class PluginLsgallery_ModuleAlbum extends Module
      * Get count albums by user
      *
      * @param string $sUserId
+     *
      * @return int
      */
     public function GetCountAlbumsPersonalByUser($sUserId)
     {
         $aFilter = array(
-            'user_id' => $sUserId,
+            'user_id'    => $sUserId,
             'album_type' => array(
                 'open', 'shared'
             ),
@@ -388,7 +436,8 @@ class PluginLsgallery_ModuleAlbum extends Module
     /**
      * Получаем массив идентификаторов блогов, которые являются закрытыми для пользователя
      *
-     * @param  ModuleUser_EntityUser|null $oUser	Пользователь
+     * @param  ModuleUser_EntityUser|null $oUser Пользователь
+     *
      * @return array
      */
     public function GetInaccessibleAlbumsByUser($oUser = null)
@@ -403,22 +452,21 @@ class PluginLsgallery_ModuleAlbum extends Module
             $aPrivateAlbums = $this->oMapper->GetCloseAlbums();
 
             if ($oUser) {
-
-                $aOwnAlbums = $this->GetAlbumsPersonalByUser($oUser->getId());
+                $aOwnAlbums     = $this->GetAlbumsPersonalByUser($oUser->getId());
                 $aFriendsAlbums = array();
-                $aFriends = $this->User_GetUsersFriend($this->oUserCurrent->getId());
+                $aFriends       = $this->User_GetUsersFriend($this->oUserCurrent->getId());
+
                 if ($aFriends['count']) {
                     $aFilter['album_type']['friend'] = array_keys($aFriends['collection']);
-                    $aFriendsAlbums = $this->GetAlbumsByFilter($aFilter);
-                    $aFriendsAlbums  = array_keys($aFriendsAlbums['collection']);
+                    $aFriendsAlbums                  = $this->GetAlbumsByFilter($aFilter);
+                    $aFriendsAlbums                  = array_keys($aFriendsAlbums['collection']);
                 }
 
-                $aOwnAlbums  = array_keys($aOwnAlbums['collection']);
-                $aPrivateAlbums = array_diff($aPrivateAlbums, $aOwnAlbums, $aFriendsAlbums );
+                $aOwnAlbums     = array_keys($aOwnAlbums['collection']);
+                $aPrivateAlbums = array_diff($aPrivateAlbums, $aOwnAlbums, $aFriendsAlbums);
             }
-            /**
-             * Сохраняем в кеш
-             */
+
+            // Сохраняем в кеш
             if ($oUser) {
                 $this->Cache_Set(
                     $aPrivateAlbums,
@@ -438,5 +486,4 @@ class PluginLsgallery_ModuleAlbum extends Module
 
         return $aPrivateAlbums;
     }
-
 }

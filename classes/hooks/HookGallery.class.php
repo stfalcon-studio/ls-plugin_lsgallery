@@ -1,13 +1,12 @@
 <?php
 
 /**
- * PluginLsgallery_HookGallery
+ * Class PluginLsgallery_HookGallery
  *
  * Hooks for gallery
  */
 class PluginLsgallery_HookGallery extends Hook
 {
-
     /**
      * Register hooks
      */
@@ -47,26 +46,25 @@ class PluginLsgallery_HookGallery extends Hook
     /**
      * Add albums block to profile
      *
-     * @param array $aData
+     * @param array $aData array
      *
      * @return string
      */
     public function ProfileAlbums($aData)
     {
-        $oUser = $aData['oUserProfile'];
+        $oUser   = $aData['oUserProfile'];
         $aResult = $this->PluginLsgallery_Album_GetAlbumsPersonalByUser($oUser->getId(), 1, 2);
         $this->Viewer_Assign("aAlbums", $aResult['collection']);
+
         return $this->Viewer_Fetch(Plugin::GetTemplatePath(__CLASS__) . 'block.albums_list.tpl');
     }
 
     /**
      * Add to fav menu link to photos list
      *
-     * @param array $aData
-     *
      * @return string
      */
-    public function MenuProfileFavouritePhoto($aData)
+    public function MenuProfileFavouritePhoto()
     {
         return $this->Viewer_Fetch(Plugin::GetTemplatePath(__CLASS__) . 'menu.profile_favourite_item.tpl');
     }
@@ -83,7 +81,12 @@ class PluginLsgallery_HookGallery extends Hook
         return $this->Viewer_Fetch(Plugin::GetTemplatePath(__CLASS__) . 'menu.profile_created_item.tpl');
     }
 
-    public function MenuWriteItem($aData)
+    /**
+     * Menu write item
+     *
+     * @return string
+     */
+    public function MenuWriteItem()
     {
         return $this->Viewer_Fetch(Plugin::GetTemplatePath(__CLASS__) . 'write_item.tpl');
     }

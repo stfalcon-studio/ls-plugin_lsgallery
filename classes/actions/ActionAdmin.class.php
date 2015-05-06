@@ -1,15 +1,25 @@
 <?php
 
+/**
+ * Class ActionAdmin
+ */
 class PluginLsgallery_ActionAdmin extends PluginLsgallery_Inherit_ActionAdmin
 {
 
+    /**
+     * Register Event
+     */
     protected function RegisterEvent()
     {
         parent::RegisterEvent();
-        $this->AddEvent('recalcimagedata','EventRecalculateImageData');
+        $this->AddEvent('recalcimagedata', 'EventRecalculateImageData');
     }
 
-    protected function EventRecalculateImageData() {
+    /**
+     * Event Recalculate Image Data
+     */
+    protected function EventRecalculateImageData()
+    {
         $this->Security_ValidateSendForm();
         set_time_limit(0);
         $this->PluginLsgallery_Image_RecalculateFavourite();
@@ -17,8 +27,7 @@ class PluginLsgallery_ActionAdmin extends PluginLsgallery_Inherit_ActionAdmin
 
         $this->Cache_Clean();
 
-        $this->Message_AddNotice($this->Lang_Get('plugin.lsgallery.lsgallery_admin_images_recalculated'),$this->Lang_Get('attention'));
+        $this->Message_AddNotice($this->Lang_Get('plugin.lsgallery.lsgallery_admin_images_recalculated'), $this->Lang_Get('attention'));
         $this->SetTemplateAction('index');
     }
-
 }
