@@ -17,7 +17,8 @@ jQuery(document).on('ready', function(){
     {hook run='image_upload_begin' oImages=$oImages oAlbum=$oAlbumEdit}
     <div class="topic-photo-upload-rules">
     	<br />
-        <a href="#" id="images-start-upload" class="button button-primary fl-l">{$aLang.plugin.lsgallery.lsgallery_images_upload_choose}</a>
+        <a href="#" id="images-start-upload" class="button button-primary fl-l button-size">{$aLang.plugin.lsgallery.lsgallery_images_upload_choose}</a>
+        <a href="#" class="button button-primary fl-l button-size">{$aLang.plugin.lsgallery.lsgallery_images_upload_choose}</a>
         <p class="left note">{$aLang.plugin.lsgallery.lsgallery_images_upload_rules|ls_lang:"SIZE%%`$oConfig->get('plugin.lsgallery.image_max_size')`":"COUNT%%`$oConfig->get('plugin.lsgallery.count_image_max')`"}</p>
     </div>
     <div class="clear"></div>

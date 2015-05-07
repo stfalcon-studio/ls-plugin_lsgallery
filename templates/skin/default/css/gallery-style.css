@@ -139,7 +139,7 @@
 	position:relative;
 	}
 	.gal-prev .gallery-bubble{
-		
+
 		}
 		.gal-prev .gallery-bubble .gallery-bubble-content{
 			width:140px;
@@ -195,9 +195,9 @@
 	overflow:hidden;
 	min-width:590px;
 	}
-	
+
 .content-profile .gallery-albums-preview {
-	min-width:390px;	
+	min-width:390px;
 }
 	.gallery-albums-preview .gallery-albums-right{
 		padding-left:10px;
@@ -428,9 +428,15 @@ a.remove{display:inline-block; width:11px; height:11px; background:url(../images
 .topic-photo-upload ul li img {top: 18px;}
 .topic-photo-upload ul li label {color: #000;}
 .autocomplete-image-tags {width: 472px; border: 1px solid #DDD; padding:3px; }
-
+#images-start-upload + .button {
+    display: none;
+}
+.button-size {
+    width: 180px;
+}
 #album-images-admin .topic-photo-upload-rules object {
     float: left;
+    position: absolute;
 }
 #album-images-admin .topic-photo-upload-rules p {
     margin-left: 30px;
