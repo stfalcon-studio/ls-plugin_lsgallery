@@ -1,14 +1,16 @@
 <?php
 
+/**
+ * Class PluginLsgallery_ModuleNotify
+ */
 class PluginLsgallery_ModuleNotify extends PluginLsgallery_Inherit_ModuleNotify
 {
-
     /**
      * Отправляет пользователю сообщение о добавлении его в друзья
      *
-     * @param ModuleUser_EntityUser $oUserTo
-     * @param ModuleUser_EntityUser $oUserFrom
-     * @param string $sText
+     * @param ModuleUser_EntityUser $oUserTo   User to
+     * @param ModuleUser_EntityUser $oUserFrom User from
+     * @param string                $sText     Text
      */
     public function SendUserMarkImageNew(ModuleUser_EntityUser $oUserTo, ModuleUser_EntityUser $oUserFrom, $sText)
     {
@@ -19,24 +21,23 @@ class PluginLsgallery_ModuleNotify extends PluginLsgallery_Inherit_ModuleNotify
          */
         if (Config::Get('module.notify.delayed')) {
             $oNotifyTask = Engine::GetEntity(
-                            'Notify_Task', array(
-                        'user_mail' => $oUserTo->getMail(),
-                        'user_login' => $oUserTo->getLogin(),
-                        'notify_text' => $sText,
-                        'notify_subject' => $this->Lang_Get('plugin.lsgallery.lsgallery_marked_subject'),
-                        'date_created' => date("Y-m-d H:i:s"),
-                        'notify_task_status' => self::NOTIFY_TASK_STATUS_NULL,
-                            )
+                'Notify_Task', array(
+                    'user_mail'          => $oUserTo->getMail(),
+                    'user_login'         => $oUserTo->getLogin(),
+                    'notify_text'        => $sText,
+                    'notify_subject'     => $this->Lang_Get('plugin.lsgallery.lsgallery_marked_subject'),
+                    'date_created'       => date("Y-m-d H:i:s"),
+                    'notify_task_status' => self::NOTIFY_TASK_STATUS_NULL,
+                )
             );
+
             if (Config::Get('module.notify.insert_single')) {
                 $this->aTask[] = $oNotifyTask;
             } else {
                 $this->oMapper->AddTask($oNotifyTask);
             }
         } else {
-            /**
-             * Отправляем мыло
-             */
+            // Отправляем мыло
             $this->Mail_SetAdress($oUserTo->getMail(), $oUserTo->getLogin());
             $this->Mail_SetSubject($this->Lang_Get('plugin.lsgallery.lsgallery_marked_subject'));
             $this->Mail_SetBody($sText);
@@ -44,5 +45,4 @@ class PluginLsgallery_ModuleNotify extends PluginLsgallery_Inherit_ModuleNotify
             $this->Mail_Send();
         }
     }
-
 }

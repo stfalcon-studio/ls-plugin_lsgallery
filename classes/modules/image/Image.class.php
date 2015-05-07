@@ -1,29 +1,36 @@
 <?php
 
+/**
+ * Class PluginLsgallery_ModuleImage
+ */
 class PluginLsgallery_ModuleImage extends Module
 {
-
     /**
      *
-     * @var PluginLsgallery_ModuleImage_MapperImage
+     * @var \PluginLsgallery_ModuleImage_MapperImage $oMapper
      */
     protected $oMapper;
 
     /**
      *
-     * @var ModuleUser_EntityUser
+     * @var \ModuleUser_EntityUser $oUserCurrent
      */
     protected $oUserCurrent = null;
 
+    /**
+     * Initialization
+     */
     public function Init()
     {
-        $this->oMapper = Engine::GetMapper(__CLASS__);
+        $this->oMapper      = Engine::GetMapper(__CLASS__);
         $this->oUserCurrent = $this->User_GetUserCurrent();
     }
 
     /**
      * Add image
-     * @param PluginLsgallery_ModuleImage_EntityImage $oImage
+     *
+     * @param PluginLsgallery_ModuleImage_EntityImage $oImage Image
+     *
      * @return PluginLsgallery_ModuleImage_EntityImage|boolean
      */
     public function AddImage($oImage)
@@ -31,8 +38,8 @@ class PluginLsgallery_ModuleImage extends Module
         $oImage->setDateAdd();
         if ($sId = $this->oMapper->AddImage($oImage)) {
             $oImage = $this->GetImageById($sId);
-            /* @var $oAlbum PluginLsgallery_ModuleAlbum_EntityAlbum */
 
+            /* @var $oAlbum \PluginLsgallery_ModuleAlbum_EntityAlbum */
             $oAlbum = $this->PluginLsgallery_Album_GetAlbumById($oImage->getAlbumId());
             if (!$oAlbum->getCoverId()) {
                 $oAlbum->setCoverId($sId);
@@ -41,31 +48,33 @@ class PluginLsgallery_ModuleImage extends Module
             $oAlbum->setImageCount($oAlbum->getImageCount() + 1);
             $this->PluginLsgallery_Album_UpdateAlbum($oAlbum);
             $this->Cache_Clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array('image_new'));
+
             return $oImage;
         }
+
         return false;
     }
 
     /**
      * Edit image
      *
-     * @param PluginLsgallery_ModuleImage_EntityImage $oImage
+     * @param \PluginLsgallery_ModuleImage_EntityImage $oImage Image
+     *
      * @return boolean
      */
     public function UpdateImage($oImage)
     {
         $oImageOld = $this->GetImageById($oImage->getId());
         $oImage->setDateEdit();
-        /* @var $oAlbum PluginLsgallery_ModuleAlbum_EntityAlbum */
+
+        /* @var $oAlbum \PluginLsgallery_ModuleAlbum_EntityAlbum */
         $oAlbum = $this->PluginLsgallery_Album_GetAlbumById($oImage->getAlbumId());
         $this->Cache_Clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array("image_update"));
         $this->Cache_Delete("image_{$oImage->getId()}");
         $this->oMapper->UpdateImage($oImage);
 
         if ($oImage->getImageTags() != $oImageOld->getImageTags()) {
-            /**
-             * Обновляем теги
-             */
+            // Обновляем теги
             $aTags = explode(',', $oImage->getImageTags());
             $this->DeleteImageTagsByImageId($oImage->getId());
 
@@ -79,28 +88,38 @@ class PluginLsgallery_ModuleImage extends Module
                 }
             }
         }
+
         return true;
     }
 
     /**
      * Get image tags by like
+     *
      * @param string $sTag
-     * @param int $iLimit
+     * @param int    $iLimit
+     *
      * @return \PluginLsgallery_ModuleImage_EntityImageTag
      */
     public function GetImageTagsByLike($sTag, $iLimit)
     {
         if (false === ($data = $this->Cache_Get("image_like_{$sTag}_{$iLimit}"))) {
             $data = $this->oMapper->GetImageTagsByLike($sTag, $iLimit);
-            $this->Cache_Set($data, "image_like_{$sTag}_{$iLimit}", array("image_update", "image_new"), 60 * 60 * 24 * 3);
+            $this->Cache_Set(
+                $data,
+                "image_like_{$sTag}_{$iLimit}",
+                array("image_update", "image_new"),
+                60 * 60 * 24 * 3
+            );
         }
+
         return $data;
     }
 
     /**
      * Delete image tags by image
      *
-     * @param string $sImageId
+     * @param string $sImageId Image id
+     *
      * @return boolean
      */
     public function DeleteImageTagsByImageId($sImageId)
@@ -121,6 +140,7 @@ class PluginLsgallery_ModuleImage extends Module
             if (!move_uploaded_file($_FILES['Filedata']['tmp_name'], $sTmpFilename)) {
                 return false;
             }
+
             return $sTmpFilename;
         } else {
             return false;
@@ -130,7 +150,7 @@ class PluginLsgallery_ModuleImage extends Module
     /**
      * Upload Image
      *
-     * @param string $sFileTmp
+     * @param string $sFileTmp File tmp
      *
      * @return string|boolean
      */
@@ -138,43 +158,45 @@ class PluginLsgallery_ModuleImage extends Module
     {
         if (!$sFileTmp) {
             $this->Message_AddError($this->Lang_Get('system_error'), $this->Lang_Get('error'));
+
             return false;
         }
 
         $aParams = $this->Image_BuildParams('lsgallery');
 
         $oImage = new LiveImage($sFileTmp);
-        /**
-         * Если объект изображения не создан,
-         * возвращаем ошибку
-         */
+
+        // Если объект изображения не создан, возвращаем ошибку
         if ($sError = $oImage->get_last_error()) {
             // Вывод сообщения об ошибки, произошедшей при создании объекта изображения
             $this->Message_AddError($sError, $this->Lang_Get('error'));
             @unlink($sFileTmp);
+
             return false;
         }
 
-        /**
-         * Максимальный размер фото
-         */
+
+        // Максимальный размер фото
         if (filesize($sFileTmp) > Config::Get('plugin.lsgallery.image_max_size') * 1024) {
             $this->Message_AddError($this->Lang_Get('plugin.lsgallery.lsgallery_images_error_bad_filesize', array('MAX' => Config::Get('module.topic.photoset.photo_max_size'))), $this->Lang_Get('error'));
             @unlink($sFileTmp);
+
             return false;
         }
 
-        /**
-         * Превышает максимальные размеры из конфига
-         */
-        if (($oImage->get_image_params('width') > Config::Get('view.img_max_width')) or ($oImage->get_image_params('height') > Config::Get('view.img_max_height'))) {
+
+        // Превышает максимальные размеры из конфига
+        if (($oImage->get_image_params('width') > Config::Get('view.img_max_width'))
+            or ($oImage->get_image_params('height') > Config::Get('view.img_max_height'))
+        ) {
             $this->Message_AddError($this->Lang_Get('topic_photoset_error_size'), $this->Lang_Get('error'));
             @unlink($sFileTmp);
+
             return false;
         }
 
         $sFileName = func_generator(10);
-        $sPath = Config::Get('path.uploads.images') . '/lsgallery/' . date('Y/m/d') . '/';
+        $sPath     = Config::Get('path.uploads.images') . '/lsgallery/' . date('Y/m/d') . '/';
         if (!is_dir(Config::Get('path.root.server') . $sPath)) {
             mkdir(Config::Get('path.root.server') . $sPath, 0755, true);
         }
@@ -183,6 +205,7 @@ class PluginLsgallery_ModuleImage extends Module
         $sFile = Config::Get('path.root.server') . $sPath . $sFileName . '.' . $oImage->get_image_params('format');
         if (!rename($sFileTmp, $sFile)) {
             $this->Message_AddError($this->Lang_Get('system_error'), $this->Lang_Get('error'));
+
             return false;
         }
         @unlink($sFileTmp);
@@ -191,7 +214,7 @@ class PluginLsgallery_ModuleImage extends Module
         foreach ($aSizes as $aSize) {
             // Для каждого указанного в конфиге размера генерируем картинку
             $sNewFileName = $sFileName . '_' . $aSize['w'];
-            $oImage = new LiveImage($sFile);
+            $oImage       = new LiveImage($sFile);
             if ($aSize['crop']) {
                 $this->Image_CropProportion($oImage, $aSize['w'], $aSize['h'], true);
                 $sNewFileName .= 'crop';
@@ -199,13 +222,15 @@ class PluginLsgallery_ModuleImage extends Module
             $this->Image_Resize($sFile, $sPath, $sNewFileName, Config::Get('view.img_max_width'), Config::Get('view.img_max_height'), $aSize['w'], $aSize['h'], true, $aParams, $oImage);
         }
         $sWebPath = $this->Image_GetWebPath($sFile);
+
         return str_ireplace(Config::Get('path.root.web'), '', $sWebPath);
     }
 
     /**
      * Delete image
      *
-     * @param PluginLsgallery_ModuleImage_EntityImage $oImage
+     * @param PluginLsgallery_ModuleImage_EntityImage $oImage Image
+     *
      * @return boolean
      */
     public function DeleteImage($oImage)
@@ -238,13 +263,14 @@ class PluginLsgallery_ModuleImage extends Module
     /**
      * Delete image files
      *
-     * @param PluginLsgallery_ModuleImage_EntityImage $oImage
+     * @param \PluginLsgallery_ModuleImage_EntityImage $oImage Image
      */
     public function DeleteImageFiles($oImage)
     {
         @unlink($this->Image_GetServerPath(rtrim(Config::Get('path.root.web'), '/') . $oImage->getWebPath()));
 
         $aSizes = Config::Get('plugin.lsgallery.size');
+
         // Удаляем все сгенерированные миниатюры основываясь на данных из конфига.
         foreach ($aSizes as $aSize) {
             $sSize = $aSize['w'];
@@ -258,12 +284,12 @@ class PluginLsgallery_ModuleImage extends Module
     /**
      * Get images by album id per page
      *
-     * @param int $iAlbumId
-     * @param int $iPage
-     * @param int $iPerPage
-     * @param string $sOrder
+     * @param int    $iAlbumId Album id
+     * @param int    $iPage    Page
+     * @param int    $iPerPage Per page
+     * @param string $sOrder   Order
      *
-     * @return PluginLsgallery_ModuleImage_EntityImage
+     * @return \PluginLsgallery_ModuleImage_EntityImage
      */
     public function GetImagesByAlbumId($iAlbumId, $iPage = 0, $iPerPage = 0, $sOrder = 'desc')
     {
@@ -277,7 +303,9 @@ class PluginLsgallery_ModuleImage extends Module
 
         $aFilter = array(
             'album_id' => $iAlbumId,
-            'order' => array('image_date_add' => $sOrder),
+            'order'    => array(
+                'image_date_add' => $sOrder
+            ),
         );
 
         return $this->GetImagesByFilter($aFilter, $iPage, $iPerPage);
@@ -286,36 +314,51 @@ class PluginLsgallery_ModuleImage extends Module
     /**
      * Get images by filter
      *
-     * @param array $aFilter
-     * @param int $iPage
-     * @param int $iPerPage
-     * @param array $aAllowData
-     * @param boolean $bOnlyIds
-     * @return PluginLsgallery_ModuleImage_EntityImage
+     * @param array   $aFilter    Filter
+     * @param int     $iPage      Page
+     * @param int     $iPerPage   Pre page
+     * @param array   $aAllowData Allow date
+     * @param boolean $bOnlyIds   Only ids
+     *
+     * @return \PluginLsgallery_ModuleImage_EntityImage
      */
-    public function GetImagesByFilter($aFilter, $iPage = 0, $iPerPage = 0, $aAllowData = array('user' => array(), 'vote', 'favourite', 'comment_new'), $bOnlyIds = false)
+    public function GetImagesByFilter(
+        $aFilter,
+        $iPage = 0,
+        $iPerPage = 0,
+        $aAllowData = array('user' => array(), 'vote', 'favourite', 'comment_new'),
+        $bOnlyIds = false
+    )
     {
         $s = serialize($aFilter);
         if (false === ($data = $this->Cache_Get("image_filter_{$s}_{$iPage}_{$iPerPage}"))) {
             $data = ($iPage * $iPerPage != 0) ? array(
                 'collection' => $this->oMapper->GetImages($aFilter, $iCount, $iPage, $iPerPage),
-                'count' => $iCount
-                    ) : array(
+                'count'      => $iCount
+            ) : array(
                 'collection' => $this->oMapper->GetAllImages($aFilter),
-                'count' => $this->GetCountImagesByFilter($aFilter)
-                    );
-            $this->Cache_Set($data, "image_filter_{$s}_{$iPage}_{$iPerPage}", array('image_update', 'image_new'), 60 * 60 * 24 * 3);
+                'count'      => $this->GetCountImagesByFilter($aFilter)
+            );
+            $this->Cache_Set(
+                $data,
+                "image_filter_{$s}_{$iPage}_{$iPerPage}",
+                array('image_update', 'image_new'),
+                60 * 60 * 24 * 3
+            );
         }
+
         if (!$bOnlyIds) {
             $data['collection'] = $this->GetImagesAdditionalData($data['collection'], $aAllowData);
         }
+
         return $data;
     }
 
     /**
      * Get count images by filter
      *
-     * @param array $aFilter
+     * @param array $aFilter Filter
+     *
      * @return int
      */
     public function GetCountImagesByFilter($aFilter)
@@ -323,16 +366,22 @@ class PluginLsgallery_ModuleImage extends Module
         $s = serialize($aFilter);
         if (false === ($data = $this->Cache_Get("image_count_{$s}"))) {
             $data = $this->oMapper->GetCountImages($aFilter);
-            $this->Cache_Set($data, "image_count_{$s}", array('image_update', 'image_new'), 60 * 60 * 24 * 1);
+            $this->Cache_Set($data,
+                "image_count_{$s}",
+                array('image_update', 'image_new'),
+                60 * 60 * 24 * 1
+            );
         }
+
         return $data;
     }
 
     /**
      * Get image by Id
      *
-     * @param string $sImageId
-     * @return PluginLsgallery_ModuleImage_EntityImage|null
+     * @param string $sImageId Image id
+     *
+     * @return \PluginLsgallery_ModuleImage_EntityImage|null
      */
     public function GetImageById($sImageId)
     {
@@ -340,19 +389,25 @@ class PluginLsgallery_ModuleImage extends Module
         if (isset($aImages[$sImageId])) {
             return $aImages[$sImageId];
         }
+
         return null;
     }
 
     /**
      * Get images additional data
      *
-     * @param array $aImagesId
-     * @param array $aAllowData
+     * @param array $aImagesId  Images id
+     * @param array $aAllowData Allow data
+     *
      * @return array
      */
-    public function GetImagesAdditionalData($aImagesId, $aAllowData = array('user' => array(), 'vote', 'favourite', 'comment_new'))
+    public function GetImagesAdditionalData(
+        $aImagesId,
+        $aAllowData = array('user' => array(), 'vote', 'favourite', 'comment_new')
+    )
     {
         func_array_simpleflip($aAllowData);
+
         if (!is_array($aImagesId)) {
             $aImagesId = array($aImagesId);
         }
@@ -362,12 +417,14 @@ class PluginLsgallery_ModuleImage extends Module
         $aUserId = array();
 
         foreach ($aImages as $oImage) {
-            /* @var $oImage PluginLsgallery_ModuleImage_EntityImage */
+            /* @var $oImage \PluginLsgallery_ModuleImage_EntityImage */
             if (isset($aAllowData['user'])) {
                 $aUserId[] = $oImage->getUserId();
             }
         }
-        $aUsers = isset($aAllowData['user']) && is_array($aAllowData['user']) ? $this->User_GetUsersAdditionalData($aUserId, $aAllowData['user']) : $this->User_GetUsersAdditionalData($aUserId);
+        $aUsers = isset($aAllowData['user']) && is_array($aAllowData['user'])
+            ? $this->User_GetUsersAdditionalData($aUserId, $aAllowData['user'])
+            : $this->User_GetUsersAdditionalData($aUserId);
 
         if (isset($aAllowData['favourite']) && $this->oUserCurrent) {
             $aFavouriteImages = $this->GetFavouriteImagesByArray($aImagesId, $this->oUserCurrent->getId());
@@ -415,9 +472,10 @@ class PluginLsgallery_ModuleImage extends Module
     /**
      * Get favourite image
      *
-     * @param string $sImageId
-     * @param type $sUserId
-     * @return ModuleFavourite_EntityFavourite|null
+     * @param string $sImageId Image id
+     * @param type   $sUserId  User id
+     *
+     * @return \ModuleFavourite_EntityFavourite|null
      */
     public function GetFavouriteImage($sImageId, $sUserId)
     {
@@ -427,8 +485,9 @@ class PluginLsgallery_ModuleImage extends Module
     /**
      * Get favourite images
      *
-     * @param array $aImages
-     * @param string $sUserId
+     * @param array  $aImages Images
+     * @param string $sUserId User id
+     *
      * @return \ModuleFavourite_EntityFavourite
      */
     public function GetFavouriteImagesByArray($aImages, $sUserId)
@@ -439,7 +498,8 @@ class PluginLsgallery_ModuleImage extends Module
     /**
      * Get images by array Id
      *
-     * @param array $aImageId
+     * @param array $aImageId Image id
+     *
      * @return array
      */
     public function GetImagesByArrayId($aImageId)
@@ -456,17 +516,14 @@ class PluginLsgallery_ModuleImage extends Module
             $aImageId = array($aImageId);
         }
 
-        $aImageId = array_unique($aImageId);
-        $aImages = array();
+        $aImageId              = array_unique($aImageId);
+        $aImages               = array();
         $aImagesIdNotNeedQuery = array();
-        /**
-         * Делаем мульти-запрос к кешу
-         */
+
+        // Делаем мульти-запрос к кешу
         $aCacheKeys = func_build_cache_keys($aImageId, 'image_');
         if (false !== ($data = $this->Cache_Get($aCacheKeys))) {
-            /**
-             * проверяем что досталось из кеша
-             */
+            // проверяем что досталось из кеша
             foreach ($aCacheKeys as $sValue => $sKey) {
                 if (array_key_exists($sKey, $data)) {
                     if ($data[$sKey]) {
@@ -483,31 +540,29 @@ class PluginLsgallery_ModuleImage extends Module
         $aImageIdNeedStore = $aImageIdNeedQuery;
         if ($data = $this->oMapper->GetImagesByArrayId($aImageIdNeedQuery)) {
             foreach ($data as $oImage) {
-                /**
-                 * Добавляем к результату и сохраняем в кеш
-                 */
+                // Добавляем к результату и сохраняем в кеш
                 $aImages[$oImage->getId()] = $oImage;
                 $this->Cache_Set($oImage, "image_{$oImage->getId()}", array(), 60 * 60 * 24 * 4);
                 $aImageIdNeedStore = array_diff($aImageIdNeedStore, array($oImage->getId()));
             }
         }
-        /**
-         * Сохраняем в кеш запросы не вернувшие результата
-         */
+
+        // Сохраняем в кеш запросы не вернувшие результата
         foreach ($aImageIdNeedStore as $sId) {
             $this->Cache_Set(null, "image_{$sId}", array(), 60 * 60 * 24 * 4);
         }
-        /**
-         * Сортируем результат согласно входящему массиву
-         */
+
+        // Сортируем результат согласно входящему массиву
         $aImages = func_array_sort_by_keys($aImages, $aImageId);
+
         return $aImages;
     }
 
     /**
      * Get images by array id from solid cache
      *
-     * @param array $aImagesId
+     * @param array $aImagesId Images id
+     *
      * @return array
      */
     public function GetImagesByArrayIdSolid($aImagesId)
@@ -516,23 +571,26 @@ class PluginLsgallery_ModuleImage extends Module
             $aImagesId = array($aImagesId);
         }
         $aImagesId = array_unique($aImagesId);
-        $aImages = array();
-        $s = join(',', $aImagesId);
+        $aImages   = array();
+        $s         = join(',', $aImagesId);
         if (false === ($data = $this->Cache_Get("image_id_{$s}"))) {
             $data = $this->oMapper->GetImagesByArrayId($aImagesId);
             foreach ($data as $oImage) {
                 $aImages[$oImage->getId()] = $oImage;
             }
             $this->Cache_Set($aImages, "image_id_{$s}", array("image_update"), 60 * 60 * 24 * 1);
+
             return $aImages;
         }
+
         return $data;
     }
 
     /**
      * Set image read
      *
-     * @param PluginLsgallery_ModuleImage_EntityImageRead $oImageRead
+     * @param \PluginLsgallery_ModuleImage_EntityImageRead $oImageRead
+     *
      * @return boolean
      */
     public function SetimageRead($oImageRead)
@@ -546,15 +604,17 @@ class PluginLsgallery_ModuleImage extends Module
             $this->Cache_Clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array("image_read_user_{$oImageRead->getUserId()}"));
             $this->oMapper->AddImageRead($oImageRead);
         }
+
         return true;
     }
 
     /**
      * Get image read
      *
-     * @param string $sImageId
-     * @param string $sUserId
-     * @return PluginLsgallery_ModuleImage_EntityImageRead|null
+     * @param string $sImageId Image id
+     * @param string $sUserId  User id
+     *
+     * @return \PluginLsgallery_ModuleImage_EntityImageRead|null
      */
     public function GetImageRead($sImageId, $sUserId)
     {
@@ -562,27 +622,32 @@ class PluginLsgallery_ModuleImage extends Module
         if (isset($data[$sImageId])) {
             return $data[$sImageId];
         }
+
         return null;
     }
 
     /**
      * Delete image read by array of image id
      *
-     * @param array|int $aImageId
+     * @param array|int $aImageId Image id
+     *
      * @return boolean
      */
     public function DeleteImageReadByArrayId($aImageId)
     {
-        if (!is_array($aImageId))
+        if (!is_array($aImageId)) {
             $aImageId = array($aImageId);
+        }
+
         return $this->oMapper->DeleteImageReadByArrayId($aImageId);
     }
 
     /**
      * Get images read by images and user
      *
-     * @param array $aImageId
-     * @param string $sUserId
+     * @param array  $aImageId Image id
+     * @param string $sUserId  User id
+     *
      * @return \PluginLsgallery_ModuleImage_EntityImageRead
      */
     public function GetImagesReadByArray($aImageId, $sUserId)
@@ -596,17 +661,14 @@ class PluginLsgallery_ModuleImage extends Module
         if (!is_array($aImageId)) {
             $aImageId = array($aImageId);
         }
-        $aImageId = array_unique($aImageId);
-        $aImagesRead = array();
+        $aImageId             = array_unique($aImageId);
+        $aImagesRead          = array();
         $aImageIdNotNeedQuery = array();
-        /**
-         * Делаем мульти-запрос к кешу
-         */
+
+        // Делаем мульти-запрос к кешу
         $aCacheKeys = func_build_cache_keys($aImageId, 'image_read_', '_' . $sUserId);
         if (false !== ($data = $this->Cache_Get($aCacheKeys))) {
-            /**
-             * проверяем что досталось из кеша
-             */
+            // проверяем что досталось из кеша
             foreach ($aCacheKeys as $sValue => $sKey) {
                 if (array_key_exists($sKey, $data)) {
                     if ($data[$sKey]) {
@@ -623,32 +685,34 @@ class PluginLsgallery_ModuleImage extends Module
         $aImageIdNeedStore = $aImageIdNeedQuery;
         if ($data = $this->oMapper->GetImagesReadByArray($aImageIdNeedQuery, $sUserId)) {
             foreach ($data as $oImageRead) {
-                /**
-                 * Добавляем к результату и сохраняем в кеш
-                 */
+                // Добавляем к результату и сохраняем в кеш
                 $aImagesRead[$oImageRead->getImageId()] = $oImageRead;
-                $this->Cache_Set($oImageRead, "image_read_{$oImageRead->getImageId()}_{$oImageRead->getUserId()}", array(), 60 * 60 * 24 * 4);
+                $this->Cache_Set($oImageRead,
+                    "image_read_{$oImageRead->getImageId()}_{$oImageRead->getUserId()}",
+                    array(),
+                    60 * 60 * 24 * 4
+                );
                 $aImageIdNeedStore = array_diff($aImageIdNeedStore, array($oImageRead->getImageId()));
             }
         }
-        /**
-         * Сохраняем в кеш запросы не вернувшие результата
-         */
+
+        // Сохраняем в кеш запросы не вернувшие результата
         foreach ($aImageIdNeedStore as $sId) {
             $this->Cache_Set(null, "image_read_{$sId}_{$sUserId}", array(), 60 * 60 * 24 * 4);
         }
-        /**
-         * Сортируем результат согласно входящему массиву
-         */
+
+        // Сортируем результат согласно входящему массиву
         $aImagesRead = func_array_sort_by_keys($aImagesRead, $aImageId);
+
         return $aImagesRead;
     }
 
     /**
      * Get images read by images and user from solid cache
      *
-     * @param array $aImageId
-     * @param string $sUserId
+     * @param array  $aImageId Image id
+     * @param string $sUserId  User id
+     *
      * @return \PluginLsgallery_ModuleImage_EntityImageRead
      */
     public function GetImagesReadByArraySolid($aImageId, $sUserId)
@@ -656,47 +720,60 @@ class PluginLsgallery_ModuleImage extends Module
         if (!is_array($aImageId)) {
             $aImageId = array($aImageId);
         }
-        $aImageId = array_unique($aImageId);
+        $aImageId    = array_unique($aImageId);
         $aImagesRead = array();
-        $s = join(',', $aImageId);
+        $s           = join(',', $aImageId);
+
         if (false === ($data = $this->Cache_Get("image_read_{$sUserId}_id_{$s}"))) {
             $data = $this->oMapper->GetImagesReadByArray($aImageId, $sUserId);
+
             foreach ($data as $oImageRead) {
                 $aImagesRead[$oImageRead->getImageId()] = $oImageRead;
             }
-            $this->Cache_Set($aImagesRead, "image_read_{$sUserId}_id_{$s}", array("image_read_user_{$sUserId}"), 60 * 60 * 24 * 1);
+            $this->Cache_Set(
+                $aImagesRead,
+                "image_read_{$sUserId}_id_{$s}",
+                array("image_read_user_{$sUserId}"),
+                60 * 60 * 24 * 1
+            );
+
             return $aImagesRead;
         }
+
         return $data;
     }
 
     /**
      * Inreace image comment count
      *
-     * @param string $sImageId
+     * @param string $sImageId Image id
+     *
      * @return boolean
      */
     public function IncreaseImageCountComment($sImageId)
     {
         $this->Cache_Delete("image_{$sImageId}");
         $this->Cache_Clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array("image_update"));
+
         return $this->oMapper->IncreaseImageCountComment($sImageId);
     }
 
     /**
      * Get image of day
      *
-     * @return PluginLsgallery_ModuleImage_EntityImage|null
+     * @return \PluginLsgallery_ModuleImage_EntityImage|null
      */
     public function GetImageOfDay()
     {
-        $sDate = date("Y-m-d 00:00:00");
+        $sDate   = date("Y-m-d 00:00:00");
         $aFilter = array(
             'album_type' => array(
                 'open', 'shared'
             ),
-            'image_new' => $sDate,
-            'order' => array('image_rating' => 'desc')
+            'image_new'  => $sDate,
+            'order'      => array(
+                'image_rating' => 'desc'
+            )
         );
 
         $aResult = $this->GetImagesByFilter($aFilter, 1, 1);
@@ -710,47 +787,53 @@ class PluginLsgallery_ModuleImage extends Module
     /**
      * Get new images
      *
-     * @param int $iPage
-     * @param int $iPerPage
+     * @param int $iPage    Page
+     * @param int $iPerPage Per page
+     *
      * @return \PluginLsgallery_ModuleImage_EntityImage
      */
     public function GetImagesNew($iPage, $iPerPage)
     {
-        $sDate = date("Y-m-d H:00:00", time() - Config::Get('plugin.lsgallery.images_new_time'));
+        $sDate   = date("Y-m-d H:00:00", time() - Config::Get('plugin.lsgallery.images_new_time'));
         $aFilter = array(
             'album_type' => array(
                 'open', 'shared'
             ),
-            'image_new' => $sDate,
+            'image_new'  => $sDate,
         );
 
         if ($this->oUserCurrent) {
             $aFriends = $this->User_GetUsersFriend($this->oUserCurrent->getId());
+
             if ($aFriends['count']) {
                 $aFilter['album_type']['friend'] = array_keys($aFriends['collection']);
             }
         }
+
         return $this->GetImagesByFilter($aFilter, $iPage, $iPerPage);
     }
 
     /**
      * Get best images
      *
-     * @param int $iPage
-     * @param int $iPerPage
+     * @param int $iPage    Page
+     * @param int $iPerPage Per page
+     *
      * @return \PluginLsgallery_ModuleImage_EntityImage
      */
     public function GetImagesBest($iPage, $iPerPage)
     {
         $aFilter = array(
-            'album_type' => array(
+            'album_type'   => array(
                 'open', 'shared'
             ),
             'image_rating' => array(
                 'value' => Config::Get('plugin.lsgallery.images_best'),
-                'type' => 'top'
+                'type'  => 'top'
             ),
-            'order' => array('image_rating' => 'desc')
+            'order'        => array(
+                'image_rating' => 'desc'
+            )
         );
 
         if ($this->oUserCurrent) {
@@ -759,12 +842,15 @@ class PluginLsgallery_ModuleImage extends Module
                 $aFilter['album_type']['friend'] = array_keys($aFriends['collection']);
             }
         }
+
         return $this->GetImagesByFilter($aFilter, $iPage, $iPerPage);
     }
 
     /**
      * Get random images
-     * @param int $iLimit
+     *
+     * @param int $iLimit Limit
+     *
      * @return \PluginLsgallery_ModuleImage_EntityImage
      */
     public function GetRandomImages($iLimit = 5)
@@ -777,7 +863,8 @@ class PluginLsgallery_ModuleImage extends Module
     /**
      * Get tags for open images
      *
-     * @param int $iLimit
+     * @param int $iLimit Limit
+     *
      * @return \PluginLsgallery_ModuleImage_EntityImageTag
      */
     public function GetOpenImageTags($iLimit)
@@ -786,14 +873,17 @@ class PluginLsgallery_ModuleImage extends Module
             $data = $this->oMapper->GetOpenImageTags($iLimit);
             $this->Cache_Set($data, "image_tag_{$iLimit}_open", array('image_update'), 60 * 60 * 24 * 3);
         }
+
         return $data;
     }
 
     /**
      * Get images by tag
-     * @param string $sTag
-     * @param int $iPage
-     * @param int $iPerPage
+     *
+     * @param string $sTag     Tag
+     * @param int    $iPage    Page
+     * @param int    $iPerPage Per Page
+     *
      * @return \PluginLsgallery_ModuleImage_EntityImage
      */
     public function GetImagesByTag($sTag, $iPage, $iPerPage)
@@ -801,37 +891,47 @@ class PluginLsgallery_ModuleImage extends Module
         if (false === ($data = $this->Cache_Get("image_tag_{$sTag}_{$iPage}_{$iPerPage}"))) {
             $data = array(
                 'collection' => $this->oMapper->GetImagesByTag($sTag, $iCount, $iPage, $iPerPage),
-                'count' => $iCount)
-            ;
-            $this->Cache_Set($data, "image_tag_{$sTag}_{$iPage}_{$iPerPage}", array('image_update'), 60 * 60 * 24 * 2);
+                'count'      => $iCount
+            );
+
+            $this->Cache_Set($data,
+                "image_tag_{$sTag}_{$iPage}_{$iPerPage}",
+                array('image_update'),
+                60 * 60 * 24 * 2
+            );
         }
         $data['collection'] = $this->GetImagesAdditionalData($data['collection']);
+
         return $data;
     }
 
     /**
      * Get favourite images by user
-     * @param string $sUserId
-     * @param int $iCurrPage
-     * @param int $iPerPage
+     *
+     * @param string $sUserId   User id
+     * @param int    $iCurrPage Current page
+     * @param int    $iPerPage  Per page
+     *
      * @return \PluginLsgallery_ModuleImage_EntityImage
      */
     public function GetImagesFavouriteByUserId($sUserId, $iCurrPage, $iPerPage)
     {
+        $data = ($this->oUserCurrent && $sUserId == $this->oUserCurrent->getId())
+            ? $this->Favourite_GetFavouritesByUserId($sUserId, 'image', $iCurrPage, $iPerPage)
+            : $this->GetFavouriteOpenImagesByUserId($sUserId, $iCurrPage, $iPerPage);
 
-        $data = ($this->oUserCurrent && $sUserId == $this->oUserCurrent->getId()) ?
-                $this->Favourite_GetFavouritesByUserId($sUserId, 'image', $iCurrPage, $iPerPage) :
-                $this->GetFavouriteOpenImagesByUserId($sUserId, $iCurrPage, $iPerPage);
         $data['collection'] = $this->GetImagesAdditionalData($data['collection']);
+
         return $data;
     }
 
     /**
      * Get favourite open images by user
      *
-     * @param string $sUserId
-     * @param int $iCurrPage
-     * @param int $iPerPage
+     * @param string $sUserId   User id
+     * @param int    $iCurrPage Current page
+     * @param int    $iPerPage  Per page
+     *
      * @return \PluginLsgallery_ModuleImage_EntityImage
      */
     public function GetFavouriteOpenImagesByUserId($sUserId, $iCurrPage, $iPerPage)
@@ -839,93 +939,114 @@ class PluginLsgallery_ModuleImage extends Module
         if (false === ($data = $this->Cache_Get("image_favourite_user_{$sUserId}_{$iCurrPage}_{$iPerPage}_open"))) {
             $data = array(
                 'collection' => $this->oMapper->GetFavouriteOpenImagesByUserId($sUserId, $iCount, $iCurrPage, $iPerPage),
-                'count' => $iCount
+                'count'      => $iCount
             );
+
             $this->Cache_Set(
-                    $data, "images_favourite_user_{$sUserId}_{$iCurrPage}_{$iPerPage}_open", array(
-                "favourite_image_change",
-                "favourite_image_change_user_{$sUserId}"
-                    ), 60 * 60 * 24 * 1
+                $data,
+                "images_favourite_user_{$sUserId}_{$iCurrPage}_{$iPerPage}_open",
+                array("favourite_image_change", "favourite_image_change_user_{$sUserId}"),
+                60 * 60 * 24 * 1
             );
         }
+
         return $data;
     }
 
     /**
      * Get count fav images by user
      *
-     * @param string $sUserId
+     * @param string $sUserId User id
+     *
      * @return int
      */
     public function GetCountImagesFavouriteByUserId($sUserId)
     {
-        return ($this->oUserCurrent && $sUserId == $this->oUserCurrent->getId()) ? $this->Favourite_GetCountFavouritesByUserId($sUserId, 'image') : $this->GetCountFavouriteOpenImagesByUserId($sUserId);
+        return ($this->oUserCurrent && $sUserId == $this->oUserCurrent->getId())
+            ? $this->Favourite_GetCountFavouritesByUserId($sUserId, 'image')
+            : $this->GetCountFavouriteOpenImagesByUserId($sUserId);
     }
 
     /**
      * Get count open fav images by user
      *
-     * @param string $sUserId
+     * @param string $sUserId User id
+     *
      * @return int
      */
     public function GetCountFavouriteOpenImagesByUserId($sUserId)
     {
         if (false === ($data = $this->Cache_Get("image_count_favourite_user_{$sUserId}_open"))) {
             $data = $this->oMapper->GetCountFavouriteOpenImagesByUserId($sUserId);
+
             $this->Cache_Set(
-                    $data, "image_count_favourite_user_{$sUserId}_open", array(
-                "favourite_image_change",
-                "favourite_image_change_user_{$sUserId}"
-                    ), 60 * 60 * 24 * 1
+                $data,
+                "image_count_favourite_user_{$sUserId}_open",
+                array( "favourite_image_change", "favourite_image_change_user_{$sUserId}"),
+                60 * 60 * 24 * 1
             );
         }
+
         return $data;
     }
 
     /**
      * Get prev image id
      *
-     * @param PluginLsgallery_ModuleImage_EntityImage$oImage
-     * @param string $sOrder
+     * @param \PluginLsgallery_ModuleImage_EntityImage $oImage Image
+     * @param string                                   $sOrder Order
      *
-     * @return PluginLsgallery_ModuleImage_EntityImage|null
+     * @return \PluginLsgallery_ModuleImage_EntityImage|null
      */
-    public function GetPrevImage($oImage, $sOrder='desc')
+    public function GetPrevImage($oImage, $sOrder = 'desc')
     {
         if (false === ($sId = $this->Cache_Get("image_prev_{$oImage->getId()}_{$sOrder}"))) {
             $sId = $this->oMapper->GetPrevImageId($oImage, $sOrder);
-            $this->Cache_Set($sId, "image_prev_{$oImage->getId()}_{$sOrder}", array('image_update', 'image_new'), 60 * 60 * 24 * 1);
+
+            $this->Cache_Set(
+                $sId,
+                "image_prev_{$oImage->getId()}_{$sOrder}",
+                array('image_update', 'image_new'),
+                60 * 60 * 24 * 1
+            );
         }
+
         return $this->GetImageById($sId);
     }
 
     /**
      * Get next image id
      *
-     * @param PluginLsgallery_ModuleImage_EntityImage $oImage
-     * @param string $sOrder
+     * @param \PluginLsgallery_ModuleImage_EntityImage $oImage Image
+     * @param string                                   $sOrder Order
      *
-     * @return PluginLsgallery_ModuleImage_EntityImage|null
+     * @return \PluginLsgallery_ModuleImage_EntityImage|null
      */
-    public function GetNextImage($oImage, $sOrder='desc')
+    public function GetNextImage($oImage, $sOrder = 'desc')
     {
         if (false === ($sId = $this->Cache_Get("image_next_{$oImage->getId()}_{$sOrder}"))) {
             $sId = $this->oMapper->GetNextImageId($oImage, $sOrder);
-            $this->Cache_Set($sId, "image_next_{$oImage->getId()}_{$sOrder}", array('image_update', 'image_new'), 60 * 60 * 24 * 1);
+
+            $this->Cache_Set(
+                $sId,
+                "image_next_{$oImage->getId()}_{$sOrder}",
+                array('image_update', 'image_new'),
+                60 * 60 * 24 * 1
+            );
         }
+
         return $this->GetImageById($sId);
     }
 
     /**
      * Move image from one album to other
      *
-     * @param PluginLsgallery_ModuleImage_EntityImage $oImage
-     * @param PluginLsgallery_ModuleAlbum_EntityAlbum $oAlbumFrom
-     * @param PluginLsgallery_ModuleAlbum_EntityAlbum $oAlbumTo
+     * @param PluginLsgallery_ModuleImage_EntityImage $oImage     Image
+     * @param PluginLsgallery_ModuleAlbum_EntityAlbum $oAlbumFrom Album from
+     * @param PluginLsgallery_ModuleAlbum_EntityAlbum $oAlbumTo   Album to
      *
      * @return boolean
      */
-
     public function MoveImage($oImage, $oAlbumFrom, $oAlbumTo)
     {
         $oImage->setAlbumId($oAlbumTo->getId());
@@ -967,8 +1088,8 @@ class PluginLsgallery_ModuleImage extends Module
     /**
      * Check if resize exist
      *
-     * @param $sOriginalPath
-     * @param $sWidth
+     * @param string $sOriginalPath Original path
+     * @param string $sWidth        Width
      *
      * @return void
      */
@@ -976,15 +1097,16 @@ class PluginLsgallery_ModuleImage extends Module
     {
         $aPathInfo = pathinfo($sOriginalPath);
         $sFilePath = $aPathInfo['dirname'] . '/' . $aPathInfo['filename'] . '_' . $sWidth . '.' . $aPathInfo['extension'];
+
         if (file_exists(Config::Get('path.root.server') . $sFilePath)) {
             return;
         }
 
-        $sPath = $aPathInfo['dirname'] . '/';
+        $sPath     = $aPathInfo['dirname'] . '/';
         $sFileName = $aPathInfo['filename'];
-        $sFile = Config::Get('path.root.server') . $sOriginalPath;
-        $aSizes = Config::Get('plugin.lsgallery.size');
-        $aParams = $this->Image_BuildParams('lsgallery');
+        $sFile     = Config::Get('path.root.server') . $sOriginalPath;
+        $aSizes    = Config::Get('plugin.lsgallery.size');
+        $aParams   = $this->Image_BuildParams('lsgallery');
 
         preg_match('/([0-9]+)(crop)?/', $sWidth, $aCurSize);
 
@@ -992,12 +1114,25 @@ class PluginLsgallery_ModuleImage extends Module
             if ($aSize['w'] == $aCurSize[1] && $aSize['crop'] == isset($aCurSize[2])) {
                 // Для каждого указанного в конфиге размера генерируем картинку
                 $sNewFileName = $sFileName . '_' . $aSize['w'];
-                $oImage = new LiveImage($sFile);
+                $oImage       = new LiveImage($sFile);
+
                 if ($aSize['crop']) {
                     $this->Image_CropProportion($oImage, $aSize['w'], $aSize['h'], true);
                     $sNewFileName .= 'crop';
                 }
-                $this->Image_Resize($sFile, $sPath, $sNewFileName, Config::Get('view.img_max_width'), Config::Get('view.img_max_height'), $aSize['w'], $aSize['h'], true, $aParams, $oImage);
+
+                $this->Image_Resize(
+                    $sFile,
+                    $sPath,
+                    $sNewFileName,
+                    Config::Get('view.img_max_width'),
+                    Config::Get('view.img_max_height'),
+                    $aSize['w'],
+                    $aSize['h'],
+                    true,
+                    $aParams,
+                    $oImage
+                );
             }
         }
 

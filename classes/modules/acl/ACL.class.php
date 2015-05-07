@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class PluginLsgallery_ModuleACL
+ */
 class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
 {
 
@@ -7,6 +10,7 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
      * Is allow to create album
      *
      * @param ModuleUser_EntityUser $oUser
+     *
      * @return boolean
      */
     public function AllowCreateAlbum($oUser)
@@ -17,11 +21,13 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
 
         return true;
     }
+
     /**
      *
      * Can  create album
      *
      * @param ModuleUser_EntityUser $oUser
+     *
      * @return boolean
      */
     public function CanCreateAlbum($oUser)
@@ -30,8 +36,8 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
             return true;
         }
         if ($oUser->getRating() < Config::Get('plugin.lsgallery.aldbum_create_rating') && !$oUser->isAdministrator()) {
-			return false;
-		}
+            return false;
+        }
 
         return true;
     }
@@ -39,8 +45,9 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
     /**
      * Is allow to update album
      *
-     * @param ModuleUser_EntityUser $oUser
+     * @param ModuleUser_EntityUser                   $oUser
      * @param PluginLsgallery_ModuleAlbum_EntityAlbum $oAlbum
+     *
      * @return boolean
      */
     public function AllowUpdateAlbum($oUser, $oAlbum)
@@ -48,7 +55,6 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
         if (!$oUser) {
             return false;
         }
-
 
         if ($oUser->isAdministrator()) {
             return true;
@@ -64,8 +70,9 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
     /**
      * Is allow delete album
      *
-     * @param ModuleUser_EntityUser $oUser
+     * @param ModuleUser_EntityUser                   $oUser
      * @param PluginLsgallery_ModuleAlbum_EntityAlbum $oAlbum
+     *
      * @return boolean
      */
     public function AllowDeleteAlbum($oUser, $oAlbum)
@@ -73,7 +80,6 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
         if (!$oUser) {
             return false;
         }
-
 
         if ($oUser->isAdministrator()) {
             return true;
@@ -89,8 +95,9 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
     /**
      * Is allow admin album images
      *
-     * @param ModuleUser_EntityUser $oUser
+     * @param ModuleUser_EntityUser                   $oUser
      * @param PluginLsgallery_ModuleAlbum_EntityAlbum $oAlbum
+     *
      * @return boolean
      */
     public function AllowAdminAlbumImages($oUser, $oAlbum)
@@ -98,7 +105,6 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
         if (!$oUser) {
             return false;
         }
-
 
         if ($oUser->isAdministrator()) {
             return true;
@@ -118,10 +124,10 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
     /**
      * Is allow view images from album
      *
-     * @param ModuleUser_EntityUser $oUser
+     * @param ModuleUser_EntityUser                   $oUser
      * @param PluginLsgallery_ModuleAlbum_EntityAlbum $oAlbum
      *
-     * @return bool
+     * @return boolean
      */
     public function AllowViewAlbumImages($oUser, $oAlbum)
     {
@@ -148,7 +154,8 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
         if ($oAlbum->getType() == PluginLsgallery_ModuleAlbum_EntityAlbum::TYPE_FRIEND) {
             if ($oFriend = $this->User_GetFriend($oUser->getId(), $oAlbum->getUserId())) {
                 if ($oFriend->getFriendStatus() == (ModuleUser::USER_FRIEND_ACCEPT + ModuleUser::USER_FRIEND_ACCEPT)
-                        || $oFriend->getFriendStatus() == (ModuleUser::USER_FRIEND_ACCEPT + ModuleUser::USER_FRIEND_OFFER)) {
+                    || $oFriend->getFriendStatus() == (ModuleUser::USER_FRIEND_ACCEPT + ModuleUser::USER_FRIEND_OFFER)
+                ) {
                     return true;
                 }
             }
@@ -163,7 +170,7 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
      * @param ModuleUser_EntityUser $oUserCurrent
      * @param ModuleUser_EntityUser $oUserMarked
      *
-     * @return bool
+     * @return boolean
      */
     public function AllowAddUserToImage($oUserCurrent, $oUserMarked)
     {
@@ -172,10 +179,12 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
         }
         if ($oFriend = $this->User_GetFriend($oUserCurrent->getId(), $oUserMarked->getUserId())) {
             if ($oFriend->getFriendStatus() == (ModuleUser::USER_FRIEND_ACCEPT + ModuleUser::USER_FRIEND_ACCEPT)
-                        || $oFriend->getFriendStatus() == (ModuleUser::USER_FRIEND_ACCEPT + ModuleUser::USER_FRIEND_OFFER)) {
-                    return true;
-                }
+                || $oFriend->getFriendStatus() == (ModuleUser::USER_FRIEND_ACCEPT + ModuleUser::USER_FRIEND_OFFER)
+            ) {
+                return true;
+            }
         }
+
         return false;
     }
 
@@ -185,7 +194,7 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
      * @param ModuleUser_EntityUser                   $oUser
      * @param PluginLsgallery_ModuleImage_EntityImage $oImage
      *
-     * @return bool
+     * @return boolean
      */
     public function AllowUpdateImage($oUser, $oImage)
     {
@@ -206,7 +215,5 @@ class PluginLsgallery_ModuleACL extends PluginCatalog_Inherit_ModuleACL
         }
 
         return false;
-
     }
-
 }

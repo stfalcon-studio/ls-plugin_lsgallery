@@ -1,20 +1,36 @@
 <?php
 
 $sDirRoot = dirname(realpath((dirname(__DIR__)) . "/../../"));
-set_include_path(get_include_path().PATH_SEPARATOR.$sDirRoot);
+set_include_path(get_include_path() . PATH_SEPARATOR . $sDirRoot);
 
 require_once($sDirRoot . "/tests/AbstractFixtures.php");
 
-
+/**
+ * Class LsgalleryFixtures
+ */
 class LsgalleryFixtures extends AbstractFixtures
 {
+
+    /**
+     * @var int $userId
+     */
     protected $userId = 1;
 
+    /**
+     * GetOrder
+     *
+     * @return int
+     */
     public static function getOrder()
     {
         return 0;
     }
 
+    /**
+     * Load
+     *
+     * @throws Exception
+     */
     public function load()
     {
         $this->createAlbum('album opened', 'test album opened description text', 'open');
@@ -30,15 +46,20 @@ class LsgalleryFixtures extends AbstractFixtures
         $this->createImagetoGalery('3', 'test6.jpg');
         $this->createImagetoGalery('3', 'test8.jpg');
         $this->createImagetoGalery('3', 'test9.jpg');
-
     }
 
+    /**
+     * @param $albumId
+     * @param $imageName
+     *
+     * @return bool
+     * @throws Exception
+     */
     private function createImagetoGalery($albumId, $imageName)
     {
-
         $oUserFirst = $this->getReference('user-golfer');
 
-        $sDirImg = dirname(realpath((dirname(__DIR__)) . "/../../"));
+        $sDirImg              = dirname(realpath((dirname(__DIR__)) . "/../../"));
         $sFileUploadLsgallery = Config::Get('path.uploads.lsgallery_images') . '/';
 
         $sFile = $sDirImg . "/plugins/lsgallery/tests/fixtures/image/";
@@ -70,13 +91,14 @@ class LsgalleryFixtures extends AbstractFixtures
     /**
      * Create album
      *
-     * @param $title string
+     * @param $title       string
      * @param $description string
-     * @param $type String (personal | open | friend)
+     * @param $type        String (personal | open | friend)
      *
      * @return bool Success
+     * @throws Exception
      */
-    private function createAlbum($title, $description, $type )
+    private function createAlbum($title, $description, $type)
     {
         $oUserFirst = $this->getReference('user-golfer');
 

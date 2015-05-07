@@ -1,8 +1,14 @@
 <?php
 
+/**
+ * Class PluginLsgallery_BlockStreamGallery
+ */
 class PluginLsgallery_BlockStreamGallery extends Block
 {
 
+    /**
+     * Execute
+     */
     public function Exec()
     {
         $aResult = $this->PluginLsgallery_Image_GetImagesBest(1, Config::Get('plugin.lsgallery.image_row'));
@@ -15,7 +21,5 @@ class PluginLsgallery_BlockStreamGallery extends Block
             $sTextResult = $oViewer->Fetch(Plugin::GetTemplatePath('lsgallery') . "block.stream_photo.tpl");
             $this->Viewer_Assign('sBestImages', $sTextResult);
         }
-
     }
-
 }

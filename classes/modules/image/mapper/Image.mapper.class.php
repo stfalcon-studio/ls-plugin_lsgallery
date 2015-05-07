@@ -1,30 +1,36 @@
 <?php
 
 /**
- * @property DbSimple_Generic_Database $oDb
+ * Class PluginLsgallery_ModuleImage_MapperImage
+ *
+ * @property \DbSimple_Generic_Database $oDb
  */
 class PluginLsgallery_ModuleImage_MapperImage extends Mapper
 {
+
     /**
      * Объект подключения к базе данных
      *
-     * @var DbSimple_Generic_Database
+     * @var \DbSimple_Generic_Database $oDb
      */
     protected $oDb;
 
-    protected $aAllowedOrder = array(
-        'image_id', 'image_date_add', 'image_rating'
-    );
+    /**
+     * @var array $aAllowedOrder
+     */
+    protected $aAllowedOrder = array('image_id', 'image_date_add', 'image_rating');
 
     /**
      * Add image
      *
-     * @param PluginLsgallery_ModuleImage_EntityImage $oImage
+     * @param \PluginLsgallery_ModuleImage_EntityImage $oImage Image
+     *
      * @return boolean|int
      */
     public function AddImage($oImage)
     {
-        $sql = "INSERT INTO
+        $sql
+            = "INSERT INTO
                     " . Config::Get('db.table.lsgallery.image') . "
                 (
                  user_id,
@@ -38,18 +44,21 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
         if ($iId = $this->oDb->query($sql, $oImage->getUserId(), $oImage->getAlbumId(), $oImage->getFilename(), $oImage->getDateAdd())) {
             return $iId;
         }
+
         return false;
     }
 
     /**
      * Update image
      *
-     * @param PluginLsgallery_ModuleImage_EntityImage $oImage
+     * @param PluginLsgallery_ModuleImage_EntityImage $oImage Image
+     *
      * @return boolean
      */
     public function UpdateImage($oImage)
     {
-        $sql = "UPDATE
+        $sql
+            = "UPDATE
                     " . Config::Get('db.table.lsgallery.image') . "
                 SET
                     album_id = ?d,
@@ -65,68 +74,95 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
                     image_count_favourite =?d
                 WHERE
                     image_id = ?d
-                ";
-        if ($this->oDb->query($sql, $oImage->getAlbumId(), $oImage->getDescription(), $oImage->getImageTags(), $oImage->getDateEdit(),
-                $oImage->getCountComment(), $oImage->getRating(), $oImage->getCountVote(),  $oImage->getCountVoteUp(), $oImage->getCountVoteDown(),
-                $oImage->getCountVoteAbstain(), $oImage->getCountFavourite(), $oImage->getId())) {
+            ";
+
+        $queryResult = $this->oDb->query(
+            $sql,
+            $oImage->getAlbumId(),
+            $oImage->getDescription(),
+            $oImage->getImageTags(),
+            $oImage->getDateEdit(),
+            $oImage->getCountComment(),
+            $oImage->getRating(),
+            $oImage->getCountVote(),
+            $oImage->getCountVoteUp(),
+            $oImage->getCountVoteDown(),
+            $oImage->getCountVoteAbstain(),
+            $oImage->getCountFavourite(),
+            $oImage->getId()
+        );
+
+        if ($queryResult) {
             return true;
         }
+
         return false;
     }
 
     /**
      * Add image tag
      *
-     * @param PluginLsgallery_ModuleImage_EntityImageTag $oImageTag
+     * @param \PluginLsgallery_ModuleImage_EntityImageTag $oImageTag Image tag
+     *
      * @return boolean
      */
     public function AddImageTag($oImageTag)
     {
-        $sql = "INSERT INTO
+        $sql
+            = "INSERT INTO
                     " . Config::Get('db.table.lsgallery.image_tag') . "
                 (
-                image_id,
-                album_id,
-                image_tag_text
+                    image_id,
+                    album_id,
+                    image_tag_text
                 )
                 VALUES
                     (?d, ?d, ?)
-                ";
+            ";
+
         if ($iId = $this->oDb->query($sql, $oImageTag->getImageId(), $oImageTag->getAlbumId(), $oImageTag->getText())) {
             return $iId;
         }
+
         return false;
     }
 
     /**
      * Delete tags by image id
-     * @param int $sImageId
+     *
+     * @param string $sImageId Image id
+     *
      * @return boolean
      */
     public function DeleteImageTagsByImageId($sImageId)
     {
-        $sql = "DELETE FROM
+        $sql
+            = "DELETE FROM
                     " . Config::Get('db.table.lsgallery.image_tag') . "
                 WHERE
                     image_id = ?d
-                ";
+            ";
+
         if ($this->oDb->query($sql, $sImageId)) {
             return true;
         }
+
         return false;
     }
 
     /**
      * Get image tags by text like with limit
      *
-     * @param string $sTag
-     * @param int $iLimit
+     * @param string $sTag   Tag
+     * @param int    $iLimit Limit
+     *
      * @return \PluginLsgallery_ModuleImage_EntityImageTag
      */
     public function GetImageTagsByLike($sTag, $iLimit)
     {
         $sTag = mb_strtolower($sTag, "UTF-8");
-        $sql = "SELECT
+        $sql
+            = "SELECT
                     *
                 FROM
                     " . Config::Get('db.table.lsgallery.image_tag') . "
@@ -135,35 +171,42 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
                 GROUP BY
                     image_tag_text
                 LIMIT 0, ?d
-				";
+            ";
+
         $aReturn = array();
         if ($aRows = $this->oDb->select($sql, $sTag . '%', $iLimit)) {
             foreach ($aRows as $aRow) {
                 $aReturn[] = Engine::GetEntity('PluginLsgallery_ModuleImage_EntityImageTag', $aRow);
             }
         }
+
         return $aReturn;
     }
 
     /**
      * Delete
      *
-     * @param int $iImageId
+     * @param int $iImageId Image id
+     *
      * @return boolean|int
      */
     public function DeleteImage($iImageId)
     {
-        $sql = "DELETE FROM
+        $sql
+            = "DELETE FROM
                     " . Config::Get('db.table.lsgallery.image') . "
                 WHERE
                     image_id = ?d
-                ";
+            ";
+
         return $this->oDb->query($sql, $iImageId);
     }
 
     /**
      * Get images by array id
-     * @param array $aArrayId
+     *
+     * @param array $aArrayId Array id
+     *
      * @return \PluginLsgallery_ModuleImage_EntityImage
      */
     public function GetImagesByArrayId($aArrayId)
@@ -172,14 +215,16 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
             return array();
         }
 
-        $sql = "SELECT
-                        *
+        $sql
+            = "SELECT
+                    *
                 FROM
-                        " . Config::Get('db.table.lsgallery.image') . "
+                    " . Config::Get('db.table.lsgallery.image') . "
                 WHERE
-                        image_id IN(?a)
+                    image_id IN(?a)
                 ORDER BY
-                        FIELD(image_id,?a)";
+                    FIELD(image_id,?a)
+            ";
 
         $aImages = array();
         if ($aRows = $this->oDb->select($sql, $aArrayId, $aArrayId)) {
@@ -187,16 +232,18 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
                 $aImages[] = Engine::GetEntity('PluginLsgallery_ModuleImage_EntityImage', $aRow);
             }
         }
+
         return $aImages;
     }
 
     /**
      * Get images id by filter with paging
      *
-     * @param array $aFilter
-     * @param int $iCount
-     * @param int $iCurrPage
-     * @param int $iPerPage
+     * @param array $aFilter   Filter
+     * @param int   $iCount    Count
+     * @param int   $iCurrPage Current page
+     * @param int   $iPerPage  Per page
+     *
      * @return array
      */
     public function GetImages($aFilter, &$iCount, $iCurrPage, $iPerPage)
@@ -204,7 +251,8 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
         $sWhere = $this->buildFilter($aFilter);
         $sOrder = $this->buildOrder($aFilter);
 
-        $sql = "SELECT
+        $sql
+            = "SELECT
                     i.image_id
                 FROM
                     " . Config::Get('db.table.lsgallery.image') . " as i
@@ -216,21 +264,26 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
                 GROUP BY
                     i.image_id
                 ORDER BY " .
-                    $sOrder . "
+                   $sOrder . "
                 LIMIT
-                    ?d, ?d";
+                    ?d, ?d
+            ";
+
         $aImages = array();
         if ($aRows = $this->oDb->selectPage($iCount, $sql, ($iCurrPage - 1) * $iPerPage, $iPerPage)) {
             foreach ($aRows as $aRow) {
                 $aImages[] = $aRow['image_id'];
             }
         }
+
         return $aImages;
     }
 
     /**
      * Get count images
-     * @param array $aFilter
+     *
+     * @param array $aFilter Filter
+     *
      * @return int
      */
     public function GetCountImages($aFilter)
@@ -238,7 +291,8 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
         $sWhere = $this->buildFilter($aFilter);
         $sOrder = $this->buildOrder($aFilter);
 
-        $sql = "SELECT
+        $sql
+            = "SELECT
                     count(i.image_id) as count
                 FROM
                     " . Config::Get('db.table.lsgallery.image') . " as i
@@ -247,18 +301,21 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
                 WHERE
                     1=1
                 " . $sWhere . "
-                ORDER BY " .
-                    $sOrder;
+                ORDER BY
+                    " . $sOrder;
+
         if ($aRow = $this->oDb->selectRow($sql)) {
             return $aRow['count'];
         }
+
         return false;
     }
 
     /**
      * Get all images by filter
      *
-     * @param array $aFilter
+     * @param array $aFilter Filter
+     *
      * @return array
      */
     public function GetAllImages($aFilter)
@@ -266,7 +323,8 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
         $sWhere = $this->buildFilter($aFilter);
         $sOrder = $this->buildOrder($aFilter);
 
-        $sql = "SELECT
+        $sql
+            = "SELECT
                     i.image_id
                 FROM
                     " . Config::Get('db.table.lsgallery.image') . " as i
@@ -293,7 +351,8 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
     /**
      * Build filter for sql query
      *
-     * @param array $aFilter
+     * @param array $aFilter Filter
+     *
      * @return string
      */
     protected function buildFilter($aFilter)
@@ -301,56 +360,57 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
         $sWhere = '';
 
         if (isset($aFilter['image_rating']) and is_array($aFilter['image_rating'])) {
-
             if ($aFilter['image_rating']['type'] == 'top') {
-                $sWhere.=" AND ( i.image_rating >= " . (float) $aFilter['image_rating']['value'] . " ) ";
+                $sWhere .= " AND ( i.image_rating >= " . (float) $aFilter['image_rating']['value'] . " ) ";
             } else {
-                $sWhere.=" AND ( i.image_rating < " . (float) $aFilter['image_rating']['value'] . "  ) ";
+                $sWhere .= " AND ( i.image_rating < " . (float) $aFilter['image_rating']['value'] . "  ) ";
             }
         }
 
-
         if (isset($aFilter['image_new'])) {
-            $sWhere.=" AND i.image_date_add >=  '" . $aFilter['image_new'] . "'";
+            $sWhere .= " AND i.image_date_add >=  '" . $aFilter['image_new'] . "'";
         }
 
         if (isset($aFilter['user_id'])) {
-            $sWhere .= is_array($aFilter['user_id']) ? " AND i.user_id IN(" . implode(', ', $aFilter['user_id']) . ")" : " AND i.user_id =  " . (int) $aFilter['user_id'];
+            $sWhere .= is_array($aFilter['user_id']) ? " AND i.user_id IN(" . implode(', ', $aFilter['user_id']) . ")" :
+                " AND i.user_id =  " . (int) $aFilter['user_id'];
         }
 
         if (isset($aFilter['album_id'])) {
             if (!is_array($aFilter['album_id'])) {
                 $aFilter['album_id'] = array($aFilter['album_id']);
             }
-            $sWhere.=" AND i.album_id IN ('" . join("','", $aFilter['album_id']) . "')";
+            $sWhere .= " AND i.album_id IN ('" . join("','", $aFilter['album_id']) . "')";
         }
 
         if (isset($aFilter['album_type']) and is_array($aFilter['album_type'])) {
             $aAlbumTypes = array();
+
             foreach ($aFilter['album_type'] as $sType => $aAlbumId) {
-                /**
-                 * Позиция вида 'type'=>array('id1', 'id2')
-                 */
+                // Позиция вида 'type'=>array('id1', 'id2')
                 if (!is_array($aAlbumId) && is_string($sType)) {
                     $aAlbumId = array($aAlbumId);
                 }
-                /**
-                 * Позиция вида 'type'
-                 */
+
+                // Позиция вида 'type'
                 if (is_string($aAlbumId) && is_int($sType)) {
-                    $sType = $aAlbumId;
+                    $sType    = $aAlbumId;
                     $aAlbumId = array();
                 }
 
-                $aAlbumTypes[] = (count($aAlbumId) == 0) ? "(a.album_type='" . $sType . "')" : "(a.album_type='" . $sType . "' AND a.album_user_id IN ('" . join("','", $aAlbumId) . "'))";
+                $aAlbumTypes[] = (count($aAlbumId) == 0) ? "(a.album_type='" . $sType . "')" :
+                    "(a.album_type='" . $sType . "' AND a.album_user_id IN ('" . join("','", $aAlbumId) . "'))";
             }
-            $sWhere.=" AND (" . join(" OR ", (array) $aAlbumTypes) . ")";
+            $sWhere .= " AND (" . join(" OR ", (array) $aAlbumTypes) . ")";
         }
+
         return $sWhere;
     }
 
     /**
-     * @param array $aFilter
+     * Build order
+     *
+     * @param array $aFilter Filter
      *
      * @return string
      */
@@ -362,31 +422,38 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
             $sOrder = 'i.image_id desc';
         } else {
             $aOrder = $aFilter['order'];
+
             if (!is_array($aOrder)) {
                 $aOrder = array($aOrder);
             }
+
             foreach ($aOrder as $key => $value) {
                 $value = (string) $value;
+
                 if (!in_array($key, $this->aAllowedOrder)) {
                     unset($aOrder[$key]);
                 } elseif (in_array($value, array('asc', 'desc'))) {
                     $sOrder .= " i.{$key} {$value},";
                 }
             }
+
             $sOrder = trim($sOrder, ',');
         }
 
         return $sOrder;
     }
+
     /**
      * Update image read
      *
-     * @param PluginLsgallery_ModuleImage_EntityImageRead $oImageRead
+     * @param \PluginLsgallery_ModuleImage_EntityImageRead $oImageRead Image read
+     *
      * @return boolean
      */
     public function UpdateImageRead($oImageRead)
     {
-        $sql = "UPDATE
+        $sql
+            = "UPDATE
                     " . Config::Get('db.table.lsgallery.image_read') . "
                 SET
                     comment_count_last = ? ,
@@ -396,19 +463,29 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
                     image_id = ?
                     AND
                     user_id = ?
-                ";
-        return $this->oDb->query($sql, $oImageRead->getCommentCountLast(), $oImageRead->getCommentIdLast(), $oImageRead->getDateRead(), $oImageRead->getImageId(), $oImageRead->getUserId());
+            ";
+
+        return $this->oDb->query(
+            $sql,
+            $oImageRead->getCommentCountLast(),
+            $oImageRead->getCommentIdLast(),
+            $oImageRead->getDateRead(),
+            $oImageRead->getImageId(),
+            $oImageRead->getUserId()
+        );
     }
 
     /**
      * Add image read
      *
-     * @param PluginLsgallery_ModuleImage_EntityImageRead $oImageRead
+     * @param \PluginLsgallery_ModuleImage_EntityImageRead $oImageRead Image read
+     *
      * @return boolean
      */
     public function AddImageRead($oImageRead)
     {
-        $sql = "INSERT INTO
+        $sql
+            = "INSERT INTO
                     " . Config::Get('db.table.lsgallery.image_read') . "
                 SET
                     comment_count_last = ? ,
@@ -416,33 +493,46 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
                     date_read = ? ,
                     image_id = ? ,
                     user_id = ?
-                ";
-        return $this->oDb->query($sql, $oImageRead->getCommentCountLast(), $oImageRead->getCommentIdLast(), $oImageRead->getDateRead(), $oImageRead->getImageId(), $oImageRead->getUserId());
+            ";
+
+        return $this->oDb->query($sql,
+            $oImageRead->getCommentCountLast(),
+            $oImageRead->getCommentIdLast(),
+            $oImageRead->getDateRead(),
+            $oImageRead->getImageId(),
+            $oImageRead->getUserId()
+        );
     }
 
     /**
      * Delete image read by array image id
-     * @param array $aImageId
+     *
+     * @param array $aImageId Image id
+     *
      * @return boolean
      */
     public function DeleteImageReadByArrayId($aImageId)
     {
-        $sql = "DELETE FROM
+        $sql
+            = "DELETE FROM
                     " . Config::Get('db.table.lsgallery.image_read') . "
                 WHERE
                     image_id IN(?a)
-                ";
+            ";
+
         if ($this->oDb->query($sql, $aImageId)) {
             return true;
         }
+
         return false;
     }
 
     /**
      * Get images read by array image and user
      *
-     * @param array $aArrayId
-     * @param string $sUserId
+     * @param array  $aArrayId Array id
+     * @param string $sUserId  User id
+     *
      * @return \PluginLsgallery_ModuleImage_EntityImageRead
      */
     public function GetImagesReadByArray($aArrayId, $sUserId)
@@ -451,65 +541,75 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
             return array();
         }
 
-        $sql = "SELECT
-                        ir.*
+        $sql
+            = "SELECT
+                    ir.*
                 FROM
-                        " . Config::Get('db.table.lsgallery.image_read') . " as ir
+                    " . Config::Get('db.table.lsgallery.image_read') . " as ir
                 WHERE
                     ir.image_id IN(?a)
                 AND
                     ir.user_id = ?d
-                ";
+            ";
+
         $aReads = array();
         if ($aRows = $this->oDb->select($sql, $aArrayId, $sUserId)) {
             foreach ($aRows as $aRow) {
-                $aReads[] = Engine::GetEntity('PluginLsgallery_ModuleImage_EntityImageRead',$aRow);
+                $aReads[] = Engine::GetEntity('PluginLsgallery_ModuleImage_EntityImageRead', $aRow);
             }
         }
+
         return $aReads;
     }
 
     /**
      * Increase image count comment
      *
-     * @param string $sImageId
+     * @param string $sImageId Image id
+     *
      * @return boolean
      */
     public function IncreaseImageCountComment($sImageId)
     {
-        $sql = "UPDATE
+        $sql
+            = "UPDATE
                     " . Config::Get('db.table.lsgallery.image') . "
                 SET
                     image_count_comment = image_count_comment + 1
                 WHERE
                     image_id = ?d
-		";
+		    ";
+
         if ($this->oDb->query($sql, $sImageId)) {
             return true;
         }
+
         return false;
     }
 
     /**
      * Get random images id
      *
-     * @param int $limit
+     * @param int $limit Limit
+     *
      * @return array
      */
     public function GetRandomImages($limit)
     {
-        $sql = "SELECT
-                    i.image_id
-                FROM
-                    " . Config::Get('db.table.lsgallery.image') . " as i
-                LEFT JOIN
-                    " . Config::Get('db.table.lsgallery.album') . " as a ON a.album_id = i.album_id
-                WHERE
-                    a.album_type = 'open'
-				ORDER BY
-                    RAND()
-                LIMIT ?d
-                ";
+        $sql
+             = "SELECT
+                     i.image_id
+                 FROM
+                     " . Config::Get('db.table.lsgallery.image') . " as i
+                 LEFT JOIN
+                     " . Config::Get('db.table.lsgallery.album') . " as a ON a.album_id = i.album_id
+                 WHERE
+                     a.album_type = 'open'
+				 ORDER BY
+                     RAND()
+                 LIMIT ?d
+            ";
+
         $aImages = array();
         if ($aRows = $this->oDb->select($sql, $limit)) {
             foreach ($aRows as $aRow) {
@@ -523,13 +623,14 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
     /**
      * Get tags of open image
      *
-     * @param int $iLimit
+     * @param int $iLimit Limit
+     *
      * @return \PluginLsgallery_ModuleImage_EntityImageTag
      */
     public function GetOpenImageTags($iLimit)
     {
-        $sql = "
-                SELECT
+        $sql
+            = "SELECT
                     it.image_tag_text,
                     count(it.image_tag_text)	as count
                 FROM
@@ -543,33 +644,39 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
                 ORDER BY
                     count desc
                 LIMIT 0, ?d
-                ";
-        $aReturn = array();
+            ";
+
+        $aReturn     = array();
         $aReturnSort = array();
         if ($aRows = $this->oDb->select($sql, $iLimit)) {
             foreach ($aRows as $aRow) {
                 $aReturn[mb_strtolower($aRow['image_tag_text'], 'UTF-8')] = $aRow;
             }
+
             ksort($aReturn);
+
             foreach ($aReturn as $aRow) {
-                $aReturnSort[] = Engine::GetEntity('PluginLsgallery_ModuleImage_EntityImageTag',$aRow);
+                $aReturnSort[] = Engine::GetEntity('PluginLsgallery_ModuleImage_EntityImageTag', $aRow);
             }
         }
+
         return $aReturnSort;
     }
 
     /**
      * Get images by tag
      *
-     * @param string $sTag
-     * @param int $iCount
-     * @param int $iCurrPage
-     * @param int $iPerPage
+     * @param string $sTag      Tag
+     * @param int    $iCount    Count
+     * @param int    $iCurrPage Current page
+     * @param int    $iPerPage  Per page
+     *
      * @return array
      */
     public function GetImagesByTag($sTag, &$iCount, $iCurrPage, $iPerPage)
     {
-        $sql = "SELECT
+        $sql
+            = "SELECT
                     image_id
                 FROM
                     " . Config::Get('db.table.lsgallery.image_tag') . "  as it
@@ -579,8 +686,10 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
                     (a.album_type  = 'open' OR a.album_type  = 'shared')
                 AND
                     image_tag_text = ?
-                ORDER BY image_id DESC
-                LIMIT ?d, ?d ";
+                ORDER BY
+                    image_id DESC
+                LIMIT ?d, ?d
+            ";
 
         $aImages = array();
         if ($aRows = $this->oDb->selectPage($iCount, $sql, $sTag, ($iCurrPage - 1) * $iPerPage, $iPerPage)) {
@@ -588,22 +697,24 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
                 $aImages[] = $aRow['image_id'];
             }
         }
+
         return $aImages;
     }
 
     /**
      * Get favourite open images by user
      *
-     * @param string $sUserId
-     * @param int $iCount
-     * @param int $iCurrPage
-     * @param int $iPerPage
+     * @param string $sUserId   User id
+     * @param int    $iCount    Count
+     * @param int    $iCurrPage Current page
+     * @param int    $iPerPage  Per page
+     *
      * @return array
      */
     public function GetFavouriteOpenImagesByUserId($sUserId, &$iCount, $iCurrPage, $iPerPage)
     {
-        $sql = "
-                SELECT
+        $sql
+            = "SELECT
                     f.target_id
                 FROM
                     " . Config::Get('db.table.favourite') . " AS f
@@ -612,38 +723,49 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
                 LEFT JOIN
                         " . Config::Get('db.table.lsgallery.album') . " as a ON a.album_id = i.album_id
                 WHERE
-                                f.user_id = ?d
+                            f.user_id = ?d
                         AND
-                                f.target_publish = 1
+                            f.target_publish = 1
                         AND
-                                f.target_type = 'image'
+                            f.target_type = 'image'
                         AND
-                                a.album_type = 'open'
-                GROUP BY target_id
-                ORDER BY target_id DESC
-                LIMIT ?d, ?d ";
+                            a.album_type = 'open'
+                GROUP BY
+                    target_id
+                ORDER BY
+                    target_id DESC
+                LIMIT ?d, ?d
+            ";
 
         $aFavourites = array();
-        if ($aRows = $this->oDb->selectPage(
-                $iCount, $sql, $sUserId, ($iCurrPage - 1) * $iPerPage, $iPerPage
-        )) {
+        $queryResult = $this->oDb->selectPage(
+            $iCount,
+            $sql,
+            $sUserId,
+            ($iCurrPage - 1) * $iPerPage,
+            $iPerPage
+        );
+
+        if ($aRows = $queryResult) {
             foreach ($aRows as $aFavourite) {
                 $aFavourites[] = $aFavourite['target_id'];
             }
         }
+
         return $aFavourites;
     }
 
     /**
      * Get count open fav images by user
      *
-     * @param type $sUserId
+     * @param string $sUserId User id
+     *
      * @return int
      */
     public function GetCountFavouriteOpenImagesByUserId($sUserId)
     {
-        $sql = "
-                SELECT
+        $sql
+            = "SELECT
                     count(f.target_id) as count
                 FROM
                     " . Config::Get('db.table.favourite') . " AS f
@@ -653,29 +775,32 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
                         " . Config::Get('db.table.lsgallery.album') . " as a ON a.album_id = i.album_id
                 WHERE
                         f.user_id = ?d
-                AND
+                    AND
                         f.target_publish = 1
-                AND
+                    AND
                         f.target_type = 'image'
-                AND
+                    AND
                         a.album_type = 'open'
-                ";
+            ";
 
         if ($aRow = $this->oDb->selectRow($sql, $sUserId)) {
             return $aRow['count'];
         }
+
         return null;
     }
 
     /**
      * Add image user
      *
-     * @param PluginLsgallery_ModuleImage_EntityImageUser $oImageUser
+     * @param \PluginLsgallery_ModuleImage_EntityImageUser $oImageUser Image user
+     *
      * @return boolean|int
      */
     public function AddImageUser($oImageUser)
     {
-        $sql = "INSERT INTO
+        $sql
+            = "INSERT INTO
                     " . Config::Get('db.table.lsgallery.image_user') . "
                 (
                  image_id,
@@ -689,24 +814,36 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
                 )
                 VALUES
                     (?d, ?d, ?d, ?d, ?d, ?d, ?d, ?)
-		";
-        return $this->oDb->query($sql, $oImageUser->getImageId(), $oImageUser->getUserId(), $oImageUser->getTargetUserId(), $oImageUser->getLassoX(), $oImageUser->getLassoY(), $oImageUser->getLassoW(), $oImageUser->getLassoH(), $oImageUser->getStatus());
+		    ";
+
+        return $this->oDb->query(
+            $sql,
+            $oImageUser->getImageId(),
+            $oImageUser->getUserId(),
+            $oImageUser->getTargetUserId(),
+            $oImageUser->getLassoX(),
+            $oImageUser->getLassoY(),
+            $oImageUser->getLassoW(),
+            $oImageUser->getLassoH(),
+            $oImageUser->getStatus()
+        );
     }
 
     /**
      * Get image user
      *
-     * @param string $sUserId
-     * @param string $sImageId
-     * @return PluginLsgallery_ModuleImage_EntityImageUser
+     * @param string $sUserId  User id
+     * @param string $sImageId Image id
+     *
+     * @return \PluginLsgallery_ModuleImage_EntityImageUser
      */
     public function GetImageUser($sUserId, $sImageId)
     {
-        $sql = "
-                SELECT
+        $sql
+            = "SELECT
                     *
                 FROM
-                        " . Config::Get('db.table.lsgallery.image_user') . "
+                    " . Config::Get('db.table.lsgallery.image_user') . "
                 WHERE
                     target_user_id = ?d
                 AND
@@ -714,21 +851,23 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
             ";
 
         if ($aRow = $this->oDb->selectRow($sql, $sUserId, $sImageId)) {
-            return Engine::GetEntity('PluginLsgallery_ModuleImage_EntityImageUser',$aRow);
+            return Engine::GetEntity('PluginLsgallery_ModuleImage_EntityImageUser', $aRow);
         }
+
         return null;
     }
 
     /**
      * Get image users
      *
-     * @param string $sImageId
+     * @param string $sImageId Image id
+     *
      * @return \PluginLsgallery_ModuleImage_EntityImageUser
      */
     public function GetImageUsersByImageId($sImageId)
     {
-        $sql = "
-                SELECT
+        $sql
+            = "SELECT
                     *
                 FROM
                     " . Config::Get('db.table.lsgallery.image_user') . "
@@ -739,21 +878,24 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
         $aResult = array();
         if ($aRows = $this->oDb->select($sql, $sImageId)) {
             foreach ($aRows as $aRow) {
-                $aResult[] = Engine::GetEntity('PluginLsgallery_ModuleImage_EntityImageUser',$aRow);
+                $aResult[] = Engine::GetEntity('PluginLsgallery_ModuleImage_EntityImageUser', $aRow);
             }
         }
+
         return $aResult;
     }
 
     /**
      * Change image user status
      *
-     * @param PluginLsgallery_ModuleImage_EntityImageUser $oImageUser
+     * @param \PluginLsgallery_ModuleImage_EntityImageUser $oImageUser Image user
+     *
      * @return boolean
      */
     public function ChangeStatusImageUser($oImageUser)
     {
-        $sql = "UPDATE
+        $sql
+            = "UPDATE
                     " . Config::Get('db.table.lsgallery.image_user') . "
                 SET
                     status = ?
@@ -761,82 +903,108 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
                     image_id = ?d
                 AND
                     target_user_id = ?d
-		";
-        if ($this->oDb->query($sql, $oImageUser->getStatus(), $oImageUser->getImageId(), $oImageUser->getTargetUserId())) {
+		    ";
+
+        $queryResult = $this->oDb->query(
+            $sql,
+            $oImageUser->getStatus(),
+            $oImageUser->getImageId(),
+            $oImageUser->getTargetUserId()
+        );
+
+        if ($queryResult) {
             return true;
         }
+
         return false;
     }
 
     /**
      * Delete image user status
      *
-     * @param PluginLsgallery_ModuleImage_EntityImageUser $oImageUser
+     * @param \PluginLsgallery_ModuleImage_EntityImageUser $oImageUser Image user
+     *
      * @return boolean
      */
     public function DeleteImageUser($oImageUser)
     {
-        $sql = "DELETE FROM
+        $sql
+            = "DELETE FROM
                     " . Config::Get('db.table.lsgallery.image_user') . "
                 WHERE
                     image_id = ?d
                 AND
                     target_user_id = ?d
-		";
+		    ";
+
         if ($this->oDb->query($sql, $oImageUser->getImageId(), $oImageUser->getTargetUserId())) {
             return true;
         }
+
         return false;
     }
 
+    /**
+     * Get images by user marked
+     *
+     * @param string $sUserId   User id
+     * @param int    $iCount    Count
+     * @param int    $iCurrPage Current page
+     * @param int    $iPerPage  Per page
+     *
+     * @return array
+     */
     public function GetImagesByUserMarked($sUserId, &$iCount, $iCurrPage, $iPerPage)
     {
-        $sql = "
-                SELECT
+        $sql
+            = "SELECT
                     image_id
                 FROM
                     " . Config::Get('db.table.lsgallery.image_user') . "
                 WHERE
                         target_user_id = ?d
-                AND
+                    AND
                         status = 'confirmed'
-                LIMIT ?d, ?d ";
+                LIMIT ?d, ?d
+            ";
 
         $aImages = array();
-        if ($aRows = $this->oDb->selectPage(
-                $iCount, $sql, $sUserId, ($iCurrPage - 1) * $iPerPage, $iPerPage
-        )) {
+        $queryResult = $this->oDb->selectPage($iCount, $sql, $sUserId, ($iCurrPage - 1) * $iPerPage, $iPerPage);
+
+        if ($aRows = $queryResult) {
             foreach ($aRows as $aRow) {
                 $aImages[] = $aRow['image_id'];
             }
         }
+
         return $aImages;
     }
 
     /**
      * Get prev image id
      *
-     * @param PluginLsgallery_ModuleImage_EntityImage $oImage
-     * @param string $sOrder
+     * @param PluginLsgallery_ModuleImage_EntityImage $oImage Image
+     * @param string                                  $sOrder Order
+     *
      * @return int|null
      */
     public function GetPrevImageId($oImage, $sOrder = "DESC")
     {
         if (strtolower($sOrder) == 'desc') {
             $sSqlOrder = 'DESC';
-            $sWhere = 'image_id < ?d';
+            $sWhere    = 'image_id < ?d';
         } else {
             $sSqlOrder = 'ASC';
-            $sWhere = 'image_id > ?d';
+            $sWhere    = 'image_id > ?d';
         }
-        $sql = "
-                SELECT
+        $sql
+            = "SELECT
                     image_id
                 FROM
                     " . Config::Get('db.table.lsgallery.image') . "
                 WHERE
                         {$sWhere}
-                AND
+                    AND
                         album_id = ?d
                 ORDER BY
                     image_id {$sSqlOrder}
@@ -845,27 +1013,29 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
         if ($aRow = $this->oDb->selectRow($sql, $oImage->getId(), $oImage->getAlbumId())) {
             return $aRow['image_id'];
         }
+
         return null;
     }
 
     /**
      * Get next image id
      *
-     * @param PluginLsgallery_ModuleImage_EntityImage $oImage
-     * @param string $sOrder
+     * @param PluginLsgallery_ModuleImage_EntityImage $oImage Image
+     * @param string                                  $sOrder Order
+     *
      * @return int|null
      */
     public function GetNextImageId($oImage, $sOrder = "DESC")
     {
         if (strtolower($sOrder) == 'desc') {
             $sSqlOrder = 'ASC';
-            $sWhere = 'image_id > ?d';
+            $sWhere    = 'image_id > ?d';
         } else {
             $sSqlOrder = 'DESC';
-            $sWhere = 'image_id < ?d';
+            $sWhere    = 'image_id < ?d';
         }
-        $sql = "
-                SELECT
+        $sql
+            = "SELECT
                     image_id
                 FROM
                     " . Config::Get('db.table.lsgallery.image') . "
@@ -875,11 +1045,12 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
                     album_id = ?d
                 ORDER BY
                     image_id {$sSqlOrder}
-                ";
+            ";
 
         if ($aRow = $this->oDb->selectRow($sql, $oImage->getId(), $oImage->getAlbumId())) {
             return $aRow['image_id'];
         }
+
         return null;
     }
 
@@ -888,73 +1059,91 @@ class PluginLsgallery_ModuleImage_MapperImage extends Mapper
      *
      * @return bool
      */
-    public function RecalculateFavourite() {
-        $sql = "
-                UPDATE ".Config::Get('db.table.lsgallery.image')." i
+    public function RecalculateFavourite()
+    {
+        $sql
+            = "UPDATE
+                    " . Config::Get('db.table.lsgallery.image') . " i
                 SET i.image_count_favourite = (
-                    SELECT count(f.user_id)
-                    FROM ".Config::Get('db.table.favourite')." f
+                    SELECT
+                        count(f.user_id)
+                    FROM
+                        " . Config::Get('db.table.favourite') . " f
                     WHERE
-                        f.target_id = i.image_id
-                    AND
-                        f.target_publish = 1
-                    AND
-                        f.target_type = 'image'
+                            f.target_id = i.image_id
+                        AND
+                            f.target_publish = 1
+                        AND
+                            f.target_type = 'image'
                 )
             ";
+
         if ($this->oDb->query($sql)) {
             return true;
         }
+
         return false;
     }
+
     /**
      * Пересчитывает счетчики голосований
      *
      * @return bool
      */
-    public function RecalculateVote() {
-        $sql = "
-                UPDATE ".Config::Get('db.table.lsgallery.image')." i
+    public function RecalculateVote()
+    {
+        $sql
+            = "UPDATE
+                    " . Config::Get('db.table.lsgallery.image') . " i
                 SET i.image_count_vote_up = (
-                    SELECT count(*)
-                    FROM ".Config::Get('db.table.vote')." v
+                    SELECT
+                        count(*)
+                    FROM
+                        " . Config::Get('db.table.vote') . " v
                     WHERE
-                        v.target_id = i.image_id
-                    AND
-                        v.vote_direction = 1
-                    AND
-                        v.target_type = 'image'
+                            v.target_id = i.image_id
+                        AND
+                            v.vote_direction = 1
+                        AND
+                            v.target_type = 'image'
                 ), i.image_count_vote_down = (
-                    SELECT count(*)
-                    FROM ".Config::Get('db.table.vote')." v
+                    SELECT
+                        count(*)
+                    FROM
+                        " . Config::Get('db.table.vote') . " v
                     WHERE
-                        v.target_id = i.image_id
-                    AND
-                        v.vote_direction = -1
-                    AND
-                        v.target_type = 'image'
+                            v.target_id = i.image_id
+                        AND
+                            v.vote_direction = -1
+                        AND
+                            v.target_type = 'image'
                 ), i.image_count_vote_abstain = (
-                    SELECT count(*)
-                    FROM ".Config::Get('db.table.vote')." v
+                    SELECT
+                        count(*)
+                    FROM
+                        " . Config::Get('db.table.vote') . " v
                     WHERE
-                        v.target_id = i.image_id
-                    AND
-                        v.vote_direction = 0
-                    AND
-                        v.target_type = 'image'
+                            v.target_id = i.image_id
+                        AND
+                            v.vote_direction = 0
+                        AND
+                            v.target_type = 'image'
                 ), i.image_count_vote = (
-                    SELECT count(*)
-                    FROM ".Config::Get('db.table.vote')." v
+                    SELECT
+                        count(*)
+                    FROM
+                        " . Config::Get('db.table.vote') . " v
                     WHERE
-                        v.target_id = i.image_id
-                    AND
-                        v.target_type = 'image'
+                            v.target_id = i.image_id
+                        AND
+                            v.target_type = 'image'
                 )
             ";
+
         if ($this->oDb->query($sql)) {
             return true;
         }
+
         return false;
     }
-
 }
