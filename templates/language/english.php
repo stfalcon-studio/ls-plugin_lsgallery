@@ -54,7 +54,7 @@ return array(
 
     'lsgallery_delete_album_success'                => 'Album deleted!',
 
-    'lsgallery_images_upload_rules'                 => 'You can load images in the format of JPG, PNG, GIF <br /> image size can not exceed%% SIZE%% KB <br /> Maximum number of uploaded images:%% COUNT%%',
+    'lsgallery_images_upload_rules'                 => 'You can load images in the format of JPG, PNG, GIF <br /> image size can not exceed %%SIZE%% KB <br /> Maximum number of uploaded images: %%COUNT%%',
     'lsgallery_images_upload_choose'                => 'Upload Image',
     'lsgallery_album_image_delete'                  => 'Delete image',
     'lsgallery_album_set_image_cover'               => 'Make the album cover',
