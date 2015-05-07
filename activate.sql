@@ -1,9 +1,9 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
-DROP TABLE IF EXISTS prefix_lsgallery_image_read;
-DROP TABLE IF EXISTS prefix_lsgallery_image_tag;
-DROP TABLE IF EXISTS prefix_lsgallery_image;
-DROP TABLE IF EXISTS prefix_lsgallery_album;
+# DROP TABLE IF EXISTS prefix_lsgallery_image_read;
+# DROP TABLE IF EXISTS prefix_lsgallery_image_tag;
+# DROP TABLE IF EXISTS prefix_lsgallery_image;
+# DROP TABLE IF EXISTS prefix_lsgallery_album;
 
 CREATE TABLE IF NOT EXISTS `prefix_lsgallery_album` (
     `album_id`             INT(11) UNSIGNED                             NOT NULL AUTO_INCREMENT,
