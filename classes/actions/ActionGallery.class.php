@@ -44,7 +44,8 @@ class PluginLsgallery_ActionGallery extends ActionPlugin
             'plugin.lsgallery.lsgallery_image_description',
             'plugin.lsgallery.lsgallery_image_description_updated',
             'plugin.lsgallery.lsgallery_save',
-            'plugin.lsgallery.lsgallery_image_move_album'
+            'plugin.lsgallery.lsgallery_image_move_album',
+            'plugin.lsgallery.lsgallery_flash_upload_init_error',
         ));
         $this->SetDefaultEvent('photo');
     }
